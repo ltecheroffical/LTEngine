@@ -9,13 +9,18 @@ struct ltrenderer_op_t *ltrenderer_add_op(ltrenderer_t *renderer) {
         if (!renderer->_op_queue.operations[i].flags.active) {
             renderer->_op_queue.operations[i].flags.active = true;
             renderer->_op_queue.operations[i].flags.locked = true;
-            renderer->_op_queue.operations[i].order = ++renderer->_op_queue.last_order;
+            renderer->_op_queue.operations[i].order = renderer->_op_queue.next_order++;
             renderer->_op_queue.op_count++;
             return &renderer->_op_queue.operations[i];
         }
     }
     
     struct ltrenderer_op_t *ops = (struct ltrenderer_op_t*)realloc(renderer->_op_queue.operations, sizeof(struct ltrenderer_op_t) * (renderer->_op_queue.capicity * 2));
+
+    if (ops == NULL) {
+        return NULL;
+    }
+
     u32 prev_capicity = renderer->_op_queue.capicity;
     renderer->_op_queue.capicity *= 2;
     
@@ -25,7 +30,7 @@ struct ltrenderer_op_t *ltrenderer_add_op(ltrenderer_t *renderer) {
 
     ops[prev_capicity].flags.active = true;
     ops[prev_capicity].flags.locked = true;
-    ops[prev_capicity].order = ++renderer->_op_queue.last_order;
+    ops[prev_capicity].order = renderer->_op_queue.next_order++;
 
     renderer->_op_queue.operations = ops;
     renderer->_op_queue.op_count++;
@@ -38,16 +43,15 @@ bool ltrenderer_process(ltrenderer_t *renderer) {
     if (renderer->_op_queue.op_count <= 0) {
         renderer->_op_queue.current = 0;
         renderer->_op_queue.current_order = 1;
-        renderer->_op_queue.last_order = 0;
+        renderer->_op_queue.next_order = 0;
         return false;
     }
 
     struct ltrenderer_op_t *ops = renderer->_op_queue.operations;
-    while (!ops[renderer->_op_queue.current].flags.active && renderer->_op_queue.current_order >= ops[renderer->_op_queue.current].order) {
-        if (renderer->_op_queue.current >= renderer->_op_queue.capicity) {
+    while (!ops[renderer->_op_queue.current].flags.active || ops[renderer->_op_queue.current].flags.locked || renderer->_op_queue.current_order < ops[renderer->_op_queue.current].order) {
+        if (++renderer->_op_queue.current >= renderer->_op_queue.capicity) {
             renderer->_op_queue.current = 0;
         }
-        renderer->_op_queue.current++;
     }
     renderer->_op_queue.current_order++;
 
@@ -58,6 +62,10 @@ bool ltrenderer_process(ltrenderer_t *renderer) {
             switch (op->op_set_param.param) {
                 case LTRENDERER_OP_PARAM_SCREEN_ONLY:
                     renderer->_flags.renderer.screen_only = op->op_set_param.screen_only;
+                    break;
+
+                case LTRENDERER_OP_PARAM_POS_OFFSET:
+                    renderer->_pos_offset = op->op_set_param.pos_offset;
                     break;
                 default:
                     break;
@@ -136,6 +144,7 @@ bool ltrenderer_process(ltrenderer_t *renderer) {
             }
 
             ltrenderer_transfer_buffer_to_screen(renderer, op->op_render_camera.position.x, op->op_render_camera.position.y);
+            break;
         }
         case LTRENDERER_OP_RENDER_SQUARE:
             ltrenderer_prepare_buffer(renderer, op->op_render_square.rect.w, op->op_render_square.rect.h);

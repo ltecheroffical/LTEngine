@@ -37,7 +37,8 @@ void ltrenderer_transfer_buffer_to_screen(ltrenderer_t *renderer, u32 x, u32 y) 
 
                     transfer_pixela_to_buffer(renderer->_cams.cams[c].pixels,
                                               ltrenderer_get_buffer_pixel(renderer, i, j),
-                                              ltvec2i_new(x + i - renderer->_cams.cams[c].x, y + j - renderer->_cams.cams[c].y),
+                                              ltvec2i_new(x + i - renderer->_cams.cams[c].x + renderer->_pos_offset.x,
+                                                          y + j - renderer->_cams.cams[c].y + renderer->_pos_offset.y),
                                               renderer->_width, renderer->_height);
                 }
                 continue;
@@ -45,7 +46,8 @@ void ltrenderer_transfer_buffer_to_screen(ltrenderer_t *renderer, u32 x, u32 y) 
             if (((x + i) < 0 || (x + i) >= renderer->_width || (y + j) < 0 || (y + j) >= renderer->_height) && !renderer->_flags.renderer.unsafe) continue;
             transfer_pixela_to_buffer(renderer->_software.pixels,
                                       ltrenderer_get_buffer_pixel(renderer, i, j),
-                                      ltvec2i_new(x + i, y + j), renderer->_width, renderer->_height);
+                                      ltvec2i_new(x + i + renderer->_pos_offset.x,
+                                                  y + j + renderer->_pos_offset.y), renderer->_width, renderer->_height);
         }
     }
 }

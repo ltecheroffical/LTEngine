@@ -6,125 +6,151 @@
 ltengine_t ltengine_new() {
     ltengine_t engine;
 
-    engine.structure = NULL;
+    engine._structure = NULL;
 
-    engine.scenes.count = 0;
-    engine.scenes.capacity = 4;
-    engine.scenes.data = (struct ltengine_scene_t *)calloc(engine.scenes.capacity, sizeof(struct ltengine_scene_t));
+    engine._flags.enable_multithreading = false;
 
-    engine.display_initilized = false;
+    engine._scenes.count = 0;
+    engine._scenes.capacity = 4;
+    engine._scenes.data = (struct ltengine_scene_t *)calloc(engine._scenes.capacity, sizeof(struct ltengine_scene_t));
+
+    engine._display_initilized = false;
     return engine;
 }
 
 void ltengine_free(ltengine_t *engine) {
-    for (u32 i = 0; i < engine->scenes.count; i++) {
-        if (engine->scenes.data[i].allocated) {
-            free(engine->scenes.data[i].data);
+    for (u32 i = 0; i < engine->_scenes.count; i++) {
+        if (engine->_scenes.data[i].allocated) {
+            engine->_structure->deinit(engine->_structure);
         }
     }
 
-    if (engine->display_initilized) {
-        ltrenderer_free(&engine->renderer);
+    if (engine->_display_initilized) {
+        ltrenderer_free(&engine->_renderer);
     }
 
-    if (engine->structure != NULL) {
-        engine->structure->deinit(engine->structure);
+    if (engine->_structure != NULL) {
+        engine->_structure->deinit(engine->_structure);
     }
 
-    free(engine->scenes.data);
+    free(engine->_scenes.data);
 }
 
 
 void ltengine_init_display(ltengine_t *engine, u32 width, u32 height) {
-    if (engine->display_initilized) {
+    if (engine->_display_initilized) {
         return;
     }
     
-    engine->display_initilized = true;
-    engine->renderer = ltrenderer_new(width, height);
+    engine->_display_initilized = true;
+    engine->_renderer = ltrenderer_new(width, height);
 }
 
 void ltengine_resize_display(ltengine_t *engine, u32 width, u32 height) {
-    ltrenderer_resize(&engine->renderer, width, height);
+    ltrenderer_resize(&engine->_renderer, width, height);
 }
 
 u32 ltengine_get_pixels(ltengine_t *engine, u8 *pixels) {
     if (pixels != NULL) {
-        ltrenderer_get_screen_data(&engine->renderer, pixels);
+        ltrenderer_get_screen_data(&engine->_renderer, pixels);
     }
 
-    return ltrenderer_get_buffer_size(&engine->renderer);
+    return ltrenderer_get_buffer_size(&engine->_renderer);
 }
 
 
-void ltengine_set_structure(ltengine_t *engine, ltobject_structure_t *structure) {
-    engine->structure = structure;
-    engine->structure->init(engine->structure);
+void ltengine_set_structure(ltengine_t *engine, ltcustom_structure_t *structure) {
+    engine->_structure = structure;
+    engine->_structure->init(engine->_structure);
 }
 
 void ltengine_clear_objects(ltengine_t *engine) {
-    engine->structure->clear(engine->structure);
+    engine->_structure->clear(engine->_structure);
+}
+
+
+void ltengine_use_multithreading(ltengine_t *engine) {
+    engine->_flags.enable_multithreading = true;
+}
+
+void ltengine_process_frame(ltengine_t *engine) {
+    if (!engine->_display_initilized) {
+        return;
+    }
+
+    while (ltrenderer_process(&engine->_renderer));
 }
 
 
 u32 ltengine_capture_scene(ltengine_t *engine) {
-    if (engine->scenes.count >= engine->scenes.capacity) {
-        engine->scenes.capacity *= 2;
-        engine->scenes.data = (struct ltengine_scene_t *)realloc(engine->scenes.data, engine->scenes.capacity * sizeof(struct ltengine_scene_t));
+    if (engine->_scenes.count >= engine->_scenes.capacity) {
+        engine->_scenes.capacity *= 2;
+        engine->_scenes.data = (struct ltengine_scene_t *)realloc(engine->_scenes.data, engine->_scenes.capacity * sizeof(struct ltengine_scene_t));
     }
 
-    u32 state_size = engine->structure->save_state(engine->structure, NULL);
-    u8 *state = (u8 *)malloc(state_size);
-    engine->structure->save_state(engine->structure, state);
 
-    u32 index = engine->scenes.count++;
-    engine->scenes.data[index].allocated = true;
-    engine->scenes.data[index].data = state;
-    engine->scenes.data[index].size = state_size;
+    u32 index = engine->_scenes.count++;
+
+    engine->_scenes.data[index].structure = engine->_structure->clone(engine->_structure);
+    engine->_scenes.data[index].allocated = true;
+
     return index;
 }
 
 void ltengine_load_scene(ltengine_t *engine, u32 index) {
-    if (index >= engine->scenes.count) {
+    if (index >= engine->_scenes.count) {
         return;
     }
 
-    engine->structure->load_state(engine->structure, 
-                                  engine->scenes.data[index].data,
-                                  engine->scenes.data[index].size);
+    if (!engine->_scenes.data[index].allocated) {
+        return;
+    }
+
+
+    if (engine->_structure != NULL) {
+        engine->_structure->deinit(engine->_structure);
+    }
+
+    engine->_structure = engine->_scenes.data[index].structure->clone(engine->_scenes.data[index].structure);
 }
 
 void ltengine_free_scene(ltengine_t *engine, u32 scene) {
-    if (scene >= engine->scenes.count) {
+    if (scene >= engine->_scenes.count) {
         return;
     }
 
-    if (!engine->scenes.data[scene].allocated) {
+    if (!engine->_scenes.data[scene].allocated) {
         return;
     }
 
-    free(engine->scenes.data[scene].data);
-    engine->scenes.data[scene].allocated = false;
+    engine->_scenes.data[scene].structure->deinit(engine->_scenes.data[scene].structure);
+    engine->_scenes.data[scene].allocated = false;
 }
 
 
 void ltengine_update(ltengine_t *engine, f32 delta) {
-    if (engine->structure == NULL) {
+    if (engine->_structure == NULL) {
         return;
     }
-    engine->structure->update(engine->structure, delta);
+    engine->_structure->update(engine->_structure, delta);
 }
 
 void ltengine_render(ltengine_t *engine) {
-    if (!engine->display_initilized) {
+    if (!engine->_display_initilized) {
         return;
     }
     
-    if (engine->structure == NULL) {
+    if (engine->_structure == NULL) {
         return;
     }
-    
-    ltrenderer_clear(&engine->renderer, ltcolora_from(engine->structure->clear_color));
+   
+    ltrenderer_set_screen_only(&engine->_renderer);
+    ltrenderer_clear(&engine->_renderer, ltcolora_from(engine->_structure->clear_color));
+    ltrenderer_clear_screen_only(&engine->_renderer);
+    ltrenderer_clear(&engine->_renderer, ltcolora_from(engine->_structure->clear_color));
 
-    engine->structure->render(engine->structure, &engine->renderer);
+    engine->_structure->render(engine->_structure, &engine->_renderer);
+
+    ltrenderer_clear_screen_only(&engine->_renderer);
+    ltrenderer_clear_unsafe(&engine->_renderer);
 }

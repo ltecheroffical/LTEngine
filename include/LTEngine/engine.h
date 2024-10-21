@@ -3,37 +3,42 @@
 #include <LTEngine/rendering/rendering.h>
 
 
-typedef struct ltobject_structure_t {
+struct ltengine_t;
+
+typedef struct ltcustom_structure_t {
+    struct ltengine_t *engine;
     ltcolor_t clear_color;
 
-    void (*init)(struct ltobject_structure_t*);
-    void (*deinit)(struct ltobject_structure_t*);
+    void (*init)(struct ltcustom_structure_t*);
+    void (*deinit)(struct ltcustom_structure_t*);
 
-    void (*update)(struct ltobject_structure_t*, f32);
-    void (*render)(struct ltobject_structure_t*, ltrenderer_t*);
+    void (*update)(struct ltcustom_structure_t*, f32);
+    void (*render)(struct ltcustom_structure_t*, ltrenderer_t*);
 
-    void (*clear)(struct ltobject_structure_t*);
+    void (*clear)(struct ltcustom_structure_t*);
 
-    u32  (*save_state)(const struct ltobject_structure_t*, u8 *data);
-    void (*load_state)(struct ltobject_structure_t*, const u8 *data, u32 size);
-} ltobject_structure_t;
+    struct ltcustom_structure_t *(*clone)(const struct ltcustom_structure_t*);
+} ltcustom_structure_t;
 
 
-typedef struct {
-    bool display_initilized;
-    ltrenderer_t renderer;
+typedef struct ltengine_t {
+    bool _display_initilized;
+    ltrenderer_t _renderer;
+
+    struct {
+        bool enable_multithreading:1;
+    } _flags;
 
     struct {
         struct ltengine_scene_t {
-            u8 *data;
-            u32 size;
+            ltcustom_structure_t *structure;
             bool allocated:1;
         } *data;
         u32 count;
         u32 capacity;
-    } scenes;
+    } _scenes;
 
-    ltobject_structure_t *structure;
+    ltcustom_structure_t *_structure;
 } ltengine_t;
 
 
@@ -44,8 +49,11 @@ void ltengine_init_display(ltengine_t *engine, u32 width, u32 height);
 void ltengine_resize_display(ltengine_t *engine, u32 width, u32 height);
 u32 ltengine_get_pixels(ltengine_t *engine, u8 *data);
 
-void ltengine_set_structure(ltengine_t *engine, ltobject_structure_t *structure);
+void ltengine_set_structure(ltengine_t *engine, ltcustom_structure_t *structure);
 void ltengine_clear_objects(ltengine_t *engine);
+
+void ltengine_use_multithreading(ltengine_t *engine);
+void ltengine_process_frame(ltengine_t *engine);
 
 u32 ltengine_capture_scene(ltengine_t *engine);
 void ltengine_load_scene(ltengine_t *engine, u32 scene);

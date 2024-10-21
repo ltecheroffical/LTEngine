@@ -2,6 +2,7 @@
 
 #include <LTEngine/common/types/inttypes.h>
 #include <LTEngine/common/types/booltypes.h>
+#include <LTEngine/common/result.h>
 
 #include <LTEngine/math/vec2.h>
 #include <LTEngine/math/rect.h>
@@ -66,9 +67,12 @@ typedef struct {
                 struct {
                     enum {
                         LTRENDERER_OP_PARAM_SCREEN_ONLY = 0,
+
+                        LTRENDERER_OP_PARAM_POS_OFFSET,
                     } param;
                     union {
                         bool screen_only:1;
+                        ltvec2_t pos_offset;
                     };
                 } op_set_param;
                 struct {
@@ -125,8 +129,10 @@ typedef struct {
         u32 current;
 
         u32 current_order;
-        u32 last_order;
+        u32 next_order;
     } _op_queue;
+
+    ltvec2_t _pos_offset;
 
     u64 _creation_time;
 } ltrenderer_t;
@@ -168,7 +174,7 @@ void ltrenderer_include_camera(ltrenderer_t *renderer, u32 id);
 void ltrenderer_include_cameras(ltrenderer_t *renderer);
 
 // Resizes the renderer
-bool ltrenderer_resize(ltrenderer_t *renderer, u32 width, u32 height);
+ltresult_t ltrenderer_resize(ltrenderer_t *renderer, u32 width, u32 height);
 
 // Clears the renderer with the color
 void ltrenderer_clear(ltrenderer_t *renderer, ltcolora_t color);
@@ -186,6 +192,8 @@ u32 ltrenderer_get_buffer_size(const ltrenderer_t *renderer);
 ltvec2u_t ltrenderer_get_screen_size(const ltrenderer_t *renderer);
 // Gets the screen data
 void ltrenderer_get_screen_data(const ltrenderer_t *renderer, u8 *pixels);
+
+void ltrenderer_set_position_offset(ltrenderer_t *renderer, ltvec2_t offset);
 
 void ltrenderer_draw_rect(ltrenderer_t *renderer, ltrect_t rect, ltcolora_t color);
 void ltrenderer_draw_line(ltrenderer_t *renderer, ltvec2_t a, ltvec2_t b, u16 thickness, ltcolora_t color);

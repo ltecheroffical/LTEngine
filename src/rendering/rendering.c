@@ -24,10 +24,10 @@ ltrenderer_t ltrenderer_new(u32 width, u32 height) {
     renderer._op_queue.capicity = 1;
     renderer._op_queue.op_count = 0;
     renderer._op_queue.current = 0;
-    renderer._op_queue.last_order = 0;
+    renderer._op_queue.next_order = 0;
     renderer._op_queue.current_order = 0;
 
-    renderer._op_queue.operations = (struct ltrenderer_op_t*)calloc(1, sizeof(struct ltrenderer_op_t));
+    renderer._op_queue.operations = (struct ltrenderer_op_t*)calloc(renderer._op_queue.capicity, sizeof(struct ltrenderer_op_t));
 
     renderer._software.pixels = (ltcolor_t*)calloc(width * height, sizeof(ltcolor_t));
 
@@ -38,6 +38,8 @@ ltrenderer_t ltrenderer_new(u32 width, u32 height) {
 
     renderer._cams.size = 4;
     renderer._cams.cams = (ltrenderer_camera_t*)calloc(renderer._cams.size, sizeof(ltrenderer_camera_t));
+
+    renderer._pos_offset = LTVEC2_ZERO;
 
     renderer._creation_time = clock(); 
     return renderer;
@@ -68,6 +70,8 @@ void ltrenderer_set_screen_only(ltrenderer_t *renderer) {
 
     op->op_set_param.param = LTRENDERER_OP_PARAM_SCREEN_ONLY;
     op->op_set_param.screen_only = true;
+
+    op->flags.locked = false;
 }
 
 void ltrenderer_clear_screen_only(ltrenderer_t *renderer) {
@@ -77,6 +81,8 @@ void ltrenderer_clear_screen_only(ltrenderer_t *renderer) {
 
     op->op_set_param.param = LTRENDERER_OP_PARAM_SCREEN_ONLY;
     op->op_set_param.screen_only = false;
+
+    op->flags.locked = false;
 }
 
 
@@ -93,11 +99,11 @@ void ltrenderer_get_screen_data(const ltrenderer_t *renderer, u8 *pixels) {
 }
 
 
-bool ltrenderer_resize(ltrenderer_t *renderer, u32 width, u32 height) {
+ltresult_t ltrenderer_resize(ltrenderer_t *renderer, u32 width, u32 height) {
     ltcolor_t *pixels = realloc(renderer->_software.pixels, width * height * sizeof(ltcolor_t));
 
     if (pixels == NULL) {
-        return false;
+        return LTRESULT_ERR_MEMORY;
     }
 
     renderer->_width = width;
@@ -110,12 +116,12 @@ bool ltrenderer_resize(ltrenderer_t *renderer, u32 width, u32 height) {
         ltcolor_t *data = (ltcolor_t*)realloc(renderer->_cams.cams[c].pixels, width * height * sizeof(ltcolor_t));
 
         if (data == NULL) {
-            return false;
+            return LTRESULT_FATAL_ERR_MEMORY;
         }
         
         renderer->_cams.cams[c].pixels = data;
     }
-    return true;
+    return LTRESULT_SUCCESS;
 }
 
 
@@ -131,4 +137,16 @@ void ltrenderer_clear(ltrenderer_t *renderer, ltcolora_t color) {
 
 ltcolor_t ltrenderer_get_pixel(const ltrenderer_t *renderer, ltvec2i_t position) {
     return renderer->_software.pixels[(position.y * renderer->_width + position.x)];
+}
+
+
+void ltrenderer_set_position_offset(ltrenderer_t *renderer, ltvec2_t offset) {
+    struct ltrenderer_op_t *op = ltrenderer_add_op(renderer);
+
+    op->op = LTRENDERER_OP_SET_PARAM;
+
+    op->op_set_param.param = LTRENDERER_OP_PARAM_POS_OFFSET;
+    op->op_set_param.pos_offset = offset;
+
+    op->flags.locked = false;
 }

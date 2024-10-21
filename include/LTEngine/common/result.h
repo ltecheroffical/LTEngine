@@ -1,0 +1,24 @@
+#pragma once
+
+#include <LTEngine/common/types/inttypes.h>
+
+
+typedef enum : u8 {
+    LTRESULT_UNKNOWN = 0,
+
+    LTRESULT_SUCCESS,
+    LTRESULT_ERROR,
+    
+
+    LTRESULT_ERR_MEMORY,
+    LTRESULT_ERR_FILE,
+    LTRESULT_ERR_NOT_IMPLEMENTED,
+
+    LTRESULT_ERR_INVALID_PARAM,
+
+
+    LTRESULT_FATAL_ERROR,
+
+    LTRESULT_FATAL_ERR_MEMORY,
+    LTRESULT_FATAL_ERR_FILE,
+} ltresult_t;
