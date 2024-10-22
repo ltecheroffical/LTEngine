@@ -80,7 +80,7 @@ ltrect_t ltrect_divf(ltrect_t a, f32 b) {
 
 
 
-ltrecti_t ltrecti_new(i32 x, i32 y, i32 w, i32 h) {
+ltrecti_t ltrecti_new(s32 x, s32 y, s32 w, s32 h) {
     return (ltrecti_t){x, y, w, h};
 }
 
@@ -121,7 +121,7 @@ ltrecti_t ltrecti_div(ltrecti_t a, ltrecti_t b) {
     };
 }
 
-ltrecti_t ltrecti_addi(ltrecti_t a, i32 b) {
+ltrecti_t ltrecti_addi(ltrecti_t a, s32 b) {
     return (ltrecti_t){
         a.x + b,
         a.y + b,
@@ -130,7 +130,7 @@ ltrecti_t ltrecti_addi(ltrecti_t a, i32 b) {
     };
 }
 
-ltrecti_t ltrecti_subi(ltrecti_t a, i32 b) {
+ltrecti_t ltrecti_subi(ltrecti_t a, s32 b) {
     return (ltrecti_t){
         a.x - b,
         a.y - b,
@@ -139,7 +139,7 @@ ltrecti_t ltrecti_subi(ltrecti_t a, i32 b) {
     };
 }
 
-ltrecti_t ltrecti_muli(ltrecti_t a, i32 b) {
+ltrecti_t ltrecti_muli(ltrecti_t a, s32 b) {
     return (ltrecti_t){
         a.x * b,
         a.y * b,
@@ -148,7 +148,7 @@ ltrecti_t ltrecti_muli(ltrecti_t a, i32 b) {
     };
 }
 
-ltrecti_t ltrecti_divi(ltrecti_t a, i32 b) {
+ltrecti_t ltrecti_divi(ltrecti_t a, s32 b) {
     return (ltrecti_t){
         a.x / b,
         a.y / b,

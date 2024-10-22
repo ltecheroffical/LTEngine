@@ -8,7 +8,7 @@
 
 
 typedef struct {
-    i32 x, y;
+    s32 x, y;
     ltvec2_t zoom;
     bool exclude;
 

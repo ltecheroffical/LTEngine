@@ -29,10 +29,10 @@ typedef struct ltobject_structure_t {
                 u16 u16[4];
                 u8 u8[8];
 
-                i64 i64;
-                i32 i32[2];
-                i16 i16[4];
-                i8 i8[8];
+                s64 i64;
+                s32 i32[2];
+                s16 i16[4];
+                s8 i8[8];
 
                 f32 f32[2];
                 f64 f64;

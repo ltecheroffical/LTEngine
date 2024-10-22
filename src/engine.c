@@ -50,7 +50,7 @@ void ltengine_resize_display(ltengine_t *engine, u32 width, u32 height) {
     ltrenderer_resize(&engine->_renderer, width, height);
 }
 
-u32 ltengine_get_pixels(ltengine_t *engine, u8 *pixels) {
+u32 ltengine_get_pixels(const ltengine_t *engine, u8 *pixels) {
     if (pixels != NULL) {
         ltrenderer_get_screen_data(&engine->_renderer, pixels);
     }

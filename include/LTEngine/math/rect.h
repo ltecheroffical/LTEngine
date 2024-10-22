@@ -28,20 +28,20 @@ ltrect_t ltrect_divf(ltrect_t a, f32 b);
 
 
 typedef struct {
-    i32 x, y;
-    i32 w, h;
+    s32 x, y;
+    s32 w, h;
 } ltrecti_t;
 
-ltrecti_t ltrecti_new(i32 x, i32 y, i32 w, i32 h);
+ltrecti_t ltrecti_new(s32 x, s32 y, s32 w, s32 h);
 
 ltrecti_t ltrecti_add(ltrecti_t a, ltrecti_t b);
 ltrecti_t ltrecti_sub(ltrecti_t a, ltrecti_t b);
 ltrecti_t ltrecti_mul(ltrecti_t a, ltrecti_t b);
 ltrecti_t ltrecti_div(ltrecti_t a, ltrecti_t b);
-ltrecti_t ltrecti_addi(ltrecti_t a, i32 b);
-ltrecti_t ltrecti_subi(ltrecti_t a, i32 b);
-ltrecti_t ltrecti_muli(ltrecti_t a, i32 b);
-ltrecti_t ltrecti_divi(ltrecti_t a, i32 b);
+ltrecti_t ltrecti_addi(ltrecti_t a, s32 b);
+ltrecti_t ltrecti_subi(ltrecti_t a, s32 b);
+ltrecti_t ltrecti_muli(ltrecti_t a, s32 b);
+ltrecti_t ltrecti_divi(ltrecti_t a, s32 b);
 
 
 typedef struct {

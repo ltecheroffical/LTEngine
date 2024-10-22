@@ -6,6 +6,8 @@
 #include <LTEngine/common/types/floattypes.h>
 #include <LTEngine/common/types/booltypes.h>
 
+#include <LTEngine/common/result.h>
+
 
 typedef struct {
     union {
@@ -16,10 +18,10 @@ typedef struct {
                 u16 u16[4];
                 u8 u8[8];
 
-                i64 i64;
-                i32 i32[2];
-                i16 i16[4];
-                i8 i8[8];
+                s64 i64;
+                s32 i32[2];
+                s16 i16[4];
+                s8 i8[8];
 
                 f64 f64;
                 f32 f32[2];
@@ -61,23 +63,28 @@ typedef struct {
 
 typedef struct ltcustom_random_data_t ltcustom_random_data_t;
 
+DEFINE_LTRESULT(ltrandom_t, ltrandom)
+
+
 ltrandom_t ltrandom_new_custom_random(const ltcustom_random_data_t *custom_random);
 ltrandom_t ltrandom_new_c_random();
 ltrandom_t ltrandom_new_lfsr();
-ltrandom_t ltrandom_new_unix_random(u32 buffer_size);
+ltresult_ltrandom_t ltrandom_new_unix_random(u32 buffer_size);
 ltrandom_t ltrandom_new_rdrand();
 
 void ltrandom_free(ltrandom_t *random);
+
+void ltrandom_seed(ltrandom_t *random, u64 seed);
 
 u8 ltrandom_get_u8(ltrandom_t *random);
 u16 ltrandom_get_u16(ltrandom_t *random);
 u32 ltrandom_get_u32(ltrandom_t *random);
 u64 ltrandom_get_u64(ltrandom_t *random);
 
-i8 ltrandom_get_i8(ltrandom_t *random);
-i16 ltrandom_get_i16(ltrandom_t *random);
-i32 ltrandom_get_i32(ltrandom_t *random);
-i64 ltrandom_get_i64(ltrandom_t *random);
+s8 ltrandom_get_i8(ltrandom_t *random);
+s16 ltrandom_get_i16(ltrandom_t *random);
+s32 ltrandom_get_i32(ltrandom_t *random);
+s64 ltrandom_get_i64(ltrandom_t *random);
 
 f32 ltrandom_get_f32(ltrandom_t *random);
 f64 ltrandom_get_f64(ltrandom_t *random);

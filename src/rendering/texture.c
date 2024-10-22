@@ -80,7 +80,7 @@ ltcolora_t lttexture_cpu_get_pixel(const lttexture_cpu_t *texture, u32 x, u32 y)
 
 
 bool lttexture_cpu_load_image(lttexture_cpu_t *texture, const char *path) {
-    i32 width, height, c;
+    s32 width, height, c;
     u8 *pixels = stbi_load(path, &width, &height, &c, 0);
     if (pixels == NULL) {
         return false;

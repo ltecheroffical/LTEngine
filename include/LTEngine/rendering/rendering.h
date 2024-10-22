@@ -49,7 +49,7 @@ typedef struct {
 
     struct {
         struct ltrenderer_op_t {
-            enum : u16 {
+            enum {
                 LTRENDERER_OP_SET_PARAM = 0,
                 LTRENDERER_OP_UPDATE_CAM,
 

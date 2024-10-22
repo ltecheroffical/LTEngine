@@ -48,7 +48,7 @@ ltvec2_t ltvec2_normalize(ltvec2_t a) {
 
 
 
-ltvec2i_t ltvec2i_new(i32 x, i32 y) {
+ltvec2i_t ltvec2i_new(s32 x, s32 y) {
     return (ltvec2i_t){x, y};
 }
 
@@ -70,19 +70,19 @@ ltvec2i_t ltvec2i_div(ltvec2i_t a, ltvec2i_t b) {
 }
 
 
-ltvec2i_t ltvec2i_addi(ltvec2i_t a, i32 b) {
+ltvec2i_t ltvec2i_addi(ltvec2i_t a, s32 b) {
     return (ltvec2i_t){a.x + b, a.y + b};
 }
 
-ltvec2i_t ltvec2i_subi(ltvec2i_t a, i32 b) {
+ltvec2i_t ltvec2i_subi(ltvec2i_t a, s32 b) {
     return (ltvec2i_t){a.x - b, a.y - b};
 }
 
-ltvec2i_t ltvec2i_muli(ltvec2i_t a, i32 b) {
+ltvec2i_t ltvec2i_muli(ltvec2i_t a, s32 b) {
     return (ltvec2i_t){a.x * b, a.y * b};
 }
 
-ltvec2i_t ltvec2i_divi(ltvec2i_t a, i32 b) {
+ltvec2i_t ltvec2i_divi(ltvec2i_t a, s32 b) {
     return (ltvec2i_t){a.x / b, a.y / b};
 }
 
