@@ -2,11 +2,32 @@
 
 #include <LTEngine/window.h>
 #include <LTEngine/random.h>
-#include <time.h>
+
+
+#define MAX_WIDTH ((u32)500)
+#define MAX_HEIGHT ((u32)400)
 
 
 i32 main(i32 argc, char *argv[]) {
-    ltresult_ltwindow_t window_result = ltwindow_new(LTWINDOW_BACKEND_SDL, NULL, "SDL Test", 640, 480);
+    if (argc < 2) {
+        printf("Test: Missing argument\n");
+        return 1;
+    }
+
+    enum ltwindow_backend_t backend;
+
+    if (strcmp(argv[1], "glfw") == 0) {
+        backend = LTWINDOW_BACKEND_GLFW;
+#ifdef LTENGINE_SDL_ENABLE
+    } else if (strcmp(argv[1], "sdl") == 0) {
+        backend = LTWINDOW_BACKEND_SDL;
+#endif
+    } else {
+        printf("Test: Unknown backend\n");
+        return 1;
+    }
+
+    ltresult_ltwindow_t window_result = ltwindow_new(backend, NULL, "SDL Test", MAX_WIDTH, MAX_HEIGHT);
 
     if (ltresult_ltwindow_get_result(window_result) != LTRESULT_SUCCESS) {
         printf("Test: Could not create window\n");
@@ -19,8 +40,8 @@ i32 main(i32 argc, char *argv[]) {
 
     // Get random size
     ltrandom_seed(&random, time(NULL));
-    u32 rnd_width = ltrandom_get_u32(&random) % 640;
-    u32 rnd_height = ltrandom_get_u32(&random) % 480;
+    u32 rnd_width = ltrandom_get_u32(&random) % MAX_WIDTH;
+    u32 rnd_height = ltrandom_get_u32(&random) % MAX_HEIGHT;
 
     ltwindow_poll_events(&window);
 

@@ -1,9 +1,3 @@
-#include <GLFW/glfw3.h>
-#ifdef LTENGINE_SDL_ENABLE
-#include <SDL2/SDL.h>
-#endif
-
-
 #include <LTEngine/window.h>
 
 

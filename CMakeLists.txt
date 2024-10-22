@@ -59,6 +59,7 @@ add_subdirectory(thirdparty)
 # Tests
 if (LTENGINE_BUILD_TESTS)
     message(STATUS "LTEngine: Tests are enabled")
+    enable_testing()
     add_subdirectory(tests)
 endif()
 

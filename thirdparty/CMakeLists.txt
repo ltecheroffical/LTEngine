@@ -8,7 +8,7 @@ endif()
 
 add_subdirectory(glfw)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME} PUBLIC
     glfw
 )
 
@@ -17,7 +17,7 @@ if (LTENGINE_BUILD_WITH_SDL)
         add_library(SDL2 ALIAS SDL2-static)
     endif()
 
-    target_link_libraries(${PROJECT_NAME} PRIVATE
+    target_link_libraries(${PROJECT_NAME} PUBLIC
         SDL2
     )
 endif()

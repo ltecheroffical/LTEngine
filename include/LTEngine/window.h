@@ -1,5 +1,10 @@
 #pragma once
 
+#include <GLFW/glfw3.h>
+#ifdef LTENGINE_SDL_ENABLE
+#include <SDL2/SDL.h>
+#endif
+
 #include <LTEngine/common/types/booltypes.h>
 #include <LTEngine/common/types/inttypes.h>
 
@@ -21,7 +26,7 @@ typedef struct {
 
     union {
         struct {
-            void *window;
+            GLFWwindow *window;
             u32 width;
             u32 height;
             ltvec2i_t position;
@@ -29,7 +34,7 @@ typedef struct {
         
 #ifdef LTENGINE_SDL_ENABLE
         struct {
-            void *window;
+            SDL_Window *window;
             bool is_open:1;
         } _sdl;
 #endif
