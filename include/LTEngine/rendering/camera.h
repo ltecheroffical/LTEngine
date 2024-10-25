@@ -12,7 +12,5 @@ typedef struct {
     ltvec2_t zoom;
     bool exclude;
 
-    ltcolor_t *pixels;
-
     bool in_use;
 } ltrenderer_camera_t;
