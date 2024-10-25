@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <time.h>
 
 #include <LTEngine/window.h>
@@ -32,12 +33,9 @@ i32 main(i32 argc, char *argv[]) {
         return 1;
     }
 
-    ltresult_ltwindow_t window_result = ltwindow_new(backend, NULL, "SDL Test", SCREEN_WIDTH, SCREEN_HEIGHT);
+    ltresult_ltwindow_t window_result = ltwindow_new(backend, NULL, backend == LTWINDOW_BACKEND_SDL ? "SDL Test" : "GLFW Test", SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    if (ltresult_ltwindow_get_result(window_result) != LTRESULT_SUCCESS) {
-        printf("Test: Could not create window\n");
-        return 1;
-    }
+    assert(ltresult_ltwindow_get_result(window_result) == LTRESULT_SUCCESS);
 
     ltwindow_t window = ltresult_ltwindow_get_value(window_result);
 
@@ -57,11 +55,7 @@ i32 main(i32 argc, char *argv[]) {
 
     char *title = malloc(sizeof(char) * (rnd_title_length + 1));
 
-    if (title == NULL) {
-        printf("Test: Failed to allocate title\n");
-        ltwindow_destroy(&window);
-        return 1;
-    }
+    assert(title != NULL);
 
     printf("Test: Generated Title (If your curious): ");
 
@@ -83,10 +77,7 @@ i32 main(i32 argc, char *argv[]) {
     
     const char *actual_title = ltwindow_get_title(&window);
 
-    if (strcmp(title, actual_title) != 0) {
-        printf("Test: Title comparsion failed\n");
-        return 1;
-    }
+    assert(strcmp(actual_title, title) == 0);
 
     free(title);
     ltwindow_destroy(&window);

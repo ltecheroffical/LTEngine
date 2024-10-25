@@ -1,12 +1,10 @@
-#include <stdio.h>
 #include <assert.h>
 
 #include <LTEngine/window.h>
-#include <LTEngine/random.h>
 
 
-#define MAX_WIDTH ((u32)500)
-#define MAX_HEIGHT ((u32)400)
+#define SCREEN_WIDTH  ((u32)500)
+#define SCREEN_HEIGHT ((u32)400)
 
 
 i32 main(i32 argc, char *argv[]) {
@@ -28,32 +26,28 @@ i32 main(i32 argc, char *argv[]) {
         return 1;
     }
 
-    ltresult_ltwindow_t window_result = ltwindow_new(backend, NULL, backend == LTWINDOW_BACKEND_SDL ? "SDL Test" : "GLFW Test", MAX_WIDTH, MAX_HEIGHT);
+    ltresult_ltwindow_t window_result = ltwindow_new(backend, NULL, backend == LTWINDOW_BACKEND_SDL ? "SDL Test" : "GLFW Test", SCREEN_WIDTH, SCREEN_HEIGHT);
 
     assert(ltresult_ltwindow_get_result(window_result) == LTRESULT_SUCCESS);
 
     ltwindow_t window = ltresult_ltwindow_get_value(window_result);
 
 
-    ltrandom_t random = ltrandom_new_c_random();
+    ltwindow_poll_events(&window);
 
-    // Get random size
-    ltrandom_seed(&random, time(NULL));
-    u32 rnd_width = ltrandom_get_u32(&random) % MAX_WIDTH;
-    u32 rnd_height = ltrandom_get_u32(&random) % MAX_HEIGHT;
+    ltwindow_set_minimized(&window, true);
 
     ltwindow_poll_events(&window);
 
-    ltwindow_set_size(&window, rnd_width, rnd_height);
+    assert(ltwindow_is_minimized(&window) == true);
+
+    ltwindow_set_minimized(&window, false);
 
     ltwindow_poll_events(&window);
 
-    ltvec2i_t size = ltwindow_get_size(&window);
-
-    assert(size.x == rnd_width);
-    assert(size.y == rnd_height);
+    assert(ltwindow_is_minimized(&window) == false);
 
     ltwindow_destroy(&window);
     printf("Test: Test passed!\n");
-    return 0;    
+    return 0;
 }

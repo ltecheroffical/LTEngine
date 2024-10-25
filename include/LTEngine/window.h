@@ -30,12 +30,14 @@ typedef struct {
             u32 width;
             u32 height;
             ltvec2i_t position;
+            bool is_minimized:1;
         } _glfw;
         
 #ifdef LTENGINE_SDL_ENABLE
         struct {
             SDL_Window *window;
             bool is_open:1;
+            bool is_minimized:1;
         } _sdl;
 #endif
     };

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include <LTEngine/window.h>
 #include <LTEngine/random.h>
@@ -27,12 +28,9 @@ i32 main(i32 argc, char *argv[]) {
         return 1;
     }
 
-    ltresult_ltwindow_t window_result = ltwindow_new(backend, NULL, "SDL Test", SCREEN_WIDTH, SCREEN_HEIGHT);
+    ltresult_ltwindow_t window_result = ltwindow_new(backend, NULL, backend == LTWINDOW_BACKEND_SDL ? "SDL Test" : "GLFW Test", SCREEN_WIDTH, SCREEN_HEIGHT);
     
-    if (ltresult_ltwindow_get_result(window_result) != LTRESULT_SUCCESS) {
-        printf("Test: Could not create window\n");
-        return 1;
-    }
+    assert(ltresult_ltwindow_get_result(window_result) == LTRESULT_SUCCESS);
 
     ltwindow_t window = ltresult_ltwindow_get_value(window_result);
 
@@ -72,17 +70,9 @@ i32 main(i32 argc, char *argv[]) {
     ltwindow_poll_events(&window);
 
     ltvec2i_t position = ltwindow_get_position(&window);
-    
-    if (position.x != rnd_x) {
-        printf("Test: Failed position comparsion (X)\n");
-        ltwindow_destroy(&window);
-        return 1;
-    }
-    if (position.y != rnd_y) {
-        printf("Test: Failed position comparsion (Y)\n");
-        ltwindow_destroy(&window);
-        return 1;
-    }
+
+    assert(position.x == rnd_x);
+    assert(position.y == rnd_y);
 
     ltwindow_destroy(&window);
     printf("Test: Test passed!\n");

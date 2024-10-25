@@ -20,6 +20,7 @@ ltresult_ltwindow_t ltwindow_new(enum ltwindow_backend_t backend, const ltengine
             window._glfw.width = 0;
             window._glfw.height = 0;
 
+            window._glfw.is_minimized = false;
             window._glfw.window = glfw_window;
             break;
 
@@ -32,6 +33,7 @@ ltresult_ltwindow_t ltwindow_new(enum ltwindow_backend_t backend, const ltengine
             }
 
             window._sdl.is_open = true;
+            window._sdl.is_minimized = false;
             window._sdl.window = sdl_window;
             break;
         }
@@ -347,6 +349,7 @@ void ltwindow_set_minimized(ltwindow_t *window, bool minimized) {
             } else {
                 glfwRestoreWindow(window->_glfw.window);
             }
+            window->_glfw.is_minimized = minimized;
             break;
 
 #ifdef LTENGINE_SDL_ENABLE
@@ -356,6 +359,7 @@ void ltwindow_set_minimized(ltwindow_t *window, bool minimized) {
             } else {
                 SDL_RestoreWindow(window->_sdl.window);
             }
+            window->_sdl.is_minimized = minimized;
             break;
 #endif
             
@@ -367,11 +371,11 @@ void ltwindow_set_minimized(ltwindow_t *window, bool minimized) {
 bool ltwindow_is_minimized(ltwindow_t *window) {
     switch (window->_backend) {
         case LTWINDOW_BACKEND_GLFW:
-            return glfwGetWindowAttrib(window->_glfw.window, GLFW_ICONIFIED);
+            return window->_glfw.is_minimized;
 
 #ifdef LTENGINE_SDL_ENABLE
         case LTWINDOW_BACKEND_SDL:
-            return SDL_GetWindowFlags(window->_sdl.window) & SDL_WINDOW_MINIMIZED;
+            return window->_sdl.is_minimized;
 #endif
             
         default:

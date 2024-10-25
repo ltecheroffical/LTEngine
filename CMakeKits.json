@@ -1,12 +1,12 @@
 [
     {
-        "name": "LTecher Adventure",
+        "name": "LTEngine",
         "generator": "Ninja",
         "compilers": {
-            "C": "/opt/local/bin/clang-mp-17",
-            "CXX": "/opt/local/bin/clang++-mp-17",
-            "ASM": "/opt/local/bin/clang-mp-17"
+            "C": "/usr/bin/clang",
+            "CXX": "/usr/bin/clang++",
+            "ASM": "/usr/bin/clang"
         },
-        "linker": "/opt/local/bin/ld"
+        "linker": "/usr/bin/ld"
     }
 ]
