@@ -33,24 +33,28 @@ typedef struct {
             void (*random_init)(struct ltcustom_random_data_t *random);
             void (*random)(struct ltcustom_random_data_t *random, void *output, u32 size);
             void (*random_free)(struct ltcustom_random_data_t *random);
-        } custom_random;
+        } _custom_random;
 
+        struct {
+            u16 index;
+        } _dont_use_this_random;
         struct {
             u64 state;
             u32 ticks;
-        } lfsr_random;
+        } _lfsr_random;
         struct {
             u8 *buffer;
             u32 buffer_size;
             u32 buffer_items;
 
             FILE *random_device;
-        } unix_random;
+        } _unix_random;
     };
 
     enum ltrandom_type_t { // Lowest security to highest security
         LTRANDOM_TYPE_CUSTOM = 0, // Can't determine security
 
+        LTRANDOM_TYPE_DONT_USE_THIS_RANDOM, // Don't use this. See the source code to find out why.
         LTRANDOM_TYPE_C_RANDOM,
         LTRANDOM_TYPE_LFSR,
 
@@ -58,7 +62,7 @@ typedef struct {
         LTRANDOM_TYPE_UNIX_RANDOM,
 #endif
         LTRANDOM_TYPE_RDRAND,
-    } random_type;
+    } _random_type;
 } ltrandom_t;
 
 typedef struct ltcustom_random_data_t ltcustom_random_data_t;
@@ -67,6 +71,7 @@ DEFINE_LTRESULT(ltrandom_t, ltrandom)
 
 
 ltrandom_t ltrandom_new_custom_random(const ltcustom_random_data_t *custom_random);
+ltrandom_t ltrandom_new_dont_use_this_random();
 ltrandom_t ltrandom_new_c_random();
 ltrandom_t ltrandom_new_lfsr();
 ltresult_ltrandom_t ltrandom_new_unix_random(u32 buffer_size);
@@ -81,10 +86,10 @@ u16 ltrandom_get_u16(ltrandom_t *random);
 u32 ltrandom_get_u32(ltrandom_t *random);
 u64 ltrandom_get_u64(ltrandom_t *random);
 
-s8 ltrandom_get_i8(ltrandom_t *random);
-s16 ltrandom_get_i16(ltrandom_t *random);
-s32 ltrandom_get_i32(ltrandom_t *random);
-s64 ltrandom_get_i64(ltrandom_t *random);
+s8 ltrandom_get_s8(ltrandom_t *random);
+s16 ltrandom_get_s16(ltrandom_t *random);
+s32 ltrandom_get_s32(ltrandom_t *random);
+s64 ltrandom_get_s64(ltrandom_t *random);
 
 f32 ltrandom_get_f32(ltrandom_t *random);
 f64 ltrandom_get_f64(ltrandom_t *random);
