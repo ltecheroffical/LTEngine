@@ -37,7 +37,7 @@ typedef struct ltobject_structure_t {
                 f32 f32[2];
                 f64 f64;
 
-                bool bool[8];
+                bool boolean[8];
 
                 void *ptr;
                 const void *const_ptr;

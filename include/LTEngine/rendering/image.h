@@ -13,7 +13,8 @@ typedef struct {
 
 ltimage_t ltimage_new(u32 width, u32 height);
 // Creates a texture from a RGBA pixel buffer
-ltimage_t ltimage_from_buffer(ltcolora_t *buffer, u32 width, u32 height);
+ltimage_t ltimage_from_buffer(const ltcolor_t *buffer, u32 width, u32 height);
+ltimage_t ltimage_from_buffera(const ltcolora_t *buffer, u32 width, u32 height);
 void ltimage_free(ltimage_t *texture);
 
 void ltimage_resize(ltimage_t *texture, u32 width, u32 height);
@@ -29,3 +30,7 @@ ltcolora_t ltimage_get_pixel(const ltimage_t *texture, u32 x, u32 y);
 bool ltimage_load_image(ltimage_t *texture, const char *path);
 // Does the same thing as `texture_load_image` but from a memory buffer
 bool ltimage_load_image_from_memory(ltimage_t *texture, const u8 *buffer, u32 size);
+
+bool ltimage_save_image_png(ltimage_t *texture, const char *path);
+bool ltimage_save_image_jpg(ltimage_t *texture, const char *path);
+bool ltimage_save_image_bmp(ltimage_t *texture, const char *path);

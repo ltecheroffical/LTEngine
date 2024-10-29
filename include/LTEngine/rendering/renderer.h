@@ -12,10 +12,10 @@
 #include <LTEngine/rendering/image.h>
 
 
-#define LTRENDERER_FLAG_FLIP_H ((ltrenderer_flags_t)(1 << 0))
-#define LTRENDERER_FLAG_FLIP_V ((ltrenderer_flags_t)(1 << 1))
+#define LTRENDERER_FLAG_FLIP_H  ((ltrenderer_flags_t)(1 << 0))
+#define LTRENDERER_FLAG_FLIP_V  ((ltrenderer_flags_t)(1 << 1))
 
-#define LTRENDERER_FLAG_POINT_FILL ((ltrenderer_flags_t)(1 << 8))
+#define LTRENDERER_FLAG_FILL    ((ltrenderer_flags_t)(1 << 2))
 
 typedef u16 ltrenderer_flags_t;
 
@@ -41,12 +41,12 @@ typedef struct ltrenderer_t {
         void (*clear)(struct ltrenderer_module_t *module, ltcolora_t color);
 
         void (*draw_rect)(struct ltrenderer_module_t *module, ltrect_t rect, ltrenderer_flags_t flags, ltcolora_t color);
-        void (*draw_circle)(struct ltrenderer_module_t *module, ltvec2_t center, f32 radius, ltrenderer_flags_t flags, ltcolora_t color);
+        void (*draw_circle)(struct ltrenderer_module_t *module, ltvec2_t center_position, u32 radius, ltrenderer_flags_t flags, ltcolora_t color);
 
         void (*draw_line)(struct ltrenderer_module_t *module, ltvec2_t a, ltvec2_t b, u16 thickness, ltrenderer_flags_t flags, ltcolora_t color);
         void (*fill_points)(struct ltrenderer_module_t *module, ltvec2_t *points, u32 count, ltrenderer_flags_t flags, ltcolora_t color);
 
-        void (*draw_camera)(struct ltrenderer_module_t *module, u32 id, ltrect_t crop);
+        void (*draw_camera)(struct ltrenderer_module_t *module, u32 id, ltvec2_t position, ltrect_t crop);
     } *_module;
 
     struct { 
@@ -120,7 +120,7 @@ void ltrenderer_clear(ltrenderer_t *renderer, ltcolora_t color);
 // Draws a rectangle
 void ltrenderer_draw_rect(ltrenderer_t *renderer, ltrect_t rect, ltrenderer_flags_t flags, ltcolora_t color);
 // Draws a circle
-void ltrenderer_draw_circle(ltrenderer_t *renderer, ltvec2_t center, f32 radius, ltrenderer_flags_t flags, ltcolora_t color);
+void ltrenderer_draw_circle(ltrenderer_t *renderer, ltvec2_t center_position, u32 radius, ltrenderer_flags_t flags, ltcolora_t color);
 // Draws a triangle (it really wraps ltrenderer_draw_points)
 void ltrenderer_draw_triangle(ltrenderer_t *renderer, ltvec2_t a, ltvec2_t b, ltvec2_t c, ltrenderer_flags_t flags, ltcolora_t color);
 

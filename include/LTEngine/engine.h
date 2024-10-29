@@ -1,6 +1,6 @@
 #pragma once
 
-#include <LTEngine/rendering/rendering.h>
+#include <LTEngine/rendering/renderer.h>
 
 
 struct ltengine_t;
@@ -45,9 +45,7 @@ typedef struct ltengine_t {
 ltengine_t ltengine_new();
 void ltengine_free(ltengine_t *engine);
 
-void ltengine_init_display(ltengine_t *engine, u32 width, u32 height);
-void ltengine_resize_display(ltengine_t *engine, u32 width, u32 height);
-u32 ltengine_get_pixels(const ltengine_t *engine, u8 *data);
+void ltengine_init_display(ltengine_t *engine, ltrenderer_module_t *module);
 
 void ltengine_set_structure(ltengine_t *engine, ltcustom_structure_t *structure);
 void ltengine_clear_objects(ltengine_t *engine);

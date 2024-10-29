@@ -196,7 +196,7 @@ void ltrenderer_draw_rect(ltrenderer_t *renderer, ltrect_t rect, ltrenderer_flag
     renderer->_module->draw_rect(renderer->_module, rect, flags, color);
 }
 
-void ltrenderer_draw_circle(ltrenderer_t *renderer, ltvec2_t position, float radius, ltrenderer_flags_t flags, ltcolora_t color) {
+void ltrenderer_draw_circle(ltrenderer_t *renderer, ltvec2_t position, u32 radius, ltrenderer_flags_t flags, ltcolora_t color) {
     if (renderer->_module->draw_circle == NULL) {
         return;
     }
@@ -225,7 +225,7 @@ void ltrenderer_draw_points(ltrenderer_t *renderer, ltvec2_t *points, u32 count,
         return;
     }
 
-    if (flags & LTRENDERER_FLAG_POINT_FILL && renderer->_module->fill_points != NULL) {
+    if (flags & LTRENDERER_FLAG_FILL && renderer->_module->fill_points != NULL) {
         renderer->_module->fill_points(renderer->_module, points, count, flags, color);
     }
 

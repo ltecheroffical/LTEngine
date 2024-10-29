@@ -37,25 +37,13 @@ void ltengine_free(ltengine_t *engine) {
 }
 
 
-void ltengine_init_display(ltengine_t *engine, u32 width, u32 height) {
+void ltengine_init_display(ltengine_t *engine, ltrenderer_module_t *module) {
     if (engine->_display_initilized) {
         return;
     }
     
     engine->_display_initilized = true;
-    engine->_renderer = ltrenderer_new(width, height);
-}
-
-void ltengine_resize_display(ltengine_t *engine, u32 width, u32 height) {
-    ltrenderer_resize(&engine->_renderer, width, height);
-}
-
-u32 ltengine_get_pixels(const ltengine_t *engine, u8 *pixels) {
-    if (pixels != NULL) {
-        ltrenderer_get_screen_data(&engine->_renderer, pixels);
-    }
-
-    return ltrenderer_get_buffer_size(&engine->_renderer);
+    engine->_renderer = ltrenderer_new(module);
 }
 
 
@@ -77,8 +65,6 @@ void ltengine_process_frame(ltengine_t *engine) {
     if (!engine->_display_initilized) {
         return;
     }
-
-    while (ltrenderer_process(&engine->_renderer));
 }
 
 
@@ -144,13 +130,7 @@ void ltengine_render(ltengine_t *engine) {
         return;
     }
    
-    ltrenderer_set_screen_only(&engine->_renderer);
-    ltrenderer_clear(&engine->_renderer, ltcolora_from(engine->_structure->clear_color));
-    ltrenderer_clear_screen_only(&engine->_renderer);
     ltrenderer_clear(&engine->_renderer, ltcolora_from(engine->_structure->clear_color));
 
     engine->_structure->render(engine->_structure, &engine->_renderer);
-
-    ltrenderer_clear_screen_only(&engine->_renderer);
-    ltrenderer_clear_unsafe(&engine->_renderer);
 }

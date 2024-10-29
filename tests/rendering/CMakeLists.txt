@@ -1,0 +1,8 @@
+add_executable(software_renderer_test software_renderer_test.c)
+
+target_link_libraries(software_renderer_test PRIVATE LTEngine)
+
+add_test(NAME software_renderer_clear_test COMMAND software_renderer_test test_renderer_clear)
+
+add_test(NAME software_renderer_draw_rect_test COMMAND software_renderer_test test_renderer_draw_rect)
+add_test(NAME software_renderer_draw_circle_test COMMAND software_renderer_test test_renderer_draw_circle)

@@ -195,9 +195,6 @@ void ltobject_structure_render(ltcustom_structure_t *structure, ltrenderer_t *re
 
 
             ltrenderer_set_position_offset(renderer, LTVEC2_ZERO);
-
-            ltrenderer_clear_screen_only(renderer);
-            ltrenderer_clear_unsafe(renderer);
         }
         object = object->_next;
     }
