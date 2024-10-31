@@ -6,3 +6,4 @@ add_test(NAME software_renderer_clear_test COMMAND software_renderer_test test_r
 
 add_test(NAME software_renderer_draw_rect_test COMMAND software_renderer_test test_renderer_draw_rect)
 add_test(NAME software_renderer_draw_circle_test COMMAND software_renderer_test test_renderer_draw_circle)
+add_test(NAME software_renderer_draw_line_test COMMAND software_renderer_test test_renderer_draw_line)

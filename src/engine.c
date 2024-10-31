@@ -26,7 +26,7 @@ void ltengine_free(ltengine_t *engine) {
     }
 
     if (engine->_display_initilized) {
-        ltrenderer_free(&engine->_renderer);
+        ltrenderer_free(engine->_renderer);
     }
 
     if (engine->_structure != NULL) {
@@ -37,13 +37,13 @@ void ltengine_free(ltengine_t *engine) {
 }
 
 
-void ltengine_init_display(ltengine_t *engine, ltrenderer_module_t *module) {
+void ltengine_init_display(ltengine_t *engine, ltrenderer_t *renderer) {
     if (engine->_display_initilized) {
         return;
     }
     
     engine->_display_initilized = true;
-    engine->_renderer = ltrenderer_new(module);
+    engine->_renderer = renderer;
 }
 
 
@@ -130,7 +130,7 @@ void ltengine_render(ltengine_t *engine) {
         return;
     }
    
-    ltrenderer_clear(&engine->_renderer, ltcolora_from(engine->_structure->clear_color));
+    ltrenderer_clear(engine->_renderer, ltcolora_from(engine->_structure->clear_color));
 
-    engine->_structure->render(engine->_structure, &engine->_renderer);
+    engine->_structure->render(engine->_structure, engine->_renderer);
 }

@@ -23,7 +23,7 @@ typedef struct ltcustom_structure_t {
 
 typedef struct ltengine_t {
     bool _display_initilized;
-    ltrenderer_t _renderer;
+    ltrenderer_t *_renderer;
 
     struct {
         bool enable_multithreading:1;
@@ -45,13 +45,10 @@ typedef struct ltengine_t {
 ltengine_t ltengine_new();
 void ltengine_free(ltengine_t *engine);
 
-void ltengine_init_display(ltengine_t *engine, ltrenderer_module_t *module);
+void ltengine_init_display(ltengine_t *engine, ltrenderer_t *renderer);
 
 void ltengine_set_structure(ltengine_t *engine, ltcustom_structure_t *structure);
 void ltengine_clear_objects(ltengine_t *engine);
-
-void ltengine_use_multithreading(ltengine_t *engine);
-void ltengine_process_frame(ltengine_t *engine);
 
 u32 ltengine_capture_scene(ltengine_t *engine);
 void ltengine_load_scene(ltengine_t *engine, u32 scene);

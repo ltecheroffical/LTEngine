@@ -3,30 +3,8 @@
 #include <LTEngine/rendering/renderer.h>
 
 
-ltrenderer_t ltrenderer_new(ltrenderer_module_t *module) {
-    ltrenderer_t renderer;
-  
-    renderer._module = module;
-
-    renderer._cams.size = 8;
-    renderer._cams.cams = (ltrenderer_camera_t*)calloc(sizeof(ltrenderer_camera_t), renderer._cams.size);
-
-    renderer._rotation = 0.f;
-    renderer._scale = LTVEC2_ONE;
-
-    renderer._pos_offset = LTVEC2_ZERO;
-    renderer._scale_offset = LTVEC2_ZERO;
-    renderer._rotation_offset = 0.f;
-
-    renderer._z_order = 0;
-
-    return renderer;
-}
-
 void ltrenderer_free(ltrenderer_t *renderer) {
-    free(renderer->_cams.cams);
-
-    renderer->_module->free(renderer->_module);
+    renderer->functions.free(renderer);
 }
 
 
@@ -58,17 +36,11 @@ void ltrenderer_set_z_order(ltrenderer_t *renderer, u16 z) {
 
 
 void ltrenderer_set_iris(ltrenderer_t *renderer) {
-    if (renderer->_module->set_iris_mode == NULL) {
-        return;
-    }
-    renderer->_module->set_iris_mode(renderer->_module);
+    renderer->_iris_mode = true;
 }
 
 void ltrenderer_clear_iris_mode(ltrenderer_t *renderer, ltcolora_t color) {
-    if (renderer->_module->clear_iris_mode == NULL) {
-        return;
-    }
-    renderer->_module->clear_iris_mode(renderer->_module, color);
+    renderer->_iris_mode = true;
 }
 
 
@@ -167,69 +139,37 @@ ltvec2_t ltrenderer_get_camera_zoom(const ltrenderer_t *renderer, u32 id) {
 
 
 void ltrenderer_set_pixela(ltrenderer_t *renderer, ltvec2i_t position, ltcolora_t color) {
-    if (renderer->_module->set_pixela == NULL) {
-        return;
-    }
-    renderer->_module->set_pixela(renderer->_module, position, color);
+    renderer->functions.set_pixela(renderer, position, color);
 }
 
 ltcolor_t ltrenderer_get_pixel(const ltrenderer_t *renderer, ltvec2i_t position) {
-    if (renderer->_module->get_pixel == NULL) {
-        return LTCOLOR_BLACK;
-    }
-    return renderer->_module->get_pixel(renderer->_module, position);
+    return renderer->functions.get_pixel(renderer, position);
 }
 
 
 void ltrenderer_clear(ltrenderer_t *renderer, ltcolora_t color) {
-    if (renderer->_module->clear == NULL) {
-        return;
-    }
-    renderer->_module->clear(renderer->_module, color);
+    renderer->functions.clear(renderer, color);
 }
 
 
 void ltrenderer_draw_rect(ltrenderer_t *renderer, ltrect_t rect, ltrenderer_flags_t flags, ltcolora_t color) {
-    if (renderer->_module->draw_rect == NULL) {
-        return;
-    }
-    renderer->_module->draw_rect(renderer->_module, rect, flags, color);
+    renderer->functions.draw_rect(renderer, ltrecti_new(rect.x, rect.y, rect.w, rect.h), flags, color);
 }
 
 void ltrenderer_draw_circle(ltrenderer_t *renderer, ltvec2_t position, u32 radius, ltrenderer_flags_t flags, ltcolora_t color) {
-    if (renderer->_module->draw_circle == NULL) {
-        return;
-    }
-    renderer->_module->draw_circle(renderer->_module, position, radius, flags, color);
+    renderer->functions.draw_circle(renderer, ltvec2i_new(position.x, position.y), radius, flags, color);
 }
 
 void ltrenderer_draw_triangle(ltrenderer_t *renderer, ltvec2_t a, ltvec2_t b, ltvec2_t c, ltrenderer_flags_t flags, ltcolora_t color) {
     ltvec2_t points[3] = {a, b, c};
-    ltrenderer_draw_points(renderer, points, 3, flags, 1, color);
+    ltrenderer_draw_points(renderer, points, 3, flags, color);
 }
 
 
 void ltrenderer_draw_line(ltrenderer_t *renderer, ltvec2_t a, ltvec2_t b, u16 thickness, ltrenderer_flags_t flags, ltcolora_t color) {
-    if (renderer->_module->draw_line == NULL) {
-        return;
-    }
-    renderer->_module->draw_line(renderer->_module, a, b, thickness, flags, color);
+    renderer->functions.draw_line(renderer, ltvec2i_new(a.x, a.y), ltvec2i_new(b.x, b.y), thickness, flags, color);
 }
 
-void ltrenderer_draw_points(ltrenderer_t *renderer, ltvec2_t *points, u32 count, u16 thickness, ltrenderer_flags_t flags, ltcolora_t color) {
-    if (renderer->_module->draw_line == NULL) {
-        return;
-    }
-
-    if (count < 1) {
-        return;
-    }
-
-    if (flags & LTRENDERER_FLAG_FILL && renderer->_module->fill_points != NULL) {
-        renderer->_module->fill_points(renderer->_module, points, count, flags, color);
-    }
-
-    for (u32 i = 0; i < count; i++) {
-        renderer->_module->draw_line(renderer->_module, points[i], points[(i + 1) % count], thickness, flags, color);
-    }
+void ltrenderer_draw_points(ltrenderer_t *renderer, const ltvec2_t *points, u32 count, ltrenderer_flags_t flags, ltcolora_t color) {
+    renderer->functions.draw_points(renderer, points, count,  flags, color);
 }

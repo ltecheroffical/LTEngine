@@ -21,33 +21,22 @@ typedef u16 ltrenderer_flags_t;
 
 
 typedef struct ltrenderer_t {
-    struct ltrenderer_module_t {
-        void (*free)(struct ltrenderer_module_t *module);
+    struct {
+        void (*free)(struct ltrenderer_t *module);
 
-        void (*set_scale)(struct ltrenderer_module_t *module, ltvec2_t scale);
-        void (*set_rotation)(struct ltrenderer_module_t *module, f32 rotation);
+        void (*set_pixela)(struct ltrenderer_t *module, ltvec2i_t position, ltcolora_t color);
+        ltcolor_t (*get_pixel)(const struct ltrenderer_t *module, ltvec2i_t position);
 
-        void (*set_z)(struct ltrenderer_module_t *module, u16 z);
+        void (*clear)(struct ltrenderer_t *module, ltcolora_t color);
 
-        void (*set_active_camera)(struct ltrenderer_module_t *module, u32 id);
-        void (*clear_active_camera)(struct ltrenderer_module_t *module);
+        void (*draw_rect)(struct ltrenderer_t *module, ltrecti_t rect, ltrenderer_flags_t flags, ltcolora_t color);
+        void (*draw_circle)(struct ltrenderer_t *module, ltvec2i_t center_position, u32 radius, ltrenderer_flags_t flags, ltcolora_t color);
 
-        void (*set_iris_mode)(struct ltrenderer_module_t *module);
-        void (*clear_iris_mode)(struct ltrenderer_module_t *module, ltcolora_t color);
+        void (*draw_line)(struct ltrenderer_t *module, ltvec2i_t a, ltvec2i_t b, u16 thickness, ltrenderer_flags_t flags, ltcolora_t color);
+        void (*draw_points)(struct ltrenderer_t *module, const ltvec2_t *points, u32 count, ltrenderer_flags_t flags, ltcolora_t color);
 
-        void (*set_pixela)(struct ltrenderer_module_t *module, ltvec2i_t position, ltcolora_t color);
-        ltcolor_t (*get_pixel)(const struct ltrenderer_module_t *module, ltvec2i_t position);
-
-        void (*clear)(struct ltrenderer_module_t *module, ltcolora_t color);
-
-        void (*draw_rect)(struct ltrenderer_module_t *module, ltrect_t rect, ltrenderer_flags_t flags, ltcolora_t color);
-        void (*draw_circle)(struct ltrenderer_module_t *module, ltvec2_t center_position, u32 radius, ltrenderer_flags_t flags, ltcolora_t color);
-
-        void (*draw_line)(struct ltrenderer_module_t *module, ltvec2_t a, ltvec2_t b, u16 thickness, ltrenderer_flags_t flags, ltcolora_t color);
-        void (*fill_points)(struct ltrenderer_module_t *module, ltvec2_t *points, u32 count, ltrenderer_flags_t flags, ltcolora_t color);
-
-        void (*draw_camera)(struct ltrenderer_module_t *module, u32 id, ltvec2_t position, ltrect_t crop);
-    } *_module;
+        void (*draw_camera)(struct ltrenderer_t *module, u32 id, ltvec2i_t position, ltrecti_t crop);
+    } functions;
 
     struct { 
         ltrenderer_camera_t *cams; 
@@ -62,12 +51,11 @@ typedef struct ltrenderer_t {
     f32 _rotation_offset;
     ltvec2_t _scale_offset;
     ltvec2_t _pos_offset;
+
+    bool _iris_mode:1;
 } ltrenderer_t;
 
-typedef struct ltrenderer_module_t ltrenderer_module_t;
 
-
-ltrenderer_t ltrenderer_new(ltrenderer_module_t *module);
 void ltrenderer_free(ltrenderer_t *renderer);
 
 // Sets the scale
@@ -125,7 +113,7 @@ void ltrenderer_draw_circle(ltrenderer_t *renderer, ltvec2_t center_position, u3
 void ltrenderer_draw_triangle(ltrenderer_t *renderer, ltvec2_t a, ltvec2_t b, ltvec2_t c, ltrenderer_flags_t flags, ltcolora_t color);
 
 // Draws a set of points (really wraps ltrenderer_draw_line)
-void ltrenderer_draw_points(ltrenderer_t *renderer, ltvec2_t *points, u32 count, u16 thickness, ltrenderer_flags_t flags, ltcolora_t color);
+void ltrenderer_draw_points(ltrenderer_t *renderer, const ltvec2_t *points, u32 count, ltrenderer_flags_t flags, ltcolora_t color);
 // Draws a line
 void ltrenderer_draw_line(ltrenderer_t *renderer, ltvec2_t a, ltvec2_t b, u16 thickness, ltrenderer_flags_t flags, ltcolora_t color);
 
