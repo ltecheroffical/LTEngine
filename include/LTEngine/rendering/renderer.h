@@ -21,6 +21,8 @@ typedef u16 ltrenderer_flags_t;
 
 
 typedef struct ltrenderer_t {
+    bool is_initialized:1;
+
     struct {
         void (*free)(struct ltrenderer_t *module);
 

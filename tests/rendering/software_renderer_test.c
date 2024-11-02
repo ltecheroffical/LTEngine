@@ -8,10 +8,11 @@
 #include <LTEngine/rendering/renderers/software_renderer.h>
 
 
-#define RENDER_WIDTH        ((u32)20)
-#define RENDER_HEIGHT       ((u32)20)
-#define RENDER_CLEAR_COLOR  ((ltcolora_t)LTCOLORA_BLACK)
-#define RENDER_FILL_COLOR   ((ltcolora_t)LTCOLORA_RED)
+#define RENDER_WIDTH            ((u32)20)
+#define RENDER_HEIGHT           ((u32)20)
+#define RENDER_CLEAR_COLOR      ((ltcolora_t)LTCOLORA_BLACK)
+#define RENDER_FILL_COLOR       ((ltcolora_t)LTCOLORA_RED)
+#define RENDER_FILL_COLOR_ALT   ((ltcolora_t)LTCOLORA_BLUE)
 
 
 void output_to_image(const char *filename, const ltcolor_t *screen, u32 width, u32 height) {
@@ -161,7 +162,6 @@ void test_renderer_draw_line() {
     ltrenderer_free(&software_renderer.renderer);
     free(screen);
 }
-
 
 
 TEST_LIST = {

@@ -29,6 +29,7 @@ ltrenderer_software_t ltrenderer_software_new(u32 width, u32 height) {
     renderer._height = height;
 
     renderer._buffer.data = NULL;
+    renderer._buffer.in_use = false;
 
     renderer._screen = (ltcolor_t*)calloc(sizeof(ltcolor_t), width * height);
     renderer._z_buffer = (u16*)calloc(sizeof(u16), width * height);
@@ -48,6 +49,8 @@ ltrenderer_software_t ltrenderer_software_new(u32 width, u32 height) {
 
     renderer.renderer.functions.draw_camera = ltrenderer_software_draw_camera;
 
+    renderer.renderer.is_initialized = false;
+
     return renderer;
 }
 
@@ -66,28 +69,34 @@ u32 ltrenderer_software_get_pixels(const ltrenderer_software_t *renderer, ltcolo
 static void ltrenderer_software_prepare_buffer(ltrenderer_software_t *renderer, u32 width, u32 height) {
     if (renderer->_buffer.data == NULL) {
         renderer->_buffer.data = (ltcolora_t*)calloc(sizeof(ltcolora_t), width * height);
-
-        renderer->_buffer.width = width;
-        renderer->_buffer.height = height;
     }
 
-    u32 current_size = renderer->_buffer.width * renderer->_buffer.height * sizeof(ltcolora_t);
     u32 required_size = width * height * sizeof(ltcolora_t);
 
-    if (required_size < current_size) {
+    if (required_size > renderer->_buffer.size) {
         free(renderer->_buffer.data);
         renderer->_buffer.data = (ltcolora_t*)calloc(sizeof(ltcolora_t), width * height);
-
-        renderer->_buffer.width = width;
-        renderer->_buffer.height = height;
     }
+
+    renderer->_buffer.width = width;
+    renderer->_buffer.height = height;
+    renderer->_buffer.size = required_size;
+    renderer->_buffer.in_use = true;
+
+    memset(renderer->_buffer.data, 0, required_size);
 }
 
 static void ltrenderer_software_buffer_set_pixel(ltrenderer_software_t *renderer, u32 x, u32 y, ltcolora_t color) {
+    if (x >= renderer->_buffer.width || y >= renderer->_buffer.height) {
+        return;
+    }
+    if (!renderer->_buffer.in_use) {
+        return;
+    }
     renderer->_buffer.data[y * renderer->_buffer.width + x] = color;
 }
 
-static void ltrenderer_software_buffer_transfer_to_screen(ltrenderer_software_t *renderer, u32 pos_x, u32 pos_y) {
+static void ltrenderer_software_buffer_transfer_to_screen(ltrenderer_software_t *renderer, i32 pos_x, i32 pos_y) {
     for (u32 y = 0; y < renderer->_buffer.height; y++) {
         for (u32 x = 0; x < renderer->_buffer.width; x++) {
             if (pos_x + x < 0 || pos_x + x >= renderer->_width || pos_y + y < 0 || pos_y + y >= renderer->_height) {
@@ -104,6 +113,8 @@ static void ltrenderer_software_buffer_transfer_to_screen(ltrenderer_software_t 
             );
         }
     }
+
+    renderer->_buffer.in_use = false;
 }
 
 
@@ -240,11 +251,71 @@ void ltrenderer_software_draw_line(ltrenderer_t *renderer, ltvec2i_t a, ltvec2i_
     ltrenderer_software_buffer_transfer_to_screen((ltrenderer_software_t*)renderer, position_x, position_y);
 }
 
+
+static i32 _draw_points_compare_ints(const void *a, const void *b);
 void ltrenderer_software_draw_points(ltrenderer_t *renderer, const ltvec2_t *points, u32 count, ltrenderer_flags_t flags, ltcolora_t color) {
-    // TODO
+    for (u32 i = 0; i < count; i++) {
+        ltvec2_t point_a = points[i];
+        ltvec2_t point_b = points[(i + 1) % count];
+
+        ltrenderer_draw_line(renderer, point_a, point_b, 1, flags, color);
+    }
+
+    if (flags & LTRENDERER_FLAG_FILL) {
+        s32 min_x = points[0].x, max_x = points[0].x;
+        s32 min_y = points[0].y, max_y = points[0].y;
+
+        for (u32 i = 1; i < count; i++) {
+            if (points[i].x < min_x) min_x = points[i].x;
+            if (points[i].x > max_x) max_x = points[i].x;
+            if (points[i].y < min_y) min_y = points[i].y;
+            if (points[i].y > max_y) max_y = points[i].y;
+        }
+
+        u32 buffer_width = max_x - min_x + 1;
+        u32 buffer_height = max_y - min_y + 1;
+
+        ltrenderer_software_prepare_buffer((ltrenderer_software_t*)renderer, buffer_width, buffer_height);
+
+        for (s32 y = min_y; y <= max_y; y++) {
+            s32 intersections[count];
+            u32 num_intersections = 0;
+
+            for (u32 i = 0; i < count; i++) {
+                ltvec2_t point_a = points[i];
+                ltvec2_t point_b = points[(i + 1) % count];
+
+                if ((point_a.y <= y && point_b.y > y) || (point_b.y <= y && point_a.y > y)) {
+                    s32 x_intersect = point_a.x + (y - point_a.y) * (point_b.x - point_a.x) / (point_b.y - point_a.y);
+                    intersections[num_intersections++] = x_intersect;
+                }
+            }
+
+            qsort(intersections, num_intersections, sizeof(s32), _draw_points_compare_ints);
+
+            for (u32 i = 0; i < num_intersections; i += 2) {
+                if (i + 1 < num_intersections) {
+                    for (s32 x = intersections[i]; x <= intersections[i + 1]; x++) {
+                        ltrenderer_software_buffer_set_pixel((ltrenderer_software_t*)renderer, x, y, color);
+                    }
+                }
+            }
+        }
+
+        u32 pos_x = min_x;
+        u32 pos_y = min_y;
+        ltrenderer_software_buffer_transfer_to_screen((ltrenderer_software_t*)renderer, pos_x, pos_y);
+    } 
 }
 
 
 void ltrenderer_software_draw_camera(ltrenderer_t *renderer, u32 id, ltvec2i_t position, ltrecti_t crop) {
     // TODO
+}
+
+
+
+
+static i32 _draw_points_compare_ints(const void *a, const void *b) {
+    return (*(s32*)a - *(s32*)b);
 }

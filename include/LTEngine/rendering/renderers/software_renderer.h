@@ -11,6 +11,8 @@ typedef struct {
     struct {
         ltcolora_t *data;
         u32 width, height;
+        u32 size;
+        bool in_use:1;
     } _buffer;
 
     ltcolor_t *_screen;
