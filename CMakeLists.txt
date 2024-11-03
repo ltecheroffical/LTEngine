@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(LTEngine VERSION 0.1.0 LANGUAGES C ASM)
+project(LTEngine VERSION 0.1.0 LANGUAGES C CXX ASM)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -13,6 +13,8 @@ option(LTENGINE_BUILD_WITH_SDL "Build SDL into LTEngine" OFF)
 
 file(GLOB_RECURSE C_SOURCE_FILES CONFIGURE_DEPENDS 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c)
+file(GLOB_RECURSE CXX_SOURCE_FILES CONFIGURE_DEPENDS 
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 # Assembly
 message(STATUS "LTEngine: Processor: ${CMAKE_SYSTEM_PROCESSOR}")
@@ -40,7 +42,7 @@ endif()
 
 # Library
 if (NOT TARGET ${PROJECT_NAME})
-    add_library(${PROJECT_NAME} ${C_SOURCE_FILES} ${ASM_SOURCE_FILES})
+    add_library(${PROJECT_NAME} ${C_SOURCE_FILES} ${CXX_SOURCE_FILES} ${ASM_SOURCE_FILES})
 
     if (NOT ASM_SUPPORTED OR NOT LTENGINE_USE_ASSEMBLY)
         message(WARNING "LTEngine: Assembly support has been disabled")
