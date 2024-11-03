@@ -10,26 +10,26 @@
 
 
 namespace LTEngine::Rendering {
-    class ltimage_t {
+    class Image {
     public:
-        ltimage_t(u32 width, u32 height);
-        ltimage_t(const ltcolor_t *buffer, u32 width, u32 height);
-        ltimage_t(const ltcolora_t *buffer, u32 width, u32 height);
-        ~ltimage_t();
+        Image(u32 width, u32 height);
+        Image(const Color *buffer, u32 width, u32 height);
+        Image(const ColorA *buffer, u32 width, u32 height);
+        ~Image();
 
         void resize(u32 width, u32 height);
 
-        void set_size(u32 width, u32 height);
-        Math::ltvec2u_t get_size() const;
+        void setSize(u32 width, u32 height);
+        Math::Vec2u getSize() const;
 
-        void set_pixel(ltcolora_t color, u32 x, u32 y);
-        ltcolora_t get_pixel(u32 x, u32 y) const;
+        void setPixel(ColorA color, u32 x, u32 y);
+        ColorA getPixel(u32 x, u32 y) const;
 
-        void flip_h(), flip_v();
+        void flipH(), flipV();
 
     private:
-        u32 _width, _height;
+        u32 m_width, m_height;
 
-        std::vector<ltcolora_t> _data;
+        std::vector<ColorA> m_data;
     };
 }

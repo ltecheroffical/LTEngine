@@ -5,45 +5,45 @@
 
 
 namespace LTEngine::Math {
-    typedef struct ltvec2_t {
+    struct Vec2 {
         f32 x, y;
 
-        ltvec2_t(f32 x, f32 y) : x(x), y(y) {}
+        Vec2(f32 x, f32 y) : x(x), y(y) {}
 
-        ltvec2_t operator+(ltvec2_t b) {
-            return ltvec2_t(x + b.x, y + b.y);
+        Vec2 operator+(Vec2 b) {
+            return Vec2(x + b.x, y + b.y);
         }
 
-        ltvec2_t operator+(u32 b) {
-            return ltvec2_t(x + b, y + b);
+        Vec2 operator+(u32 b) {
+            return Vec2(x + b, y + b);
         }
 
-        ltvec2_t operator-(ltvec2_t b) {
-            return ltvec2_t(x - b.x, y - b.y);
+        Vec2 operator-(Vec2 b) {
+            return Vec2(x - b.x, y - b.y);
         }
 
-        ltvec2_t operator-(u32 b) {
-            return ltvec2_t(x - b, y - b);
+        Vec2 operator-(u32 b) {
+            return Vec2(x - b, y - b);
         }
 
-        ltvec2_t operator*(ltvec2_t b) {
-            return ltvec2_t(x * b.x, y * b.y);
+        Vec2 operator*(Vec2 b) {
+            return Vec2(x * b.x, y * b.y);
         }
         
-        ltvec2_t operator*(u32 b) {
-            return ltvec2_t(x * b, y * b);
+        Vec2 operator*(u32 b) {
+            return Vec2(x * b, y * b);
         }
 
-        ltvec2_t operator/(ltvec2_t b) {
-            return ltvec2_t(x / b.x, y / b.y);
+        Vec2 operator/(Vec2 b) {
+            return Vec2(x / b.x, y / b.y);
         }
 
-        ltvec2_t operator/(u32 b) {
-            return ltvec2_t(x / b, y / b);
+        Vec2 operator/(u32 b) {
+            return Vec2(x / b, y / b);
         }
 
 
-        void operator+=(ltvec2_t b) {
+        void operator+=(Vec2 b) {
             x += b.x;
             y += b.y;
         }
@@ -53,7 +53,7 @@ namespace LTEngine::Math {
             y += b;
         }
 
-        void operator-=(ltvec2_t b) {
+        void operator-=(Vec2 b) {
             x -= b.x;
             y -= b.y;
         }
@@ -63,7 +63,7 @@ namespace LTEngine::Math {
             y -= b;
         }
 
-        void operator*=(ltvec2_t b) {
+        void operator*=(Vec2 b) {
             x *= b.x;
             y *= b.y;
         }
@@ -73,7 +73,7 @@ namespace LTEngine::Math {
             y *= b;
         }
 
-        void operator/=(ltvec2_t b) {
+        void operator/=(Vec2 b) {
             x /= b.x;
             y /= b.y;
         }
@@ -82,47 +82,47 @@ namespace LTEngine::Math {
             x /= b;
             y /= b;
         }
-    } ltvec2_t;
+    };
     
-    typedef struct ltvec2i_t {
+    struct Vec2i {
         i32 x, y;
 
-        ltvec2i_t(i32 x, i32 y) : x(x), y(y) {}
+        Vec2i(i32 x, i32 y) : x(x), y(y) {}
 
-        ltvec2i_t operator+(ltvec2i_t b) {
-            return ltvec2i_t(x + b.x, y + b.y);
+        Vec2i operator+(Vec2i b) {
+            return Vec2i(x + b.x, y + b.y);
         }
 
-        ltvec2i_t operator+(u32 b) {
-            return ltvec2i_t(x + b, y + b);
+        Vec2i operator+(u32 b) {
+            return Vec2i(x + b, y + b);
         }
 
-        ltvec2i_t operator-(ltvec2i_t b) {
-            return ltvec2i_t(x - b.x, y - b.y);
+        Vec2i operator-(Vec2i b) {
+            return Vec2i(x - b.x, y - b.y);
         }
 
-        ltvec2i_t operator-(u32 b) {
-            return ltvec2i_t(x - b, y - b);
+        Vec2i operator-(u32 b) {
+            return Vec2i(x - b, y - b);
         }
 
-        ltvec2i_t operator*(ltvec2i_t b) {
-            return ltvec2i_t(x * b.x, y * b.y);
+        Vec2i operator*(Vec2i b) {
+            return Vec2i(x * b.x, y * b.y);
         }
         
-        ltvec2i_t operator*(u32 b) {
-            return ltvec2i_t(x * b, y * b);
+        Vec2i operator*(u32 b) {
+            return Vec2i(x * b, y * b);
         }
 
-        ltvec2i_t operator/(ltvec2i_t b) {
-            return ltvec2i_t(x / b.x, y / b.y);
+        Vec2i operator/(Vec2i b) {
+            return Vec2i(x / b.x, y / b.y);
         }
 
-        ltvec2i_t operator/(u32 b) {
-            return ltvec2i_t(x / b, y / b);
+        Vec2i operator/(u32 b) {
+            return Vec2i(x / b, y / b);
         }
 
 
-        void operator+=(ltvec2i_t b) {
+        void operator+=(Vec2i b) {
             x += b.x;
             y += b.y;
         }
@@ -132,7 +132,7 @@ namespace LTEngine::Math {
             y += b;
         }
 
-        void operator-=(ltvec2i_t b) {
+        void operator-=(Vec2i b) {
             x -= b.x;
             y -= b.y;
         }
@@ -142,7 +142,7 @@ namespace LTEngine::Math {
             y -= b;
         }
 
-        void operator*=(ltvec2i_t b) {
+        void operator*=(Vec2i b) {
             x *= b.x;
             y *= b.y;
         }
@@ -152,7 +152,7 @@ namespace LTEngine::Math {
             y *= b;
         }
 
-        void operator/=(ltvec2i_t b) {
+        void operator/=(Vec2i b) {
             x /= b.x;
             y /= b.y;
         }
@@ -161,47 +161,47 @@ namespace LTEngine::Math {
             x /= b;
             y /= b;
         }
-    } ltvec2i_i;
+    };
 
-    typedef struct ltvec2u_t {
+    struct Vec2u {
         u32 x, y;
 
-        ltvec2u_t(u32 x, u32 y) : x(x), y(y) {}
+        Vec2u(u32 x, u32 y) : x(x), y(y) {}
 
-        ltvec2u_t operator+(ltvec2u_t b) {
-            return ltvec2u_t(x + b.x, y + b.y);
+        Vec2u operator+(Vec2u b) {
+            return Vec2u(x + b.x, y + b.y);
         }
 
-        ltvec2u_t operator+(u32 b) {
-            return ltvec2u_t(x + b, y + b);
+        Vec2u operator+(u32 b) {
+            return Vec2u(x + b, y + b);
         }
 
-        ltvec2u_t operator-(ltvec2u_t b) {
-            return ltvec2u_t(x - b.x, y - b.y);
+        Vec2u operator-(Vec2u b) {
+            return Vec2u(x - b.x, y - b.y);
         }
 
-        ltvec2u_t operator-(u32 b) {
-            return ltvec2u_t(x - b, y - b);
+        Vec2u operator-(u32 b) {
+            return Vec2u(x - b, y - b);
         }
 
-        ltvec2u_t operator*(ltvec2u_t b) {
-            return ltvec2u_t(x * b.x, y * b.y);
+        Vec2u operator*(Vec2u b) {
+            return Vec2u(x * b.x, y * b.y);
         }
         
-        ltvec2u_t operator*(u32 b) {
-            return ltvec2u_t(x * b, y * b);
+        Vec2u operator*(u32 b) {
+            return Vec2u(x * b, y * b);
         }
 
-        ltvec2u_t operator/(ltvec2u_t b) {
-            return ltvec2u_t(x / b.x, y / b.y);
+        Vec2u operator/(Vec2u b) {
+            return Vec2u(x / b.x, y / b.y);
         }
 
-        ltvec2u_t operator/(u32 b) {
-            return ltvec2u_t(x / b, y / b);
+        Vec2u operator/(u32 b) {
+            return Vec2u(x / b, y / b);
         }
 
 
-        void operator+=(ltvec2u_t b) {
+        void operator+=(Vec2u b) {
             x += b.x;
             y += b.y;
         }
@@ -211,7 +211,7 @@ namespace LTEngine::Math {
             y += b;
         }
 
-        void operator-=(ltvec2u_t b) {
+        void operator-=(Vec2u b) {
             x -= b.x;
             y -= b.y;
         }
@@ -221,7 +221,7 @@ namespace LTEngine::Math {
             y -= b;
         }
 
-        void operator*=(ltvec2u_t b) {
+        void operator*=(Vec2u b) {
             x *= b.x;
             y *= b.y;
         }
@@ -231,7 +231,7 @@ namespace LTEngine::Math {
             y *= b;
         }
 
-        void operator/=(ltvec2u_t b) {
+        void operator/=(Vec2u b) {
             x /= b.x;
             y /= b.y;
         }
@@ -240,5 +240,5 @@ namespace LTEngine::Math {
             x /= b;
             y /= b;
         }
-    } ltvec2u_t;
+    };
 }

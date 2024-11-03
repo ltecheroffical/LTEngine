@@ -4,12 +4,12 @@
 
 
 namespace LTEngine::Rendering {
-    typedef struct {
-        Math::ltvec2_t position;
-        Math::ltvec2_t zoom;
+    struct Camera {
+        Math::Vec2 position;
+        Math::Vec2 zoom;
         f32 rotation;
 
         bool exclude:1;
         bool in_use:1;
-    } ltcamera_t;
+    };
 }

@@ -1,28 +1,28 @@
 #pragma once
 
 #include <LTEngine/common/types/inttypes.h>
-#include <LTEngine/math/vec2.h>
 
+#include <LTEngine/math/vec2.hpp>
 #include <LTEngine/rendering/color.hpp>
 
 
 namespace LTEngine::Rendering {
-    typedef struct {
-        ltvec2_t position;
-        ltcolora_t color;
+    struct CPUShaderData {
+        Math::Vec2 position;
+        ColorA color;
 
-        ltvec2u_t screen_size;
-        const ltcolor_t *screen;
+        Math::Vec2u screenSize;
+        const Color *screen;
         
-        u32 texture_width;
-        u32 texture_height;
-        const ltcolora_t *texture;
-    } ltshader_cpu_data_t;
+        u32 textureWidth;
+        u32 textureHeight;
+        const ColorA *texture;
+    };
 
-    class ltshader_cpu_t {
+    class CPUShader {
     public:
-        virtual ~ltshader_cpu_t() = 0;
+        virtual ~CPUShader() = 0;
 
-        virtual void fragment(ltshader_cpu_data_t *params) = 0;
+        virtual void fragment(CPUShaderData *params) = 0;
     };
 }

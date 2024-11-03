@@ -5,9 +5,9 @@
 
 
 namespace LTEngine::Random {
-    class ltrandom_t {
+    class Random {
     public:
-        virtual ~ltrandom_t() = 0;
+        virtual ~Random() = 0;
 
         virtual void seed(u8 seed);
 
@@ -44,6 +44,6 @@ namespace LTEngine::Random {
         virtual f64 next_f64(f64 min, f64 max);
         virtual f64 next_f64(f64 min);
 
-        virtual void next_bytes(u8 *data, u32 length);
+        virtual void nextBytes(u8 *data, u32 length);
     };
 }

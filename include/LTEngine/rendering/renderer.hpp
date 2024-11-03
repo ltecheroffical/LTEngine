@@ -14,66 +14,66 @@
 
 
 namespace LTEngine::Rendering {
-    typedef u16 ltrenderer_flags_t;
+    typedef u16 RendererFlags;
 
-    class ltrenderer_t {
+    class Renderer {
     public:
-        virtual ~ltrenderer_t() = 0;
+        virtual ~Renderer() = 0;
 
-        void set_scale(Math::ltvec2_t scale);
-        void set_rotation(f32 rotation);
+        void setScale(Math::Vec2 scale);
+        void setRotation(f32 rotation);
 
-        void set_z_order(u16 z);
+        void setZOrder(u16 z);
 
-        void set_scale_factor(f32 scale);
-        void set_rotation_offset(f32 offset);
+        void setScaleFactor(f32 scale);
+        void setRotationOffset(f32 offset);
 
-        void set_iris_mode();
-        void clear_iris_mode();
+        void setIrisMode();
+        void clearIrisMode();
 
-        u32 create_camera(Math::ltvec2_t position, Math::ltvec2_t zoom);
-        void delete_camera(u32 id);
-        void set_camera_position(u32 id, Math::ltvec2_t position);
-        void set_camera_rotation(u32 id, f32 rotation);
-        void set_camera_zoom(u32 id, Math::ltvec2_t zoom);
-        void set_camera_include(u32 id);
-        void set_camera_exclude(u32 id);
-        Math::ltvec2_t get_camera_position(u32 id) const;
-        Math::ltvec2_t get_camera_zoom(u32 id) const;
-        f32 get_camera_rotation(u32 id) const;
+        u32 createCamera(Math::Vec2 position, Math::Vec2 zoom);
+        void deleteCamera(u32 id);
+        void setCameraPosition(u32 id, Math::Vec2 position);
+        void setCameraRotation(u32 id, f32 rotation);
+        void setCameraZoom(u32 id, Math::Vec2 zoom);
+        void setCameraInclude(u32 id);
+        void setCameraExclude(u32 id);
+        Math::Vec2 getCameraPosition(u32 id) const;
+        Math::Vec2 getCameraZoom(u32 id) const;
+        f32 getCameraRotation(u32 id) const;
 
-        virtual u32 get_screen_data(ltcolor_t *data, u32 width, u32 height) = 0;
-        virtual u32 get_screen_data(ltcolora_t *data, u32 width, u32 height);
+        virtual u32 getScreenData(Color *data, u32 width, u32 height) = 0;
+        virtual u32 getScreenData(ColorA *data, u32 width, u32 height);
 
-        virtual void clear(ltcolor_t color) = 0;
-        virtual void clear(ltcolora_t color) = 0;
+        virtual void clear(Color color) = 0;
+        virtual void clear(ColorA color) = 0;
 
-        virtual void set_pixel(Math::ltvec2i_t position, ltcolor_t color) = 0;
-        virtual void set_pixel(Math::ltvec2i_t position, ltcolora_t color) = 0;
-        virtual ltcolor_t get_pixel(Math::ltvec2i_t position) = 0;
+        virtual void setPixel(Math::Vec2i position, Color color) = 0;
+        virtual void setPixel(Math::Vec2i position, ColorA color) = 0;
+        virtual Color getPixel(Math::Vec2i position) = 0;
 
-        virtual void draw_rect(Math::ltrect_t rect, ltcolora_t color, ltrenderer_flags_t flags) = 0;
-        virtual void draw_circle(Math::ltvec2i_t position, u32 radius, ltcolora_t color, ltrenderer_flags_t flags) = 0;
-        void draw_triangle(Math::ltvec2_t a, Math::ltvec2_t b, Math::ltvec2_t c, ltcolora_t color, ltrenderer_flags_t flags);
+        virtual void drawRect(Math::Rect rect, ColorA color, RendererFlags flags) = 0;
+        virtual void drawCircle(Math::Vec2i position, u32 radius, ColorA color, RendererFlags flags) = 0;
+        void drawTriangle(Math::Vec2 a, Math::Vec2 b, Math::Vec2 c, ColorA color, RendererFlags flags);
 
-        virtual void draw_line(Math::ltvec2i_t a, Math::ltvec2i_t b, u16 thickness, ltcolora_t color, ltrenderer_flags_t flags) = 0;
-        virtual void draw_points(const Math::ltvec2_t *points, u32 count, ltcolora_t color, ltrenderer_flags_t flags) = 0;
+        virtual void drawLine(Math::Vec2i a, Math::Vec2i b, u16 thickness, ColorA color, RendererFlags flags) = 0;
+        virtual void drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) = 0;
 
-        virtual void draw_image(const ltimage_t *image, Math::ltvec2i_t position, ltcolora_t color, ltrenderer_flags_t flags) = 0;
-        virtual void draw_camera(u32 id, Math::ltrecti_t rect, ltcolora_t color, ltrenderer_flags_t flags) = 0;
+        virtual void drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags) = 0;
+        virtual void drawCamera(u32 id, Math::Recti rect, ColorA color, RendererFlags flags) = 0;
 
     protected:
-        Math::ltvec2_t _scale;
-        f32 _rotation;
+        Math::Vec2 m_scale;
+        f32 m_rotation;
 
-        u16 _z_order;
+        u16 m_zOrder;
 
-        bool _iris_mode:1;
+        bool m_irisMode:1;
 
     private:
-        Math::ltvec2_t _scale_factor[2];
-        f32 _rotation_offset[2];
+        Math::Vec2 m_scaleFactor[2];
+        f32 m_rotationOffset[2];
 
-        std::vector<ltcamera_t> _cameras;
+        std::vector<Camera> m_cameras;
     };
 }

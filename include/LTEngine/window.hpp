@@ -11,24 +11,24 @@ namespace LTEngine {
         
         virtual void close() = 0;
 
-        virtual void set_size(u32 width, u32 height) = 0;
-        virtual void set_position(u32 x, u32 y) = 0;
-        virtual void set_title(char *title) = 0;
-        virtual void set_fullscreen(bool fullscreen) = 0;
-        virtual void set_minimized(bool minimized) = 0;
+        virtual void setSize(u32 width, u32 height) = 0;
+        virtual void setPosition(u32 x, u32 y) = 0;
+        virtual void setTitle(char *title) = 0;
+        virtual void setFullscreen(bool fullscreen) = 0;
+        virtual void setMinimized(bool minimized) = 0;
 
         virtual void show() = 0;
         virtual void hide() = 0;
 
-        virtual u32 get_width(), get_height() = 0;
-        virtual u32 get_x(), get_y() = 0;
-        virtual char *get_title() = 0;
-        virtual bool is_fullscreen() = 0;
-        virtual bool is_minimized() = 0;
-        virtual bool is_hidden();
+        virtual u32 getWidth(), getHeight() = 0;
+        virtual u32 getX(), getY() = 0;
+        virtual char *getTitle() = 0;
+        virtual bool isFullscreen() = 0;
+        virtual bool isMinimized() = 0;
+        virtual bool isHidden();
 
-        virtual void poll_events() = 0;
+        virtual void pollEvents() = 0;
 
-        virtual bool should_close() = 0;
+        virtual bool shouldClose() = 0;
     };
 }
