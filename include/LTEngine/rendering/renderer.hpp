@@ -25,8 +25,9 @@ namespace LTEngine::Rendering {
 
         void setZOrder(u16 z);
 
-        void setScaleFactor(f32 scale);
         void setRotationOffset(f32 offset);
+        void setScaleFactor(Math::Vec2 scale);
+        void setPositionOffset(Math::Vec2 offset);
 
         void setIrisMode();
         void clearIrisMode();
@@ -42,8 +43,7 @@ namespace LTEngine::Rendering {
         Math::Vec2 getCameraZoom(u32 id) const;
         f32 getCameraRotation(u32 id) const;
 
-        virtual u32 getScreenData(Color *data, u32 width, u32 height) = 0;
-        virtual u32 getScreenData(ColorA *data, u32 width, u32 height);
+        virtual u32 getScreenData(Color *data) = 0;
 
         virtual void clear(Color color) = 0;
         virtual void clear(ColorA color) = 0;
@@ -53,26 +53,27 @@ namespace LTEngine::Rendering {
         virtual Color getPixel(Math::Vec2i position) = 0;
 
         virtual void drawRect(Math::Rect rect, ColorA color, RendererFlags flags) = 0;
-        virtual void drawCircle(Math::Vec2i position, u32 radius, ColorA color, RendererFlags flags) = 0;
+        virtual void drawCircle(Math::Vec2 position, f32 radius, ColorA color, RendererFlags flags) = 0;
         void drawTriangle(Math::Vec2 a, Math::Vec2 b, Math::Vec2 c, ColorA color, RendererFlags flags);
 
-        virtual void drawLine(Math::Vec2i a, Math::Vec2i b, u16 thickness, ColorA color, RendererFlags flags) = 0;
+        virtual void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) = 0;
         virtual void drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) = 0;
 
         virtual void drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags) = 0;
         virtual void drawCamera(u32 id, Math::Recti rect, ColorA color, RendererFlags flags) = 0;
 
     protected:
-        Math::Vec2 m_scale;
-        f32 m_rotation;
+        Math::Vec2 m_positionOffset = Math::Vec2::ZERO;
+        Math::Vec2 m_scale = Math::Vec2::ONE;
+        f32 m_rotation = 0.f;
 
-        u16 m_zOrder;
+        u16 m_zOrder = 0;
 
         bool m_irisMode:1;
 
     private:
-        Math::Vec2 m_scaleFactor[2];
-        f32 m_rotationOffset[2];
+        Math::Vec2 m_scaleFactor[2] = {Math::Vec2::ONE, Math::Vec2::ONE};
+        f32 m_rotationOffset[2] = {0.f, 0.f};
 
         std::vector<Camera> m_cameras;
     };
