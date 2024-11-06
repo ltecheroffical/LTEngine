@@ -28,6 +28,6 @@ namespace LTEngine {
         Rendering::Renderer *m_renderer;
         
         std::unique_ptr<Object::ObjectStructure> m_objectStructure;
-        std::vector<Object::ObjectStructure> m_scenes;
+        std::vector<std::unique_ptr<Object::ObjectStructure>> m_scenes;
     };
 }

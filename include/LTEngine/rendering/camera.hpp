@@ -1,6 +1,10 @@
 #pragma once
 
+#include <vector>
+
 #include <LTEngine/math/vec2.hpp>
+
+#include <LTEngine/rendering/color.hpp>
 
 
 namespace LTEngine::Rendering {
@@ -8,6 +12,8 @@ namespace LTEngine::Rendering {
         Math::Vec2 position = Math::Vec2::ZERO;
         Math::Vec2 zoom = Math::Vec2::ONE;
         f32 rotation = 0.f;
+
+        std::vector<Color> m_pixels;
 
         bool exclude:1;
     };

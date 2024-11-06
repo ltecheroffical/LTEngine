@@ -18,7 +18,13 @@ namespace LTEngine::Rendering {
 
     class Renderer {
     public:
-        virtual ~Renderer() = 0;
+        virtual ~Renderer() = default;
+
+        const static RendererFlags FLAG_FLIP_H = ((RendererFlags)1 << 0);
+        const static RendererFlags FLAG_FLIP_V = ((RendererFlags)1 << 1);
+
+        const static RendererFlags FLAG_FILL = ((RendererFlags)1 << 2);
+
 
         void setScale(Math::Vec2 scale);
         void setRotation(f32 rotation);
@@ -53,7 +59,7 @@ namespace LTEngine::Rendering {
         virtual Color getPixel(Math::Vec2i position) = 0;
 
         virtual void drawRect(Math::Rect rect, ColorA color, RendererFlags flags) = 0;
-        virtual void drawCircle(Math::Vec2 position, f32 radius, ColorA color, RendererFlags flags) = 0;
+        virtual void drawCircle(Math::Vec2 centerPosition, f32 radius, ColorA color, RendererFlags flags) = 0;
         void drawTriangle(Math::Vec2 a, Math::Vec2 b, Math::Vec2 c, ColorA color, RendererFlags flags);
 
         virtual void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) = 0;
@@ -71,10 +77,10 @@ namespace LTEngine::Rendering {
 
         bool m_irisMode:1;
 
+        std::vector<Camera> m_cameras;
+
     private:
         Math::Vec2 m_scaleFactor[2] = {Math::Vec2::ONE, Math::Vec2::ONE};
         f32 m_rotationOffset[2] = {0.f, 0.f};
-
-        std::vector<Camera> m_cameras;
     };
 }

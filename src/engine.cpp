@@ -23,12 +23,12 @@ void Engine::clearObjects() {
 
 u32 Engine::captureScene() {
     u32 index = m_scenes.size();
-    m_scenes.push_back(*m_objectStructure->clone());
+    m_scenes.push_back(m_objectStructure->clone());
     return index;
 }
 
 void Engine::loadScene(u32 id) {
-    m_objectStructure = m_scenes.at(id).clone();
+    m_objectStructure = m_scenes.at(id)->clone();
 }
 
 void Engine::deleteScene(u32 id) {

@@ -7,6 +7,15 @@ namespace LTEngine::Rendering {
     struct Color {
         u8 r, g, b;
 
+        static const Color BLACK;
+        static const Color WHITE;
+        static const Color RED;
+        static const Color GREEN;
+        static const Color BLUE;
+        static const Color YELLOW;
+        static const Color CYAN;
+
+        Color() : r(0), g(0), b(0) {}
         Color(u8 r, u8 g, u8 b) : r(r), g(g), b(b) {}
 
         Color operator+(Color other) {
@@ -90,6 +99,16 @@ namespace LTEngine::Rendering {
     struct ColorA {
         u8 r, g, b, a;
 
+        static const ColorA BLACK;
+        static const ColorA WHITE;
+        static const ColorA RED;
+        static const ColorA GREEN;
+        static const ColorA BLUE;
+        static const ColorA YELLOW;
+        static const ColorA CYAN;
+        static const ColorA CLEAR;
+
+        ColorA() : r(0), g(0), b(0), a(0) {}
         ColorA(u8 r, u8 g, u8 b, u8 a) : r(r), g(g), b(b), a(a) {}
 
         operator Color() {
@@ -185,4 +204,21 @@ namespace LTEngine::Rendering {
             this->a /= other;
         }
     };
+
+    inline const Color Color::BLACK = Color(0, 0, 0);
+    inline const Color Color::WHITE = Color(255, 255, 255);
+    inline const Color Color::RED = Color(255, 0, 0);
+    inline const Color Color::GREEN = Color(0, 255, 0);
+    inline const Color Color::BLUE = Color(0, 0, 255);
+    inline const Color Color::YELLOW = Color(255, 255, 0);
+    inline const Color Color::CYAN = Color(0, 255, 255);
+
+    inline const ColorA ColorA::BLACK = ColorA(0, 0, 0, 255);
+    inline const ColorA ColorA::WHITE = ColorA(255, 255, 255, 255);
+    inline const ColorA ColorA::RED = ColorA(255, 0, 0, 255);
+    inline const ColorA ColorA::GREEN = ColorA(0, 255, 0, 255);
+    inline const ColorA ColorA::BLUE = ColorA(0, 0, 255, 255);
+    inline const ColorA ColorA::YELLOW = ColorA(255, 255, 0, 255);
+    inline const ColorA ColorA::CYAN = ColorA(0, 255, 255, 255);
+    inline const ColorA ColorA::CLEAR = ColorA(0, 0, 0, 0);
 }

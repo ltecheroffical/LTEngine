@@ -1,16 +1,14 @@
 #pragma once
 
-#include <vector>
-
 #include <LTEngine/rendering/renderer.hpp>
 #include <LTEngine/rendering/cpu_shader.hpp>
 
 
 namespace LTEngine::Rendering {
     class SoftwareRenderer : Renderer {
-    public:
+    public: 
         SoftwareRenderer(u32 width, u32 height);
-        ~SoftwareRenderer() override;
+        ~SoftwareRenderer() override = default;
 
         void resize(u32 width, u32 height);
 
@@ -24,8 +22,7 @@ namespace LTEngine::Rendering {
         Color getPixel(Math::Vec2i position) override;
 
         void drawRect(Math::Rect rect, ColorA color, RendererFlags flags) override;
-        void drawCircle(Math::Vec2 position, f32 radius, ColorA color, RendererFlags flags) override;
-        void drawTriangle(Math::Vec2 a, Math::Vec2 b, Math::Vec2 c, ColorA color, RendererFlags flags);
+        void drawCircle(Math::Vec2 centerPosition, f32 radius, ColorA color, RendererFlags flags) override;
 
         void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) override;
         void drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) override;
@@ -38,6 +35,10 @@ namespace LTEngine::Rendering {
 
 
     private:
+        void prepareBuffer(u32 width, u32 height);
+        void drawBufferPixel(u32 x, u32 y, ColorA color);
+        void flushBuffer(i32 x, i32 y);
+
         std::vector<Color> m_screen;
         u32 m_screenWidth;
         u32 m_screenHeight;

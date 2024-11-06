@@ -1,4 +1,4 @@
-add_executable(software_renderer_test software_renderer_test.c)
+add_executable(software_renderer_test software_renderer_test.cpp)
 
 target_link_libraries(software_renderer_test PRIVATE LTEngine)
 
@@ -8,3 +8,6 @@ add_test(NAME software_renderer_draw_rect_test COMMAND software_renderer_test te
 add_test(NAME software_renderer_draw_circle_test COMMAND software_renderer_test test_renderer_draw_circle)
 add_test(NAME software_renderer_draw_line_test COMMAND software_renderer_test test_renderer_draw_line)
 add_test(NAME software_renderer_draw_triangle_test COMMAND software_renderer_test test_renderer_draw_triangle)
+
+add_dependencies(software_renderer_test 
+    LTEngine)
