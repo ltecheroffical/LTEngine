@@ -35,6 +35,8 @@ namespace LTEngine::Rendering {
         void setScaleFactor(Math::Vec2 scale);
         void setPositionOffset(Math::Vec2 offset);
 
+        void resetTransform();
+
         void setIrisMode();
         void clearIrisMode();
 

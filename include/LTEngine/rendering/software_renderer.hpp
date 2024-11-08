@@ -5,7 +5,7 @@
 
 
 namespace LTEngine::Rendering {
-    class SoftwareRenderer : Renderer {
+    class SoftwareRenderer : public Renderer {
     public: 
         SoftwareRenderer(u32 width, u32 height);
         ~SoftwareRenderer() override = default;

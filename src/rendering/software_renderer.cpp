@@ -21,7 +21,7 @@ u32 SoftwareRenderer::getScreenData(Color *data) {
     if (data != nullptr) {
         memcpy(data, m_screen.data(), sizeof(Color) * m_screenWidth * m_screenHeight);
     }
-    return m_screen.size() * sizeof(Color);
+    return m_screen.size();
 }
 
 
@@ -258,6 +258,9 @@ void SoftwareRenderer::drawBufferPixel(u32 x, u32 y, ColorA color) {
 }
 
 void SoftwareRenderer::flushBuffer(i32 posX, i32 posY) {
+    posX += m_positionOffset.x;
+    posY += m_positionOffset.y;
+    
     for (u32 y = 0; y < m_bufferHeight; y++) {
         for (u32 x = 0; x < m_bufferWidth; x++) {
             if (x + posX < 0 || x + posX >= m_screenWidth || y + posY < 0 || y + posY >= m_screenHeight) {
@@ -289,7 +292,12 @@ void SoftwareRenderer::flushBuffer(i32 posX, i32 posY) {
 
             Color bg = m_screen[(y + posY) * m_screenWidth + (x + posX)];
             const f32 A_n = color.a / 255.f;
-            m_screen[((y + posY) * m_screenWidth + (x + posX))] = Color(color.r * A_n, color.g * A_n, color.b * A_n) + (bg * (1.f - A_n));
+
+            f32 out_r = color.r * A_n + bg.r * (1.f - A_n);
+            f32 out_g = color.g * A_n + bg.g * (1.f - A_n);
+            f32 out_b = color.b * A_n + bg.b * (1.f - A_n);
+
+            m_screen[((y + posY) * m_screenWidth + (x + posX))] = Color(out_r, out_g, out_b);
         }
     }
 }

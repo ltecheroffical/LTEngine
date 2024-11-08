@@ -4,9 +4,9 @@
 using namespace LTEngine;
 
 
-Engine::Engine(const Object::ObjectStructure *structure) {
+Engine::Engine(std::unique_ptr<Object::EngineStructure> structure) {
     m_displayInitialized = false;
-    m_objectStructure = structure->clone();
+    m_objectStructure = std::move(structure);
 }
 
 
@@ -50,5 +50,6 @@ void Engine::render() {
     if (!m_displayInitialized) {
         return;
     }
+    m_renderer->clear(m_objectStructure->getClearColor());
     m_objectStructure->render(m_renderer);
 }

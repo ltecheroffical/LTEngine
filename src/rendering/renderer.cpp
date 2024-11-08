@@ -36,6 +36,18 @@ void Renderer::setPositionOffset(Math::Vec2 offset) {
 }
 
 
+void Renderer::resetTransform() {
+    m_scaleFactor[0] = Math::Vec2::ONE;
+    m_rotationOffset[0] = 0.f;
+    m_scale = Math::Vec2::ONE;
+
+    m_scaleFactor[1] = Math::Vec2::ONE;
+    m_rotationOffset[1] = 0.f;
+    m_positionOffset = Math::Vec2::ZERO;
+    m_rotation = 0.f;
+}
+
+
 void Renderer::setIrisMode() {
     m_irisMode = true;
 }

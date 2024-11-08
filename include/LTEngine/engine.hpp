@@ -1,6 +1,6 @@
 #pragma once
 
-#include <LTEngine/structure/object_structure.hpp>
+#include <LTEngine/structure/engine_structure.hpp>
 
 #include <LTEngine/rendering/renderer.hpp>
 
@@ -8,11 +8,13 @@
 namespace LTEngine {
     class Engine {
     public:
-        Engine(const Object::ObjectStructure *structure);
+        Engine(std::unique_ptr<Object::EngineStructure> structure);
         ~Engine() = default;
 
         void initDisplay(Rendering::Renderer *renderer);
+        Rendering::Renderer *getRenderer() { return m_renderer; }
 
+        Object::EngineStructure *getObjectStructure() { return m_objectStructure.get(); }
         void clearObjects();
 
         u32 captureScene();
@@ -27,7 +29,7 @@ namespace LTEngine {
 
         Rendering::Renderer *m_renderer;
         
-        std::unique_ptr<Object::ObjectStructure> m_objectStructure;
-        std::vector<std::unique_ptr<Object::ObjectStructure>> m_scenes;
+        std::unique_ptr<Object::EngineStructure> m_objectStructure;
+        std::vector<std::unique_ptr<Object::EngineStructure>> m_scenes;
     };
 }
