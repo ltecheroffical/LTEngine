@@ -24,7 +24,7 @@ namespace LTEngine {
             m_cache.clear();
         }
 
-        void removeAsset(const std::string &path) {
+        void removeCachedAsset(const std::string &path) {
             m_cache.erase(path);
         }
 
