@@ -11,8 +11,8 @@ namespace Pong {
         Paddle(PaddleController *controller);
         ~Paddle() override = default;
 
-        const static u32 PADDLE_WIDTH = 15;
-        const static u32 PADDLE_HEIGHT = 100;
+        const static u32 PADDLE_WIDTH = 8;
+        const static u32 PADDLE_HEIGHT = 75;
 
         void update(f32 delta) override;
         void render(LTEngine::Rendering::Renderer *renderer) override;
@@ -20,7 +20,7 @@ namespace Pong {
         std::unique_ptr<Object> clone() const override;
 
     private:
-        const static u32 PADDLE_SPEED = 2000;
+        constexpr static f32 PADDLE_SPEED = 450.f;
 
         PaddleController *m_controller;
     };

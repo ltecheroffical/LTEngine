@@ -23,6 +23,6 @@ namespace LTEngine::Random {
         virtual f64 next_f64() override;
 
     private:
-        u16 m_index;
+        u16 m_index = 0;
     };
 }

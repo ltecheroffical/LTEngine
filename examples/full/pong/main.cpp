@@ -1,3 +1,5 @@
+#include <iostream>
+#include <thread>
 #include <chrono>
 
 #include <LTEngine/engine.hpp>
@@ -8,6 +10,7 @@
 
 #include "player_controller.hpp"
 #include "paddle.hpp"
+#include "ball.hpp"
 
 
 #define SCREEN_WIDTH ((u32)500)
@@ -41,13 +44,15 @@ int main(int argc, char *argv[]) {
     const u32 playerPaddle = structure->addObject(std::make_unique<Paddle>(&playerController), LTEngine::Math::Vec2(PADDLE_OFFSET, SCREEN_HEIGHT / 2.f - Paddle::PADDLE_HEIGHT / 2.f));
     const u32 enemyPaddle = structure->addObject(std::make_unique<Paddle>(nullptr), LTEngine::Math::Vec2(SCREEN_WIDTH - PADDLE_OFFSET - Paddle::PADDLE_WIDTH, SCREEN_HEIGHT / 2.f - Paddle::PADDLE_HEIGHT / 2.f));
 
+    const u32 ball = structure->addObject(std::make_unique<Ball>(), LTEngine::Math::Vec2(SCREEN_WIDTH / 2.f - (f32)Ball::BALL_RADIUS / 2.f, SCREEN_HEIGHT / 2.f - (f32)Ball::BALL_RADIUS / 2.f));
+
     structure->setClearColor(LTEngine::Rendering::Color::BLACK);
 
     engine.initDisplay(&renderer);
 
-    f32 delta = 0.0f;
-    u64 start = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    f32 deltaSeconds = 0.0f;
     while (!window.shouldClose()) {
+        u64 start = std::chrono::high_resolution_clock::now().time_since_epoch().count();
         window.pollEvents();
 
         Paddle *player = dynamic_cast<Paddle*>(structure->getObject(playerPaddle));
@@ -58,14 +63,21 @@ int main(int argc, char *argv[]) {
             enemy->position.y = std::clamp(enemy->position.y, 0.f, (f32)SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT);
         }
 
-        engine.update(delta);
-        engine.render();
-        
-        window.present();
+        engine.update(deltaSeconds);
+        if (!window.isMinimized() && !window.isHidden()) {
+            engine.render();
+            window.present();
+        }
 
-        u64 end = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-        delta = (f32)(end - start) / 10000000000.f;
-        start = end;
+        do {
+            u64 end = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+            deltaSeconds = (end - start) / 1000000000.f;
+
+            auto sleepDuration = std::chrono::duration<f32>(1.0f / 60.0f - deltaSeconds);
+            std::this_thread::sleep_for(sleepDuration);
+        } while (deltaSeconds < 1.0f / 60.0f);
+
+        std::cout << "FPS: " << 1.0f / deltaSeconds << std::endl;
     }
 
     return 0;
