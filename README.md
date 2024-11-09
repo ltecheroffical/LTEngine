@@ -59,6 +59,7 @@ These features are planned for the first stable release:
 - [x] **Asset Manager**: Centralized management for assets (images, text, sounds) from bundles or directories.
 - [ ] **Localization**: Support for multiple languages by mapping keys (e.g., "ui/buttons/save") to text (e.g., "Save").
 - [ ] **Physics Engine Support**: Compatibility with physics engines (e.g., Box2D).
+- [ ] **Audio Engine Support**: Compatibility with audio engines (e.g., raudio, soloud).
 - [ ] **More examples**: Examples that show users how to use the engine.
 - [ ] **Documentation**: Documentation comments through out the engine's headers.
 
