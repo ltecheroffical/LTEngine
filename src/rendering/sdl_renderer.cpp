@@ -147,7 +147,61 @@ void SDLRenderer::drawPoints(const Math::Vec2 *points, u32 count, ColorA color, 
 }
 
 
-void SDLRenderer::drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags) {
+void SDLRenderer::drawImage(const Image *image, Math::Vec2i position, Math::Recti region, ColorA color, RendererFlags flags) {
+    SDL_Texture *texture;
+
+    if (!m_imageCache.contains(image)) {
+        texture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, region.w, region.h);
+        if (texture == NULL) {
+            throw std::runtime_error("Failed to create SDL texture! " + std::string(SDL_GetError()));
+        }
+
+        void *pixels;
+        int pitch;
+
+        if (SDL_LockTexture(texture, NULL, &pixels, &pitch) == 0) {
+            for (u32 y = 0; y < region.h; y++) {
+
+
+            u8 *row = (u8 *)pixels + y * pitch;
+            for (u32 x = 0; x < region.w; x++) {
+                row[x * 4] = image->getPixel(x + region.x, y + region.y).r;
+                row[x * 4 + 1] = image->getPixel(x + region.x, y + region.y).g;
+                row[x * 4 + 2] = image->getPixel(x + region.x, y + region.y).b;
+                row[x * 4 + 3] = image->getPixel(x + region.x, y + region.y).a;
+                }
+            }
+            SDL_UnlockTexture(texture);
+        } else {
+            SDL_DestroyTexture(texture);
+            throw std::runtime_error("Failed to lock SDL texture! " + std::string(SDL_GetError()));
+        }
+        m_imageCache[image] = texture;
+    } else {
+        texture = m_imageCache[image];
+    }
+
+    SDL_Rect rect;
+    rect.x = position.x + m_positionOffset.x;
+    rect.y = position.y + m_positionOffset.y;
+    rect.w = region.w;
+    rect.h = region.h;
+
+    m_imageCacheLifetime[image] = MAX_IMAGE_CACHE_LIFETIME;
+
+    std::erase_if(m_imageCacheLifetime, [this](std::pair<const Image*, u32> pair) {
+        if (--pair.second > 0) {
+            return false;
+        }
+        SDL_DestroyTexture(m_imageCache[pair.first]);
+        const auto it = m_imageCache.find(pair.first);
+        if (it != m_imageCache.end()) {
+            m_imageCache.erase(it);
+        }
+        return true;
+    });
+
+    SDL_RenderCopy(m_renderer, texture, NULL, &rect);
 }
 
 #endif

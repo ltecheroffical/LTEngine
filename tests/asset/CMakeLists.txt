@@ -1,0 +1,8 @@
+add_executable(bundle_asset_manager_test bundle_asset_manager_test.cpp)
+
+target_link_libraries(bundle_asset_manager_test PRIVATE LTEngine)
+
+target_compile_definitions(bundle_asset_manager_test PRIVATE RESOURCES_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources")
+
+add_test(test_bundle_asset_manager_writing bundle_asset_manager_test test_bundle_asset_manager_writing)
+add_test(test_bundle_asset_manager_reading bundle_asset_manager_test test_bundle_asset_manager_reading)

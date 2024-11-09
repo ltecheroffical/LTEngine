@@ -1,6 +1,8 @@
 #pragma once
 #ifdef LTENGINE_SDL_ENABLE
 
+#include <unordered_map>
+
 #include <SDL2/SDL.h>
 
 #include <LTEngine/rendering/renderer.hpp>
@@ -25,9 +27,13 @@ namespace LTEngine::Rendering {
         void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) override;
         void drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) override;
 
-        void drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags) override;
+        void drawImage(const Image *image, Math::Vec2i position, Math::Recti region, ColorA color, RendererFlags flags) override;
 
     private:
+        const u32 MAX_IMAGE_CACHE_LIFETIME = 500;
+
+        std::unordered_map<const Image*, u32> m_imageCacheLifetime;
+        std::unordered_map<const Image*, SDL_Texture*> m_imageCache;
         SDL_Renderer *m_renderer;
     };
 }

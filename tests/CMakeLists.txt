@@ -3,4 +3,4 @@ include_directories(include)
 
 add_subdirectory(rendering)
 
-add_subdirectory(window)
+add_subdirectory(asset)

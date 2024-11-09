@@ -68,7 +68,8 @@ namespace LTEngine::Rendering {
         virtual void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) = 0;
         virtual void drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) = 0;
 
-        virtual void drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags) = 0;
+        void drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags);
+        virtual void drawImage(const Image *image, Math::Vec2i position, Math::Recti region, ColorA color, RendererFlags flags) = 0;
 
     protected:
         virtual void cameraCreated(u32 id) {};

@@ -276,15 +276,15 @@ void SoftwareRenderer::drawPoints(const Math::Vec2 *points, u32 count, ColorA co
 }
 
 
-void SoftwareRenderer::drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags) {
-    u32 imageWidth = image->getSize().x;
-    u32 imageHeight = image->getSize().y;
+void SoftwareRenderer::drawImage(const Image *image, Math::Vec2i position, Math::Recti region, ColorA color, RendererFlags flags) {
+    u32 imageWidth = region.w;
+    u32 imageHeight = region.h;
 
     prepareBuffer(imageWidth, imageHeight);
 
     for (u32 y = 0; y < imageHeight; y++) {
         for (u32 x = 0; x < imageWidth; x++) {
-            drawBufferPixel(x, y, image->getPixel(x, y));
+            drawBufferPixel(x, y, image->getPixel(region.x + x, region.y + y));
         }
     }
 

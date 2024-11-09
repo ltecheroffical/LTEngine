@@ -3,5 +3,8 @@
 compile_commands.json
 CMakeKits.json
 
+**/._*
+**/.DS_Store
+
 Testing/
 out/

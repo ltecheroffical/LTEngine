@@ -31,7 +31,7 @@ namespace LTEngine::Rendering {
         void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) override;
         void drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) override;
 
-        void drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags) override;
+        void drawImage(const Image *image, Math::Vec2i position, Math::Recti region, ColorA color, RendererFlags flags) override;
         void drawCamera(u32 id, Math::Recti rect, ColorA color, RendererFlags flags);
 
         void setShader(CPUShader *shader);

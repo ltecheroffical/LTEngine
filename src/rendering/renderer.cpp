@@ -191,6 +191,11 @@ void Renderer::drawTriangle(Math::Vec2 a, Math::Vec2 b, Math::Vec2 c, ColorA col
 }
 
 
+void Renderer::drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags) {
+    drawImage(image, position, Math::Recti(Math::Vec2i::ZERO, image->getSize()), color, flags);
+}
+
+
 void Renderer::recalculateTransform() {
     auto camera_it = std::find_if(m_cameras.begin(), m_cameras.end(), [this](const Camera &camera) {
         return camera.id == m_currentCamera;
