@@ -3,8 +3,8 @@
         "name": "LTEngine",
         "generator": "Ninja",
         "compilers": {
-            "C": "/usr/bin/clang",
-            "CXX": "/usr/bin/clang++",
+            "C": "/usr/local/bin/gcc-14",
+            "CXX": "/usr/local/bin/g++-14",
             "ASM": "/usr/bin/clang"
         },
         "linker": "/usr/bin/ld"
