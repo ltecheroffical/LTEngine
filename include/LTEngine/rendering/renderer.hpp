@@ -18,6 +18,7 @@ namespace LTEngine::Rendering {
 
     class Renderer {
     public:
+        Renderer() = default;
         virtual ~Renderer() = default;
 
         const static RendererFlags FLAG_FLIP_H = ((RendererFlags)1 << 0);
@@ -47,11 +48,11 @@ namespace LTEngine::Rendering {
         void setCameraZoom(u32 id, Math::Vec2 zoom);
         void setCameraInclude(u32 id);
         void setCameraExclude(u32 id);
+        void setCurrentCamera(u32 id);
+        void clearCurrentCamera();
         Math::Vec2 getCameraPosition(u32 id) const;
         Math::Vec2 getCameraZoom(u32 id) const;
         f32 getCameraRotation(u32 id) const;
-
-        virtual u32 getScreenData(Color *data) = 0;
 
         virtual void clear(Color color) = 0;
         virtual void clear(ColorA color) = 0;
@@ -68,20 +69,31 @@ namespace LTEngine::Rendering {
         virtual void drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) = 0;
 
         virtual void drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags) = 0;
-        virtual void drawCamera(u32 id, Math::Recti rect, ColorA color, RendererFlags flags) = 0;
 
     protected:
+        virtual void cameraCreated(u32 id) {};
+        virtual void cameraDestroyed(u32 id) {};
+        virtual void cameraSelected(u32 id) {};
+        virtual void cameraDeselected() {};
+
         Math::Vec2 m_positionOffset = Math::Vec2::ZERO;
         Math::Vec2 m_scale = Math::Vec2::ONE;
         f32 m_rotation = 0.f;
 
         u16 m_zOrder = 0;
 
-        bool m_irisMode:1;
+        bool m_irisMode:1 = false;
+        bool m_currentCameraActive:1 = false;
 
         std::vector<Camera> m_cameras;
 
     private:
+        void recalculateTransform();
+
+        u32 m_nextCameraId = 0;
+        u32 m_currentCamera = 0;
+
+        Math::Vec2 m_realPositionOffset = Math::Vec2::ZERO;
         Math::Vec2 m_scaleFactor[2] = {Math::Vec2::ONE, Math::Vec2::ONE};
         f32 m_rotationOffset[2] = {0.f, 0.f};
     };

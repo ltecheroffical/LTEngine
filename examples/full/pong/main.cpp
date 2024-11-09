@@ -4,7 +4,7 @@
 #include <LTEngine/structure/object_structure.hpp>
 
 #include <LTEngine/sdl_window.hpp>
-#include <LTEngine/rendering/software_renderer.hpp>
+#include <LTEngine/rendering/sdl_renderer.hpp>
 
 #include "player_controller.hpp"
 #include "paddle.hpp"
@@ -25,8 +25,10 @@ int main(int argc, char *argv[]) {
     window.setResizable(false);
 
     LTEngine::Engine engine(std::make_unique<LTEngine::Object::ObjectStructure>());
-    LTEngine::Rendering::SoftwareRenderer renderer(SCREEN_WIDTH, SCREEN_HEIGHT);
+    LTEngine::Rendering::SDLRenderer renderer(window.getRenderer());
 
+    const u32 mainCamera = renderer.createCamera(LTEngine::Math::Vec2::ZERO, LTEngine::Math::Vec2::ONE);
+    renderer.setCurrentCamera(mainCamera);
 
     LTEngine::Object::ObjectStructure *structure = dynamic_cast<LTEngine::Object::ObjectStructure*>(engine.getObjectStructure());
 
@@ -36,12 +38,10 @@ int main(int argc, char *argv[]) {
 
     PlayerController playerController(&window);
 
-    structure->addObject(std::make_unique<Paddle>(&playerController), LTEngine::Math::Vec2(PADDLE_OFFSET, SCREEN_HEIGHT / 2.f - Paddle::PADDLE_HEIGHT / 2.f));
-    structure->addObject(std::make_unique<Paddle>(nullptr), LTEngine::Math::Vec2(SCREEN_WIDTH - PADDLE_OFFSET - Paddle::PADDLE_WIDTH, SCREEN_HEIGHT / 2.f - Paddle::PADDLE_HEIGHT / 2.f));
+    const u32 playerPaddle = structure->addObject(std::make_unique<Paddle>(&playerController), LTEngine::Math::Vec2(PADDLE_OFFSET, SCREEN_HEIGHT / 2.f - Paddle::PADDLE_HEIGHT / 2.f));
+    const u32 enemyPaddle = structure->addObject(std::make_unique<Paddle>(nullptr), LTEngine::Math::Vec2(SCREEN_WIDTH - PADDLE_OFFSET - Paddle::PADDLE_WIDTH, SCREEN_HEIGHT / 2.f - Paddle::PADDLE_HEIGHT / 2.f));
 
     structure->setClearColor(LTEngine::Rendering::Color::BLACK);
-
-    std::vector<LTEngine::Rendering::Color> screen(renderer.getScreenData(nullptr));
 
     engine.initDisplay(&renderer);
 
@@ -49,13 +49,18 @@ int main(int argc, char *argv[]) {
     u64 start = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     while (!window.shouldClose()) {
         window.pollEvents();
-        window.clear(LTEngine::Rendering::ColorA(180, 180, 180, 255));
+
+        Paddle *player = dynamic_cast<Paddle*>(structure->getObject(playerPaddle));
+        Paddle *enemy = dynamic_cast<Paddle*>(structure->getObject(enemyPaddle));
+
+        if (player != nullptr && enemy != nullptr) {
+            player->position.y = std::clamp(player->position.y, 0.f, (f32)SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT);
+            enemy->position.y = std::clamp(enemy->position.y, 0.f, (f32)SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT);
+        }
 
         engine.update(delta);
         engine.render();
         
-        renderer.getScreenData(screen.data());
-        window.display(screen.data(), SCREEN_WIDTH, SCREEN_HEIGHT);
         window.present();
 
         u64 end = std::chrono::high_resolution_clock::now().time_since_epoch().count();

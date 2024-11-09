@@ -20,7 +20,7 @@ namespace Pong {
         std::unique_ptr<Object> clone() const override;
 
     private:
-        const static u32 PADDLE_SPEED = 1500;
+        const static u32 PADDLE_SPEED = 2000;
 
         PaddleController *m_controller;
     };
