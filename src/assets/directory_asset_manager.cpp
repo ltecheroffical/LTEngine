@@ -17,7 +17,8 @@ const std::vector<u8> DirectoryAssetManager::loadPure(const std::string &path) {
     return data;
 }
 
-void DirectoryAssetManager::saveAssetPure(const std::string &path, const std::vector<u8> &data) {
+void DirectoryAssetManager::saveAssetPure(const std::string &path, const u8 *data, u32 size) {
     std::ofstream file(m_directory + path, std::ios::binary);
-    file.write((char *)data.data(), data.size());
+    file.write((char *)data, size);
+    file.close();
 }
