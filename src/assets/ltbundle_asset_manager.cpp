@@ -86,7 +86,7 @@ const std::vector<u8> LTBundleAssetManager::loadPure(const std::string &path) {
     throw std::runtime_error("Asset not found in bundle!");
 }
 
-void LTBundleAssetManager::saveAssetPure(const std::string &path, const std::vector<u8> &data) {
+void LTBundleAssetManager::saveAssetPure(const std::string &path, const u8 *data, u32 size) {
     // Check if an existing header exists
     std::fstream file(m_bundlePath, std::ios::binary | std::ios::in | std::ios::out);
     if (!file.is_open()) {
@@ -137,12 +137,15 @@ void LTBundleAssetManager::saveAssetPure(const std::string &path, const std::vec
     
 
     entries[header.assetCount].pathSize = path.size();
-    entries[header.assetCount].size = data.size();
-    entries[header.assetCount].checksum = Hash::crc32(data.data(), data.size());
+    entries[header.assetCount].size = size;
+    entries[header.assetCount].checksum = Hash::crc32(data, size);
 
     paths[header.assetCount] = path;
 
-    assetsData[header.assetCount] = data;
+    assetsData[header.assetCount].resize(size);
+    for (u32 i = 0; i < size; i++) {
+        assetsData[header.assetCount][i] = data[i];
+    }
     header.assetCount++;
 
     

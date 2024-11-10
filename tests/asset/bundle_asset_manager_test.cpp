@@ -13,11 +13,11 @@
 void test_bundle_asset_manager_writing() {
     LTEngine::LTBundleAssetManager manager(TEMP_DIR "/bundle_asset_manager_test");
    
-    std::vector<u8> testData1 = {41, 40, 69, 124, 186, 7, 173, 185, 205, 195, 236, 8, 4, 210, 86, 29, 220, 61, 193, 230, 157, 72, 246, 249, 213, 155, 182, 52, 112, 36, 214, 147};
-    std::vector<u8> testData2 = {181, 148, 14, 21, 75, 52, 244, 48, 55, 110, 88, 229, 214, 246, 215, 231, 60, 34, 240, 11, 226, 69, 66, 68, 135, 239, 31, 46, 2, 74, 24, 42};
+    const std::vector<u8> testData1 = {41, 40, 69, 124, 186, 7, 173, 185, 205, 195, 236, 8, 4, 210, 86, 29, 220, 61, 193, 230, 157, 72, 246, 249, 213, 155, 182, 52, 112, 36, 214, 147};
+    const std::vector<u8> testData2 = {181, 148, 14, 21, 75, 52, 244, 48, 55, 110, 88, 229, 214, 246, 215, 231, 60, 34, 240, 11, 226, 69, 66, 68, 135, 239, 31, 46, 2, 74, 24, 42};
 
-    manager.saveAssetPure("test_asset1", testData1);
-    manager.saveAssetPure("test_asset2", testData2);
+    manager.saveAssetPure("test_asset1", testData1.data(), testData1.size());
+    manager.saveAssetPure("test_asset2", testData2.data(), testData2.size());
 
     manager.clearCache();
 

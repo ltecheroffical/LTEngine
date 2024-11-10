@@ -47,6 +47,13 @@ namespace LTEngine::Rendering {
         }
 
 
+        bool operator<(const Color& other) const {
+            if (r != other.r) return r < other.r;
+            if (g != other.g) return g < other.g;
+            return b < other.b;
+        }
+
+
         void operator+=(Color other) {
             this->r += other.r;
             this->g += other.g;
@@ -141,6 +148,13 @@ namespace LTEngine::Rendering {
 
         ColorA operator/(ColorA other) {
             return ColorA(this->r / other.r, this->g / other.g, this->b / other.b, this->a / other.a);
+        }
+
+        bool operator<(const ColorA& other) const {
+            if (r != other.r) return r < other.r;
+            if (g != other.g) return g < other.g;
+            if (b != other.b) return b < other.b;
+            return a < other.a;
         }
 
 
