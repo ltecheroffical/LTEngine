@@ -20,13 +20,16 @@ const std::vector<u8> AssetManager::load(const std::string &path) {
     return std::move(data);
 }
 
-void AssetManager::saveAsset(const std::string &path, const std::vector<u8> &data) {
-    std::vector<u8> processedData = data;
+void AssetManager::saveAsset(const std::string &path, const u8 *data, u32 size) {
+    std::vector<u8> processedData(size);
+    for (u32 i = 0; i < size; i++) {
+        processedData[i] = data[i];
+    }
     
     if (m_postProcessor != nullptr) {
         m_postProcessor->preProcess(processedData);
     }
 
     m_cache[path] = processedData;
-    saveAssetPure(path, processedData);
+    saveAssetPure(path, processedData.data(), processedData.size());
 }

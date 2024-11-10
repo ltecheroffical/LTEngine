@@ -17,8 +17,8 @@ namespace LTEngine {
        
         const std::vector<u8> load(const std::string &path);
         virtual const std::vector<u8> loadPure(const std::string &path) = 0;
-        void saveAsset(const std::string &path, const std::vector<u8> &data);
-        virtual void saveAssetPure(const std::string &path, const std::vector<u8> &data) = 0;
+        void saveAsset(const std::string &path, const u8 *data, u32 size);
+        virtual void saveAssetPure(const std::string &path, const u8 *data, u32 size) = 0;
 
         void clearCache() {
             m_cache.clear();
