@@ -53,16 +53,16 @@ LTEngine is designed to support both **game cores** and **normal games**, which 
 
 These features are planned for the first stable release:
 
-- [x] **Finite State Machine**: Enables states for entities (e.g., Idle, Alerted, Attacking).
-- [ ] **GPU Renderer**: Built-in support for GPU rendering (e.g., Vulkan, OpenGL).
-- [ ] **Font Loading/Rendering**: Loading custom fonts and rendering text.
-- [x] **Asset Manager**: Centralized management for assets (images, text, sounds) from bundles or directories.
-- [ ] **AI Pathfinding**: Integration with pathfinding algorithms (e.g., A*).
-- [ ] **Localization**: Support for multiple languages by mapping keys (e.g., "ui/buttons/save") to text (e.g., "Save").
-- [ ] **Physics Engine Support**: Compatibility with physics engines (e.g., Box2D).
-- [ ] **Audio Engine Support**: Compatibility with audio engines (e.g., raudio, soloud).
-- [ ] **More examples**: Examples that show users how to use the engine.
-- [ ] **Documentation**: Documentation comments through out the engine's headers.
+- [x] **Asset Manager** (7/10 Diffculty): Centralized management for assets (images, text, sounds) from bundles or directories.
+- [x] **Finite State Machine** (5/10 Diffculty): Enables states for entities (e.g., Idle, Alerted, Attacking).
+- [ ] **GPU Renderer** (9/10 Diffculty): Built-in support for GPU rendering (e.g., Vulkan, OpenGL).
+- [ ] **Font Loading/Rendering** (6/10 Diffculty): Loading custom fonts and rendering text.
+- [ ] **Physics Engine Support** (8/10 Diffculty): Compatibility with physics engines (e.g., Box2D).
+- [ ] **Audio Engine Support** (7/10 Diffculty): Compatibility with audio engines (e.g., raudio, soloud).
+- [ ] **Localization** (5/10 Diffculty): Support for multiple languages by mapping keys (e.g., "ui/buttons/save") to text (e.g., "Save").
+- [ ] **AI Pathfinding** (8/10 Diffculty): Integration with pathfinding algorithms (e.g., A*).
+- [ ] **Documentation** (4/10): Documentation comments through out the engine's headers.
+- [ ] **More examples** (6/10): Examples that show users how to use the engine.
 
 ---
 
