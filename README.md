@@ -53,7 +53,7 @@ LTEngine is designed to support both **game cores** and **normal games**, which 
 
 These features are planned for the first stable release:
 
-- [ ] **Finite State Machine**: Enables states for entities (e.g., Idle, Alerted, Attacking).
+- [x] **Finite State Machine**: Enables states for entities (e.g., Idle, Alerted, Attacking).
 - [ ] **GPU Renderer**: Built-in support for GPU rendering (e.g., Vulkan, OpenGL).
 - [ ] **Font Loading/Rendering**: Loading custom fonts and rendering text.
 - [x] **Asset Manager**: Centralized management for assets (images, text, sounds) from bundles or directories.
