@@ -39,22 +39,22 @@ Color SDLRenderer::getPixel(Math::Vec2i position) {
 }
 
 
-void SDLRenderer::drawRect(Math::Rect rect, ColorA color, RendererFlags flags) {
+void SDLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) {
     SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 
-    SDL_FRect sdlRect = {rect.x + m_positionOffset.x, rect.y + m_positionOffset.y, (f32)rect.w, (f32)rect.h};
+    SDL_FRect sdlRect = {rect.x + m_positionOffset.x, rect.y + m_positionOffset.y, (f32)rect.w * m_scale.x, (f32)rect.h * m_scale.y};
     SDL_RenderFillRectF(m_renderer, &sdlRect);
 }
 
-void SDLRenderer::drawCircle(Math::Vec2 centerPosition, f32 radius, ColorA color, RendererFlags flags) {
+void SDLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags) {
     SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 
-    u32 centerX = radius + centerPosition.x + m_positionOffset.x;
-    u32 centerY = radius + centerPosition.y + m_positionOffset.y;
+    u32 centerX = circle.radius + circle.x + m_positionOffset.x;
+    u32 centerY = circle.radius + circle.y + m_positionOffset.y;
 
-    i32 x = radius;
+    i32 x = circle.radius;
     i32 y = 0;
-    i32 p = 1 - radius;
+    i32 p = 1 - circle.radius;
 
     while (x >= y) {
         SDL_RenderDrawPoint(m_renderer, centerX + x, centerY + y);
@@ -75,13 +75,13 @@ void SDLRenderer::drawCircle(Math::Vec2 centerPosition, f32 radius, ColorA color
 
 
     if (flags & Renderer::FLAG_FILL) {
-        for (u32 y = 0; y < 2 * radius + 1; y++) {
-            for (u32 x = 0; x < 2 * radius + 1; x++) {
+        for (u32 y = 0; y < 2 * circle.radius + 1; y++) {
+            for (u32 x = 0; x < 2 * circle.radius + 1; x++) {
                 // Do not draw outside the circle
-                i32 dx = x - radius;
-                i32 dy = y - radius;
+                i32 dx = x - circle.radius;
+                i32 dy = y - circle.radius;
 
-                if (dx * dx + dy * dy > radius * radius) {
+                if (dx * dx + dy * dy > circle.radius * circle.radius) {
                     continue;
                 }
                 SDL_RenderDrawPoint(m_renderer, x + m_positionOffset.x, y + m_positionOffset.y);
@@ -93,11 +93,23 @@ void SDLRenderer::drawCircle(Math::Vec2 centerPosition, f32 radius, ColorA color
 
 void SDLRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) {
     SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
-    SDL_RenderDrawLine(m_renderer, a.x + m_positionOffset.x, a.y + m_positionOffset.y, b.x + m_positionOffset.x, b.y + m_positionOffset.y);
+    if (flags & Renderer::FLAG_FLIP_H || flags & Renderer::FLAG_FLIP_V) {
+        std::swap(a, b);
+    }
+
+    // Simulate thickness
+    for (u16 i = 0; i < thickness; i++) {
+        SDL_RenderDrawLine(m_renderer, a.x + m_positionOffset.x - i, a.y + m_positionOffset.y - i, b.x + m_positionOffset.x - i, b.y + m_positionOffset.y - i);
+        SDL_RenderDrawLine(m_renderer, a.x + m_positionOffset.x, a.y + m_positionOffset.y, b.x + m_positionOffset.x, b.y + m_positionOffset.y);
+        SDL_RenderDrawLine(m_renderer, a.x + m_positionOffset.x + i, a.y + m_positionOffset.y + i, b.x + m_positionOffset.x + i, b.y + m_positionOffset.y + i);
+    }
 }
 
-void SDLRenderer::drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) {
+void SDLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlags flags) {
     SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+
+    u32 count = polygon.points.size();
+    Math::Vec2 *points = polygon.points.data();
 
     for (u32 i = 0; i < count; i++) {
         u32 aX = points[i].x;
@@ -147,7 +159,7 @@ void SDLRenderer::drawPoints(const Math::Vec2 *points, u32 count, ColorA color, 
 }
 
 
-void SDLRenderer::drawImage(const Image *image, Math::Vec2i position, Math::Recti region, ColorA color, RendererFlags flags) {
+void SDLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color, RendererFlags flags) {
     SDL_Texture *texture;
 
     if (!m_imageCache.contains(image)) {
@@ -187,6 +199,17 @@ void SDLRenderer::drawImage(const Image *image, Math::Vec2i position, Math::Rect
     rect.w = region.w;
     rect.h = region.h;
 
+    SDL_Point center = { (int)region.w / 2, (int)region.h / 2 };
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+    if (flags & Renderer::FLAG_FLIP_H) {
+        flip = SDL_FLIP_HORIZONTAL;
+    }
+
+    if (flags & Renderer::FLAG_FLIP_V) {
+        flip = SDL_FLIP_VERTICAL;
+    }
+
     m_imageCacheLifetime[image] = MAX_IMAGE_CACHE_LIFETIME;
 
     std::erase_if(m_imageCacheLifetime, [this](std::pair<const Image*, u32> pair) {
@@ -201,7 +224,7 @@ void SDLRenderer::drawImage(const Image *image, Math::Vec2i position, Math::Rect
         return true;
     });
 
-    SDL_RenderCopy(m_renderer, texture, NULL, &rect);
+    SDL_RenderCopyEx(m_renderer, texture, &rect, &rect, rotation, &center, flip);
 }
 
 #endif

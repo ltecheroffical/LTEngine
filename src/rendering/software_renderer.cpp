@@ -7,6 +7,7 @@ using namespace LTEngine::Rendering;
 
 SoftwareRenderer::SoftwareRenderer(u32 width, u32 height) : m_screenWidth(width), m_screenHeight(height) {
     m_screen.resize(m_screenWidth * m_screenHeight, Color::BLACK);
+    m_screenDepth.resize(m_screenWidth * m_screenHeight, 0);
     m_screenOnly = false;
 }
 
@@ -17,7 +18,11 @@ void SoftwareRenderer::resize(u32 width, u32 height) {
     std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(), [width, height](std::pair<u32, std::vector<Color>> output) {
         output.second.resize(width * height, Color::BLACK);
     });
+    std::for_each(m_cameraDepth.begin(), m_cameraDepth.end(), [width, height](std::pair<u32, std::vector<u16>> output) {
+        output.second.resize(width * height, 0);
+    });
     m_screen.resize(m_screenWidth * m_screenHeight, Color::BLACK);
+    m_screenDepth.resize(m_screenWidth * m_screenHeight, 0);
 }
 
 
@@ -61,7 +66,9 @@ void SoftwareRenderer::clear(Color color) {
         }
 
         std::fill(output.second.begin(), output.second.end(), color);
-    }); 
+    });
+
+    std::fill(m_screenDepth.begin(), m_screenDepth.end(), 0);
 }
 
 void SoftwareRenderer::clear(ColorA color) {
@@ -93,6 +100,24 @@ void SoftwareRenderer::clear(ColorA color) {
 
         std::transform(output.second.begin(), output.second.end(), output.second.begin(), blend_colors);
     });
+
+    std::for_each(m_cameraDepth.begin(), m_cameraDepth.end(), [this, blend_colors](std::pair<u32, std::vector<u16>> output) {
+        auto it = std::find_if(m_cameras.begin(), m_cameras.end(), [this, output](const Camera &camera) {
+            return camera.id == output.first;
+        });
+
+        if (it == m_cameras.end()) {
+            throw std::runtime_error("Camera not found");
+        }
+
+        if (it->exclude) {
+            return;
+        }
+
+        std::fill(output.second.begin(), output.second.end(), 0);
+    });
+
+    std::fill(m_screenDepth.begin(), m_screenDepth.end(), 0);
 }
 
 
@@ -111,7 +136,7 @@ Color SoftwareRenderer::getPixel(Math::Vec2i position) {
 }
 
 
-void SoftwareRenderer::drawRect(Math::Rect rect, ColorA color, RendererFlags flags) {
+void SoftwareRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) {
     prepareBuffer(rect.w, rect.h);
 
     for (u32 y = 0; y < rect.h; y++) {
@@ -123,7 +148,9 @@ void SoftwareRenderer::drawRect(Math::Rect rect, ColorA color, RendererFlags fla
     flushBuffer(rect.x, rect.y);
 }
 
-void SoftwareRenderer::drawCircle(Math::Vec2 centerPosition, f32 radius, ColorA color, RendererFlags flags) {
+void SoftwareRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags) {
+    u32 radius = circle.radius;
+
     prepareBuffer(2 * radius + 1, 2 * radius + 1);
 
     u32 centerX = radius;
@@ -167,7 +194,7 @@ void SoftwareRenderer::drawCircle(Math::Vec2 centerPosition, f32 radius, ColorA 
     }
 
 
-    flushBuffer(centerPosition.x - radius - 1, centerPosition.y - radius - 1);
+    flushBuffer(circle.x - radius - 1, circle.y - radius - 1);
 }
 
 
@@ -220,7 +247,10 @@ void SoftwareRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, Color
 
 }
 
-void SoftwareRenderer::drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) {
+void SoftwareRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlags flags) {
+    Math::Vec2 *points = polygon.points.data();
+    u32 count = polygon.points.size();
+
     for (u32 i = 0; i < count; i++) {
         Math::Vec2 point_a = points[i];
         Math::Vec2 point_b = points[(i + 1) % count];
@@ -276,7 +306,7 @@ void SoftwareRenderer::drawPoints(const Math::Vec2 *points, u32 count, ColorA co
 }
 
 
-void SoftwareRenderer::drawImage(const Image *image, Math::Vec2i position, Math::Recti region, ColorA color, RendererFlags flags) {
+void SoftwareRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color, RendererFlags flags) {
     u32 imageWidth = region.w;
     u32 imageHeight = region.h;
 
@@ -291,7 +321,7 @@ void SoftwareRenderer::drawImage(const Image *image, Math::Vec2i position, Math:
     flushBuffer(position.x, position.y);
 }
 
-void SoftwareRenderer::drawCamera(u32 id, Math::Recti rect, ColorA color, RendererFlags flags) {
+void SoftwareRenderer::drawCamera(u32 id, Shapes::Recti rect, ColorA color, RendererFlags flags) {
     prepareBuffer(rect.w, rect.h);
 
     for (u32 y = 0; y < rect.h; y++) {
@@ -304,6 +334,11 @@ void SoftwareRenderer::drawCamera(u32 id, Math::Recti rect, ColorA color, Render
     }
 
     flushBuffer(rect.x, rect.y);
+}
+
+
+void SoftwareRenderer::setScalingMode(ScalingMode mode) {
+    m_scalingMode = mode;
 }
 
 
@@ -374,7 +409,12 @@ void SoftwareRenderer::flushBuffer(i32 posX, i32 posY) {
                     continue;
                 }
 
+                if (m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] > m_zOrder) {
+                    continue;
+                }
+
                 m_screen[((y + posY) * m_screenWidth + (x + posX))] = processPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
+                m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] = m_zOrder;
                 continue;
             }
             std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(), [&](std::pair<u32, std::vector<Color>> output) {
@@ -390,6 +430,11 @@ void SoftwareRenderer::flushBuffer(i32 posX, i32 posY) {
                     return;
                 }
 
+                if (m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] > m_zOrder) {
+                    return;
+                }
+
+                m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] = m_zOrder;
                 output.second[(y + posY) * m_screenWidth + (x + posX)] = processPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
             });
         }

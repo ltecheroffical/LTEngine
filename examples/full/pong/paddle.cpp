@@ -17,7 +17,7 @@ void Paddle::update(f32 delta) {
 }
 
 void Paddle::render(LTEngine::Rendering::Renderer *renderer) {
-    renderer->drawRect(LTEngine::Math::Rect(0, 0, PADDLE_WIDTH, PADDLE_HEIGHT), LTEngine::Rendering::ColorA::WHITE, 0);
+    renderer->drawRect(LTEngine::Shapes::Rect(0, 0, PADDLE_WIDTH, PADDLE_HEIGHT), LTEngine::Rendering::ColorA::WHITE, 0);
 }
 
 

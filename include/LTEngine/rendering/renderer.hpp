@@ -6,7 +6,11 @@
 #include <LTEngine/common/types/floattypes.h>
 
 #include <LTEngine/math/vec2.hpp>
-#include <LTEngine/math/rect.hpp>
+
+#include <LTEngine/shapes/rect.hpp>
+#include <LTEngine/shapes/circle.hpp>
+#include <LTEngine/shapes/triangle.hpp>
+#include <LTEngine/shapes/polygon.hpp>
 
 #include <LTEngine/rendering/color.hpp>
 #include <LTEngine/rendering/image.hpp>
@@ -28,7 +32,6 @@ namespace LTEngine::Rendering {
 
 
         void setScale(Math::Vec2 scale);
-        void setRotation(f32 rotation);
 
         void setZOrder(u16 z);
 
@@ -61,15 +64,15 @@ namespace LTEngine::Rendering {
         virtual void setPixel(Math::Vec2i position, ColorA color) = 0;
         virtual Color getPixel(Math::Vec2i position) = 0;
 
-        virtual void drawRect(Math::Rect rect, ColorA color, RendererFlags flags) = 0;
-        virtual void drawCircle(Math::Vec2 centerPosition, f32 radius, ColorA color, RendererFlags flags) = 0;
-        void drawTriangle(Math::Vec2 a, Math::Vec2 b, Math::Vec2 c, ColorA color, RendererFlags flags);
+        virtual void drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) = 0;
+        virtual void drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags) = 0;
+        void drawTriangle(Shapes::Triangle triangle, ColorA color, RendererFlags flags);
 
         virtual void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) = 0;
-        virtual void drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) = 0;
+        virtual void drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlags flags) = 0;
 
-        void drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags);
-        virtual void drawImage(const Image *image, Math::Vec2i position, Math::Recti region, ColorA color, RendererFlags flags) = 0;
+        void drawImage(const Image *image, Math::Vec2i position, f32 rotation, ColorA color, RendererFlags flags);
+        virtual void drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color, RendererFlags flags) = 0;
 
     protected:
         virtual void cameraCreated(u32 id) {};
@@ -78,8 +81,8 @@ namespace LTEngine::Rendering {
         virtual void cameraDeselected() {};
 
         Math::Vec2 m_positionOffset = Math::Vec2::ZERO;
+        f32 m_rotationOffset = 0.f;
         Math::Vec2 m_scale = Math::Vec2::ONE;
-        f32 m_rotation = 0.f;
 
         u16 m_zOrder = 0;
 
@@ -95,7 +98,7 @@ namespace LTEngine::Rendering {
         u32 m_currentCamera = 0;
 
         Math::Vec2 m_realPositionOffset = Math::Vec2::ZERO;
+        f32 m_realRotationOffset = 0.f;
         Math::Vec2 m_scaleFactor[2] = {Math::Vec2::ONE, Math::Vec2::ONE};
-        f32 m_rotationOffset[2] = {0.f, 0.f};
     };
 }

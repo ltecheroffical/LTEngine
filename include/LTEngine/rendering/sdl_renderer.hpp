@@ -21,13 +21,13 @@ namespace LTEngine::Rendering {
         void setPixel(Math::Vec2i position, ColorA color) override;
         Color getPixel(Math::Vec2i position) override;
 
-        void drawRect(Math::Rect rect, ColorA color, RendererFlags flags) override;
-        void drawCircle(Math::Vec2 centerPosition, f32 radius, ColorA color, RendererFlags flags) override;
+        void drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) override;
+        void drawCircle(Shapes::Circle, ColorA color, RendererFlags flags) override;
 
         void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) override;
-        void drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) override;
+        void drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlags flags) override;
 
-        void drawImage(const Image *image, Math::Vec2i position, Math::Recti region, ColorA color, RendererFlags flags) override;
+        void drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color, RendererFlags flags) override;
 
     private:
         const u32 MAX_IMAGE_CACHE_LIFETIME = 500;

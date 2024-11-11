@@ -125,7 +125,7 @@ Color OpenGLRenderer::getPixel(Math::Vec2i position) {
 }
 
 
-void OpenGLRenderer::drawRect(Math::Rect rect, ColorA color, RendererFlags flags) {
+void OpenGLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) {
     rect.x += m_positionOffset.x;
     rect.y += m_positionOffset.y;
 
@@ -140,25 +140,25 @@ void OpenGLRenderer::drawRect(Math::Rect rect, ColorA color, RendererFlags flags
     m_vertices.push_back({ posToOpenGLX(rect.x), posToOpenGLY(rect.y + rect.h), color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f });
 }
 
-void OpenGLRenderer::drawCircle(Math::Vec2 centerPosition, f32 radius, ColorA color, RendererFlags flags) {
-    m_vertexRenderPoints[m_vertices.size()] = [this, radius]() {
+void OpenGLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags) {
+    m_vertexRenderPoints[m_vertices.size()] = [this]() {
         return (VertexDrawInfo){ m_shaderProgram };
     };
 
     const int numSegments = 100;  // Number of segments to approximate a circle
     float angleStep = 2.0f * M_PI / numSegments;
 
-    centerPosition.x += m_positionOffset.x;
-    centerPosition.y += m_positionOffset.y;
+    circle.x += m_positionOffset.x;
+    circle.y += m_positionOffset.y;
 
     // Add the center vertex
-    m_vertices.push_back({ posToOpenGLX(centerPosition.x), posToOpenGLY(centerPosition.y),
+    m_vertices.push_back({ posToOpenGLX(circle.x), posToOpenGLY(circle.y),
                            color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f });
 
     for (int i = 0; i <= numSegments; ++i) {
         float angle = i * angleStep;
-        float x = centerPosition.x + radius * cos(angle);
-        float y = centerPosition.y + radius * sin(angle);
+        float x = circle.x + circle.radius * cos(angle);
+        float y = circle.y + circle.radius * sin(angle);
         m_vertices.push_back({ posToOpenGLX(x), posToOpenGLY(y),
                                color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f });
     }
@@ -192,7 +192,10 @@ void OpenGLRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA 
     };
 }
 
-void OpenGLRenderer::drawPoints(const Math::Vec2 *points, u32 count, ColorA color, RendererFlags flags) {
+void OpenGLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlags flags) {
+    Math::Vec2 *points = polygon.points.data();
+    u32 count = polygon.points.size();
+
     for (u32 i = 0; i < count; i++) {
         m_vertices.push_back({
             posToOpenGLX(points[i].x), posToOpenGLY(points[i].y),
@@ -207,7 +210,7 @@ void OpenGLRenderer::drawPoints(const Math::Vec2 *points, u32 count, ColorA colo
 }
 
 
-void OpenGLRenderer::drawImage(const Image *image, Math::Vec2i position, Math::Recti region, ColorA color, RendererFlags flags) {
+void OpenGLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color, RendererFlags flags) {
     switchContext();
 }
 

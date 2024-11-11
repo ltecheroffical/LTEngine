@@ -10,11 +10,6 @@ void Renderer::setScale(Math::Vec2 scale) {
     recalculateTransform();
 }
 
-void Renderer::setRotation(f32 rotation) {
-    m_rotationOffset[0] = rotation;
-    recalculateTransform();
-}
-
 
 void Renderer::setZOrder(u16 z) {
     m_zOrder = z;
@@ -22,7 +17,7 @@ void Renderer::setZOrder(u16 z) {
 
 
 void Renderer::setRotationOffset(f32 offset) {
-    m_rotationOffset[1] = offset;
+    m_realRotationOffset = offset;
     recalculateTransform();
 }
 
@@ -38,11 +33,11 @@ void Renderer::setPositionOffset(Math::Vec2 offset) {
 
 
 void Renderer::resetTransform() {
-    m_scaleFactor[0] = Math::Vec2::ONE;
-    m_rotationOffset[0] = 0.f;
-    m_scaleFactor[1] = Math::Vec2::ONE;
-    m_rotationOffset[1] = 0.f;
     m_positionOffset = Math::Vec2::ZERO;
+    m_realRotationOffset = 0.f;
+    m_scaleFactor[0] = Math::Vec2::ONE;
+
+    m_scaleFactor[1] = Math::Vec2::ONE;
 
     recalculateTransform();
 }
@@ -184,15 +179,25 @@ f32 Renderer::getCameraRotation(u32 id) const {
 }
 
 
-void Renderer::drawTriangle(Math::Vec2 a, Math::Vec2 b, Math::Vec2 c, ColorA color, RendererFlags flags) {
-    drawLine(a, b, 1, color, flags);
-    drawLine(b, c, 1, color, flags);
-    drawLine(c, a, 1, color, flags);
+void Renderer::drawTriangle(Shapes::Triangle triangle, ColorA color, RendererFlags flags) {
+    if (flags & FLAG_FILL) {
+        drawPoints({
+            .points = {
+                triangle.p1,
+                triangle.p2,
+                triangle.p3
+            }
+        }, color, flags);
+    }
+
+    drawLine(triangle.p1, triangle.p2, 1, color, flags);
+    drawLine(triangle.p2, triangle.p3, 1, color, flags);
+    drawLine(triangle.p3, triangle.p1, 1, color, flags);
 }
 
 
-void Renderer::drawImage(const Image *image, Math::Vec2i position, ColorA color, RendererFlags flags) {
-    drawImage(image, position, Math::Recti(Math::Vec2i::ZERO, image->getSize()), color, flags);
+void Renderer::drawImage(const Image *image, Math::Vec2i position, f32 rotation, ColorA color, RendererFlags flags) {
+    drawImage(image, position, rotation, Shapes::Recti(Math::Vec2i::ZERO, image->getSize()), color, flags);
 }
 
 
@@ -212,6 +217,6 @@ void Renderer::recalculateTransform() {
     }
 
     m_positionOffset = m_realPositionOffset + cam_position;
+    m_rotationOffset = m_realRotationOffset + cam_rotation;
     m_scale = m_scaleFactor[0] * m_scaleFactor[1] * cam_zoom;
-    m_rotation = m_rotationOffset[0] + m_rotationOffset[1] + cam_rotation;
 }

@@ -76,7 +76,7 @@ void test_renderer_draw_circle() {
 
     const u8 circleRadius = 2;
 
-    softwareRenderer.drawCircle({circleRadius + 1, circleRadius + 1}, circleRadius, RENDER_FILL_COLOR, Renderer::FLAG_FILL);
+    softwareRenderer.drawCircle({{circleRadius + 1, circleRadius + 1}, circleRadius}, RENDER_FILL_COLOR, Renderer::FLAG_FILL);
 
     softwareRenderer.getScreenData(screen.data());
 

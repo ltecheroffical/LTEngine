@@ -10,7 +10,7 @@ void Ball::update(f32 delta) {
 }
 
 void Ball::render(LTEngine::Rendering::Renderer *renderer) {
-    renderer->drawCircle(LTEngine::Math::Vec2::ZERO, BALL_RADIUS, LTEngine::Rendering::ColorA::WHITE, LTEngine::Rendering::Renderer::FLAG_FILL);
+    renderer->drawCircle({LTEngine::Shapes::Shape(0, 0), BALL_RADIUS}, LTEngine::Rendering::ColorA::WHITE, LTEngine::Rendering::Renderer::FLAG_FILL);
 }
 
 std::unique_ptr<LTEngine::Object::ObjectStructure::Object> Ball::clone() const {
