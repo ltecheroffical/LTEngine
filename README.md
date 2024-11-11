@@ -55,7 +55,7 @@ These features are planned for the first stable release:
 
 - [x] **Asset Manager** (7/10 Diffculty): Centralized management for assets (images, text, sounds) from bundles or directories.
 - [x] **Finite State Machine** (5/10 Diffculty): Enables states for entities (e.g., Idle, Alerted, Attacking).
-- [ ] **GPU Renderer** (9/10 Diffculty): Built-in support for GPU rendering (e.g., Vulkan, OpenGL).
+- [x] **GPU Renderer** (9/10 Diffculty): Built-in support for GPU rendering (e.g., Vulkan, OpenGL).
 - [ ] **Font Loading/Rendering** (6/10 Diffculty): Loading custom fonts and rendering text.
 - [ ] **Physics Engine Support** (8/10 Diffculty): Compatibility with physics engines (e.g., Box2D).
 - [ ] **Audio Engine Support** (7/10 Diffculty): Compatibility with audio engines (e.g., raudio, soloud).

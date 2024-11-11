@@ -16,6 +16,20 @@ GLFWWindow::GLFWWindow(const char *title, u32 width, u32 height) {
     m_cleanupGLFW = true;
 }
 
+GLFWWindow::GLFWWindow(const char *title, u32 width, u32 height, const std::unordered_map<int, int> &hints) {
+    glfwInit();
+
+    std::for_each(hints.begin(), hints.end(), [](const std::pair<int, int> &hint) {
+        glfwWindowHint(hint.first, hint.second);
+    });
+
+    m_glfwWindow = glfwCreateWindow(width, height, "LTEngine", nullptr, nullptr);
+    if (m_glfwWindow == nullptr) {
+        throw std::runtime_error("Failed to create GLFW window");
+    }
+    m_cleanupGLFW = true;
+}
+
 
 GLFWWindow::~GLFWWindow() {
     glfwDestroyWindow(m_glfwWindow);
@@ -117,6 +131,11 @@ void GLFWWindow::pollEvents() {
     glfwPollEvents();
 }
 
+void GLFWWindow::swapBuffers() {
+    glfwSwapBuffers(m_glfwWindow);
+}
+
+
 bool GLFWWindow::shouldClose() {
     return glfwWindowShouldClose(m_glfwWindow);
 }
@@ -152,6 +171,20 @@ bool GLFWWindow::isMousePressed(WindowMouseButton button) {
 
 bool GLFWWindow::isMouseReleased(WindowMouseButton button) {
     return glfwGetMouseButton(m_glfwWindow, windowMouseButtonToGLFWMouseButtonLookup[static_cast<int>(button)]) == GLFW_RELEASE;
+}
+
+
+void GLFWWindow::display(Rendering::Color *screen, u32 width, u32 height) {
+    
+}
+
+void GLFWWindow::display(Rendering::ColorA *screen, u32 width, u32 height) {
+    
+}
+
+
+void GLFWWindow::makeContextCurrent() {
+    glfwMakeContextCurrent(m_glfwWindow);
 }
 
 

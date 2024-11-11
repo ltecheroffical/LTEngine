@@ -6,10 +6,12 @@ if (LTENGINE_BUILD_WITH_SDL)
     add_subdirectory(SDL)
 endif()
 
+add_subdirectory(glad)
 add_subdirectory(glfw)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
     glfw
+    glad
 )
 
 if (LTENGINE_BUILD_WITH_SDL)
@@ -26,8 +28,10 @@ endif()
 # Linking
 target_link_libraries(${PROJECT_NAME} PRIVATE
     stb_image
+    glad
 )
 
 add_dependencies(${PROJECT_NAME} 
     stb_image
+    glad
 )

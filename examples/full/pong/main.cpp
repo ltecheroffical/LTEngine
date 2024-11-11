@@ -5,8 +5,8 @@
 #include <LTEngine/engine.hpp>
 #include <LTEngine/structure/object_structure.hpp>
 
-#include <LTEngine/sdl_window.hpp>
-#include <LTEngine/rendering/sdl_renderer.hpp>
+#include <LTEngine/rendering/opengl_renderer.hpp>
+#include <LTEngine/glfw_window.hpp>
 
 #include "player_controller.hpp"
 #include "paddle.hpp"
@@ -23,12 +23,23 @@ using namespace Pong;
 
 
 int main(int argc, char *argv[]) {
-    LTEngine::SDLWindow window((char*)"Pong", SCREEN_WIDTH, SCREEN_HEIGHT);
+    LTEngine::GLFWWindow window((char*)"Pong", SCREEN_WIDTH, SCREEN_HEIGHT, {
+        { GLFW_CONTEXT_VERSION_MAJOR, 3 },
+        { GLFW_CONTEXT_VERSION_MINOR, 3 },
+        { GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE },
+        { GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE }
+    });
 
     window.setResizable(false);
 
+    window.makeContextCurrent();
+
     LTEngine::Engine engine(std::make_unique<LTEngine::Object::ObjectStructure>());
-    LTEngine::Rendering::SDLRenderer renderer(window.getRenderer());
+
+    LTEngine::Rendering::OpenGLRenderer::loadOpenGL((GLADloadproc)glfwGetProcAddress);
+    LTEngine::Rendering::OpenGLRenderer renderer(SCREEN_WIDTH, SCREEN_HEIGHT, [&window]() {
+        window.makeContextCurrent();
+    });
 
     const u32 mainCamera = renderer.createCamera(LTEngine::Math::Vec2::ZERO, LTEngine::Math::Vec2::ONE);
     renderer.setCurrentCamera(mainCamera);
@@ -66,8 +77,10 @@ int main(int argc, char *argv[]) {
         engine.update(deltaSeconds);
         if (!window.isMinimized() && !window.isHidden()) {
             engine.render();
-            window.present();
         }
+
+        renderer.present();
+        window.swapBuffers();
 
         do {
             u64 end = std::chrono::high_resolution_clock::now().time_since_epoch().count();

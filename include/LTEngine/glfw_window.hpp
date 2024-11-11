@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 #include <GLFW/glfw3.h>
 
 #include <LTEngine/window.hpp>
@@ -9,6 +11,7 @@ namespace LTEngine {
     class GLFWWindow : public Window {
     public:
         GLFWWindow(const char *title, u32 width, u32 height);
+        GLFWWindow(const char *title, u32 width, u32 height, const std::unordered_map<int, int> &hints);
         ~GLFWWindow() override;
 
         void setSize(u32 width, u32 height) override;
@@ -30,6 +33,7 @@ namespace LTEngine {
         bool isHidden() override;
 
         void pollEvents() override;
+        void swapBuffers();
 
         bool shouldClose() override;
 
@@ -43,6 +47,8 @@ namespace LTEngine {
 
         void display(Rendering::Color *screen, u32 width, u32 height) override;
         void display(Rendering::ColorA *screen, u32 width, u32 height) override;
+
+        void makeContextCurrent();
 
         GLFWwindow *getGLFWWindow();
         void setCleanupGLFW(bool value);
