@@ -61,8 +61,8 @@ These features are planned for the first stable release:
 - [ ] **Audio Engine Support** (7/10 Diffculty): Compatibility with audio engines (e.g., raudio, soloud).
 - [ ] **Localization** (5/10 Diffculty): Support for multiple languages by mapping keys (e.g., "ui/buttons/save") to text (e.g., "Save").
 - [ ] **AI Pathfinding** (8/10 Diffculty): Integration with pathfinding algorithms (e.g., A*).
-- [ ] **Documentation** (4/10): Documentation comments through out the engine's headers.
-- [ ] **More examples** (6/10): Examples that show users how to use the engine.
+- [ ] **Documentation** (4/10 Diffculty): Documentation comments through out the engine's headers.
+- [ ] **More examples** (6/10 Diffculty): Examples that show users how to use the engine.
 
 ---
 
