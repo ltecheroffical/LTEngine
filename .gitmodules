@@ -5,3 +5,6 @@
 	path = thirdparty/SDL
 	url = https://github.com/libsdl-org/SDL
 	branch = SDL2
+[submodule "thirdparty/box2d"]
+	path = thirdparty/box2d
+	url = https://github.com/erincatto/box2d

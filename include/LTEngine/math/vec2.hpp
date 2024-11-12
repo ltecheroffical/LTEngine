@@ -17,35 +17,35 @@ namespace LTEngine::Math {
 
         Vec2(f32 x, f32 y) : x(x), y(y) {}
 
-        Vec2 operator+(Vec2 b) {
+        Vec2 operator+(Vec2 b) const {
             return Vec2(x + b.x, y + b.y);
         }
 
-        Vec2 operator+(u32 b) {
+        Vec2 operator+(u32 b) const {
             return Vec2(x + b, y + b);
         }
 
-        Vec2 operator-(Vec2 b) {
+        Vec2 operator-(Vec2 b) const {
             return Vec2(x - b.x, y - b.y);
         }
 
-        Vec2 operator-(u32 b) {
+        Vec2 operator-(u32 b) const {
             return Vec2(x - b, y - b);
         }
 
-        Vec2 operator*(Vec2 b) {
+        Vec2 operator*(Vec2 b) const {
             return Vec2(x * b.x, y * b.y);
         }
         
-        Vec2 operator*(u32 b) {
+        Vec2 operator*(u32 b) const {
             return Vec2(x * b, y * b);
         }
 
-        Vec2 operator/(Vec2 b) {
+        Vec2 operator/(Vec2 b) const {
             return Vec2(x / b.x, y / b.y);
         }
 
-        Vec2 operator/(u32 b) {
+        Vec2 operator/(u32 b) const {
             return Vec2(x / b, y / b);
         }
 

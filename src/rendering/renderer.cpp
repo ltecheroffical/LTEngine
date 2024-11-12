@@ -7,7 +7,6 @@ using namespace LTEngine::Rendering;
 
 void Renderer::setScale(Math::Vec2 scale) {
     m_scaleFactor[0] = scale;
-    recalculateTransform();
 }
 
 
@@ -17,29 +16,24 @@ void Renderer::setZOrder(u16 z) {
 
 
 void Renderer::setRotationOffset(f32 offset) {
-    m_realRotationOffset = offset;
-    recalculateTransform();
+    m_rotationOffset = offset;
 }
 
 void Renderer::setScaleFactor(Math::Vec2 scale) {
     m_scaleFactor[1] = scale;
-    recalculateTransform();
 }
 
 void Renderer::setPositionOffset(Math::Vec2 offset) {
-    m_realPositionOffset = offset;
-    recalculateTransform();
+    m_positionOffset = offset;
 }
 
 
 void Renderer::resetTransform() {
     m_positionOffset = Math::Vec2::ZERO;
-    m_realRotationOffset = 0.f;
+    m_rotationOffset = 0.f;
     m_scaleFactor[0] = Math::Vec2::ONE;
 
     m_scaleFactor[1] = Math::Vec2::ONE;
-
-    recalculateTransform();
 }
 
 
@@ -137,14 +131,11 @@ void Renderer::setCurrentCamera(u32 id) {
 
     m_currentCamera = id;
     m_currentCameraActive = true;
-    
-    recalculateTransform();
     cameraSelected(id);
 }
 
 void Renderer::clearCurrentCamera() {
     m_currentCameraActive = false;
-    recalculateTransform();
     cameraDeselected();
 }
 
@@ -201,22 +192,94 @@ void Renderer::drawImage(const Image *image, Math::Vec2i position, f32 rotation,
 }
 
 
-void Renderer::recalculateTransform() {
+Math::Vec2 Renderer::worldToScreenPosition(Math::Vec2 position) const {
     auto camera_it = std::find_if(m_cameras.begin(), m_cameras.end(), [this](const Camera &camera) {
         return camera.id == m_currentCamera;
     });
 
-    Math::Vec2 cam_position = Math::Vec2::ZERO;
-    Math::Vec2 cam_zoom = Math::Vec2::ONE;
-    f32 cam_rotation = 0.f;
+    Math::Vec2 camPosition = Math::Vec2::ZERO;
 
     if (m_currentCameraActive && camera_it != m_cameras.end()) {
-        cam_position = camera_it->position;
-        cam_zoom = camera_it->zoom;
-        cam_rotation = camera_it->rotation;
+        camPosition = camera_it->position;
     }
 
-    m_positionOffset = m_realPositionOffset + cam_position;
-    m_rotationOffset = m_realRotationOffset + cam_rotation;
-    m_scale = m_scaleFactor[0] * m_scaleFactor[1] * cam_zoom;
+    return position * m_scaleFactor[0] + m_positionOffset - camPosition;
+}
+
+void Renderer::worldToScreenPosition(f32 *x, f32 *y) const {
+    Math::Vec2 position = worldToScreenPosition(Math::Vec2(*x, *y));
+    *x = position.x;
+    *y = position.y;
+}
+
+f32 Renderer::worldToScreenRotation(f32 rotation) const {
+    auto camera_it = std::find_if(m_cameras.begin(), m_cameras.end(), [this](const Camera &camera) {
+        return camera.id == m_currentCamera;
+    });
+
+    f32 camRotation = 0.f;
+
+    if (m_currentCameraActive && camera_it != m_cameras.end()) {
+        camRotation = camera_it->rotation;
+    }
+
+    return rotation + m_rotationOffset - camRotation;
+}
+
+void Renderer::worldToScreenRotation(f32 *rotation) const {
+    *rotation = worldToScreenRotation(*rotation);
+}
+
+
+Math::Vec2 Renderer::screenToWorldPosition(Math::Vec2 position) const {
+    auto camera_it = std::find_if(m_cameras.begin(), m_cameras.end(), [this](const Camera &camera) {
+        return camera.id == m_currentCamera;
+    });
+
+    Math::Vec2 camPosition = Math::Vec2::ZERO;
+
+    if (m_currentCameraActive && camera_it != m_cameras.end()) {
+        camPosition = camera_it->position;
+    }
+
+    return position - m_positionOffset / m_scaleFactor[0] + camPosition;
+}
+
+void Renderer::screenToWorldPosition(f32 *x, f32 *y) const {
+    Math::Vec2 position = screenToWorldPosition(Math::Vec2(*x, *y));
+    *x = position.x;
+    *y = position.y;
+}
+
+f32 Renderer::screenToWorldRotation(f32 rotation) const {
+    auto camera_it = std::find_if(m_cameras.begin(), m_cameras.end(), [this](const Camera &camera) {
+        return camera.id == m_currentCamera;
+    });
+
+    f32 camRotation = 0.f;
+
+    if (m_currentCameraActive && camera_it != m_cameras.end()) {
+        camRotation = camera_it->rotation;
+    }
+
+    return rotation - m_rotationOffset + camRotation;
+}
+
+void Renderer::screenToWorldRotation(f32 *rotation) const {
+    *rotation = screenToWorldRotation(*rotation);
+}
+
+
+Math::Vec2 Renderer::getWorldScale() const {
+    auto camera_it = std::find_if(m_cameras.begin(), m_cameras.end(), [this](const Camera &camera) {
+        return camera.id == m_currentCamera;
+    });
+
+    Math::Vec2 camZoom = Math::Vec2::ONE;
+
+    if (m_currentCameraActive && camera_it != m_cameras.end()) {
+        camZoom = camera_it->zoom;
+    }
+
+    return m_scaleFactor[0] / m_scaleFactor[1] / camZoom;
 }

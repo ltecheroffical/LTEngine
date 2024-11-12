@@ -42,15 +42,19 @@ Color SDLRenderer::getPixel(Math::Vec2i position) {
 void SDLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) {
     SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 
-    SDL_FRect sdlRect = {rect.x + m_positionOffset.x, rect.y + m_positionOffset.y, (f32)rect.w * m_scale.x, (f32)rect.h * m_scale.y};
+    worldToScreenPosition(&rect.x, &rect.y);
+
+    SDL_FRect sdlRect = {rect.x, rect.y, (f32)rect.w * getWorldScale().x, (f32)rect.h * getWorldScale().y};
     SDL_RenderFillRectF(m_renderer, &sdlRect);
 }
 
 void SDLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags) {
     SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 
-    u32 centerX = circle.radius + circle.x + m_positionOffset.x;
-    u32 centerY = circle.radius + circle.y + m_positionOffset.y;
+    worldToScreenPosition(&circle.x, &circle.y);
+
+    u32 centerX = circle.radius + circle.x;
+    u32 centerY = circle.radius + circle.y;
 
     i32 x = circle.radius;
     i32 y = 0;
@@ -84,7 +88,7 @@ void SDLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFlags 
                 if (dx * dx + dy * dy > circle.radius * circle.radius) {
                     continue;
                 }
-                SDL_RenderDrawPoint(m_renderer, x + m_positionOffset.x, y + m_positionOffset.y);
+                SDL_RenderDrawPoint(m_renderer, x, y);
             }
         }
     }
@@ -97,11 +101,14 @@ void SDLRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA col
         std::swap(a, b);
     }
 
+    worldToScreenPosition(&a.x, &a.y);
+    worldToScreenPosition(&b.x, &b.y);
+
     // Simulate thickness
     for (u16 i = 0; i < thickness; i++) {
-        SDL_RenderDrawLine(m_renderer, a.x + m_positionOffset.x - i, a.y + m_positionOffset.y - i, b.x + m_positionOffset.x - i, b.y + m_positionOffset.y - i);
-        SDL_RenderDrawLine(m_renderer, a.x + m_positionOffset.x, a.y + m_positionOffset.y, b.x + m_positionOffset.x, b.y + m_positionOffset.y);
-        SDL_RenderDrawLine(m_renderer, a.x + m_positionOffset.x + i, a.y + m_positionOffset.y + i, b.x + m_positionOffset.x + i, b.y + m_positionOffset.y + i);
+        SDL_RenderDrawLine(m_renderer, a.x - i, a.y - i, b.x - i, b.y - i);
+        SDL_RenderDrawLine(m_renderer, a.x, a.y, b.x, b.y);
+        SDL_RenderDrawLine(m_renderer, a.x + i, a.y + i, b.x + i, b.y + i);
     }
 }
 
@@ -112,11 +119,11 @@ void SDLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlag
     Math::Vec2 *points = polygon.points.data();
 
     for (u32 i = 0; i < count; i++) {
-        u32 aX = points[i].x;
-        u32 aY = points[i].y;
+        u32 aX = worldToScreenPosition(points[i]).x;
+        u32 aY = worldToScreenPosition(points[i]).y;
         u32 bX = points[(i + 1) % count].x;
         u32 bY = points[(i + 1) % count].y;
-        SDL_RenderDrawLine(m_renderer, aX + m_positionOffset.x, aY + m_positionOffset.y, bX + m_positionOffset.x, bY + m_positionOffset.y);
+        SDL_RenderDrawLine(m_renderer, aX, aY, bX, bY);
     }
 
     if (flags & Renderer::FLAG_FILL) {
@@ -150,7 +157,7 @@ void SDLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlag
                 if (i + 1 < num_intersections) {
                     for (i32 x = intersections[i]; x <= intersections[i + 1]; x++) {
                         SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
-                        SDL_RenderDrawPoint(m_renderer, x + min_x + m_positionOffset.x, y + min_y + m_positionOffset.y);
+                        SDL_RenderDrawPoint(m_renderer, x + min_x, y + min_y);
                     }
                 }
             }
@@ -194,8 +201,8 @@ void SDLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rotati
     }
 
     SDL_Rect rect;
-    rect.x = position.x + m_positionOffset.x;
-    rect.y = position.y + m_positionOffset.y;
+    rect.x = worldToScreenPosition(Math::Vec2(position.x, position.y)).x;
+    rect.y = worldToScreenPosition(Math::Vec2(position.x, position.y)).x;
     rect.w = region.w;
     rect.h = region.h;
 

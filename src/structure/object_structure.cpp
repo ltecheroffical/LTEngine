@@ -47,10 +47,16 @@ u32 ObjectStructure::Object::getId() const {
     return m_id;
 }
 
+void ObjectStructure::Object::setObjectStructure(ObjectStructure *objectStructure) {
+    if (m_structure == nullptr) {
+        m_structure = objectStructure;
+    }
+}
+
 
 void ObjectStructure::update(f32 delta) {
-    for (auto &object : m_objects) {
-        object->update(delta);
+    for (u32 i = 0; i < m_objects.size(); i++) {
+        m_objects[i]->update(delta);
     }
 }
 
@@ -93,6 +99,7 @@ void ObjectStructure::setClearColor(Rendering::Color color) {
 u32 ObjectStructure::addObject(std::unique_ptr<Object> object) {
     u32 id = m_nextId++;
     object->setId(id);
+    object->setObjectStructure(this);
     m_objects.push_back(std::move(object));
     return id;
 }
@@ -123,6 +130,9 @@ u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec2 positi
 
 void ObjectStructure::removeObject(u32 id) {
     auto it = std::find_if(m_objects.begin(), m_objects.end(), [id](const std::unique_ptr<Object> &x) {
+        if (x == nullptr) {
+            return false;
+        }
         return x->getId() == id;
     });
 
@@ -133,6 +143,9 @@ void ObjectStructure::removeObject(u32 id) {
 
 ObjectStructure::Object *ObjectStructure::getObject(u32 id) {
     auto it = std::find_if(m_objects.begin(), m_objects.end(), [id](const std::unique_ptr<Object> &x) {
+        if (x == nullptr) {
+            return false;
+        }
         return x->getId() == id;
     });
     

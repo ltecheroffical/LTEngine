@@ -74,15 +74,23 @@ namespace LTEngine::Rendering {
         void drawImage(const Image *image, Math::Vec2i position, f32 rotation, ColorA color, RendererFlags flags);
         virtual void drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color, RendererFlags flags) = 0;
 
+        Math::Vec2 worldToScreenPosition(Math::Vec2 position) const;
+        void worldToScreenPosition(f32 *x, f32 *y) const;
+        f32 worldToScreenRotation(f32 rotation) const;
+        void worldToScreenRotation(f32 *rotation) const;
+
+        Math::Vec2 screenToWorldPosition(Math::Vec2 position) const;
+        void screenToWorldPosition(f32 *x, f32 *y) const;
+        f32 screenToWorldRotation(f32 rotation) const;
+        void screenToWorldRotation(f32 *rotation) const;
+
+        Math::Vec2 getWorldScale() const;
+
     protected:
         virtual void cameraCreated(u32 id) {};
         virtual void cameraDestroyed(u32 id) {};
         virtual void cameraSelected(u32 id) {};
         virtual void cameraDeselected() {};
-
-        Math::Vec2 m_positionOffset = Math::Vec2::ZERO;
-        f32 m_rotationOffset = 0.f;
-        Math::Vec2 m_scale = Math::Vec2::ONE;
 
         u16 m_zOrder = 0;
 
@@ -92,13 +100,11 @@ namespace LTEngine::Rendering {
         std::vector<Camera> m_cameras;
 
     private:
-        void recalculateTransform();
-
         u32 m_nextCameraId = 0;
         u32 m_currentCamera = 0;
 
-        Math::Vec2 m_realPositionOffset = Math::Vec2::ZERO;
-        f32 m_realRotationOffset = 0.f;
-        Math::Vec2 m_scaleFactor[2] = {Math::Vec2::ONE, Math::Vec2::ONE};
+        Math::Vec2 m_positionOffset = Math::Vec2::ZERO;
+        f32 m_rotationOffset = 0.f;
+        Math::Vec2 m_scaleFactor[2] = { Math::Vec2::ONE, Math::Vec2::ONE };
     };
 }

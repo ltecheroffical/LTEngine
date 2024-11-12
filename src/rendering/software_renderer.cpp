@@ -365,10 +365,10 @@ void SoftwareRenderer::flushBuffer(i32 posX, i32 posY) {
     if (m_screenOnly && m_cameraSelected) {
         return;
     }
+    
+    posX = worldToScreenPosition(Math::Vec2(posX, posY)).x;
+    posY = worldToScreenPosition(Math::Vec2(posX, posY)).y;
 
-    posX += m_positionOffset.x;
-    posY += m_positionOffset.y;
-   
     auto processPixel = [this, &posX, &posY](ColorA color, Math::Vec2u texturePosition) {
         if (m_shader != nullptr) {
             CPUShaderIO io = {

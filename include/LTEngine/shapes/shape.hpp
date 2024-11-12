@@ -5,8 +5,8 @@
 
 namespace LTEngine::Shapes {
     struct Shape {
-        f32 x = 0, y = 0;
-        f32 rotation = 0;
+        f32 x = 0.f, y = 0.f;
+        f32 rotation = 0.f;
 
         Shape() = default;
         Shape(f32 x, f32 y) : x(x), y(y) {}

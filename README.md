@@ -57,12 +57,13 @@ These features are planned for the first stable release:
 - [x] **Finite State Machine** (5/10 Diffculty): Enables states for entities (e.g., Idle, Alerted, Attacking).
 - [x] **GPU Renderer** (9/10 Diffculty): Built-in support for GPU rendering (e.g., Vulkan, OpenGL).
 - [ ] **Font Loading/Rendering** (6/10 Diffculty): Loading custom fonts and rendering text.
-- [ ] **Physics Engine Support** (8/10 Diffculty): Compatibility with physics engines (e.g., Box2D).
+- [x] **Physics Engine Support** (8/10 Diffculty): Compatibility with physics engines (e.g., Box2D).
 - [ ] **Audio Engine Support** (7/10 Diffculty): Compatibility with audio engines (e.g., raudio, soloud).
 - [ ] **Localization** (5/10 Diffculty): Support for multiple languages by mapping keys (e.g., "ui/buttons/save") to text (e.g., "Save").
 - [ ] **AI Pathfinding** (8/10 Diffculty): Integration with pathfinding algorithms (e.g., A*).
 - [ ] **Documentation** (4/10 Diffculty): Documentation comments through out the engine's headers.
 - [ ] **More examples** (6/10 Diffculty): Examples that show users how to use the engine.
+- [ ] **Polishing** (8/10 Diffculty): Refactor and improve the engine's codebase and add tests.
 
 ---
 

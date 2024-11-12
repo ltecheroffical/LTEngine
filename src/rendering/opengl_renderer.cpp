@@ -126,8 +126,10 @@ Color OpenGLRenderer::getPixel(Math::Vec2i position) {
 
 
 void OpenGLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) {
-    rect.x += m_positionOffset.x;
-    rect.y += m_positionOffset.y;
+    worldToScreenPosition(&rect.x, &rect.y);
+    if (rect.x + rect.w < 0 || rect.y + rect.h < 0 || rect.x > m_width || rect.y > m_height) {
+        return;
+    }
 
     // Triangle 1 (buttom left, bottom right, top right)
     m_vertices.push_back({ posToOpenGLX(rect.x), posToOpenGLY(rect.y), color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f });
@@ -141,15 +143,17 @@ void OpenGLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags fla
 }
 
 void OpenGLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags) {
+    worldToScreenPosition(&circle.x, &circle.y);
+    if (circle.x + circle.radius < 0 || circle.y + circle.radius < 0 || circle.x - circle.radius > m_width || circle.y - circle.radius > m_height) {
+        return;
+    }
+
     m_vertexRenderPoints[m_vertices.size()] = [this]() {
         return (VertexDrawInfo){ m_shaderProgram };
     };
 
     const int numSegments = 100;  // Number of segments to approximate a circle
     float angleStep = 2.0f * M_PI / numSegments;
-
-    circle.x += m_positionOffset.x;
-    circle.y += m_positionOffset.y;
 
     // Add the center vertex
     m_vertices.push_back({ posToOpenGLX(circle.x), posToOpenGLY(circle.y),
@@ -174,10 +178,8 @@ void OpenGLRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA 
         return (VertexDrawInfo){ m_shaderProgram };
     };
 
-    a.x += m_positionOffset.x;
-    a.y += m_positionOffset.y;
-    b.x += m_positionOffset.x;
-    b.y += m_positionOffset.y;
+    worldToScreenPosition(&a.x, &a.y);
+    worldToScreenPosition(&b.x, &b.y);
 
     m_vertices.push_back({ posToOpenGLX(a.x), posToOpenGLY(a.y), color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f });
     m_vertices.push_back({ posToOpenGLX(b.x), posToOpenGLY(b.y), color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f });
@@ -211,6 +213,12 @@ void OpenGLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererF
 
 
 void OpenGLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color, RendererFlags flags) {
+    position.x = worldToScreenPosition(Math::Vec2(position.x, position.y)).x;
+    position.y = worldToScreenPosition(Math::Vec2(position.x, position.y)).y;
+    if (position.x + image->getSize().x > m_width || position.y + image->getSize().y > m_height) {
+        return;
+    }
+
     switchContext();
 }
 

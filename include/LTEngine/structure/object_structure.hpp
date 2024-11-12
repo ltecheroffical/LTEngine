@@ -29,6 +29,9 @@ namespace LTEngine::Object {
             void setActive(bool active);
             void setVisible(bool visible);
 
+            ObjectStructure *getObjectStructure() { return m_structure; }
+            void setObjectStructure(ObjectStructure *structure);
+
             u32 getId() const;
             void setId(u32 id);
 
@@ -38,6 +41,8 @@ namespace LTEngine::Object {
 
             u32 m_id = 0;
             bool m_idSet = false;
+
+            ObjectStructure *m_structure = nullptr;
         };
 
         void update(f32 delta) override;
