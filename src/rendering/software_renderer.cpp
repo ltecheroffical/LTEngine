@@ -49,6 +49,7 @@ void SoftwareRenderer::clear(Color color) {
 
     if (m_screenOnly) {
         std::fill(m_screen.begin(), m_screen.end(), color);
+        std::fill(m_screenDepth.begin(), m_screenDepth.end(), 0);
         return;
     }
 
@@ -66,9 +67,8 @@ void SoftwareRenderer::clear(Color color) {
         }
 
         std::fill(output.second.begin(), output.second.end(), color);
+        std::fill(m_cameraDepth[output.first].begin(), m_cameraDepth[output.first].end(), 0);
     });
-
-    std::fill(m_screenDepth.begin(), m_screenDepth.end(), 0);
 }
 
 void SoftwareRenderer::clear(ColorA color) {

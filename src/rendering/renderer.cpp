@@ -203,7 +203,7 @@ Math::Vec2 Renderer::worldToScreenPosition(Math::Vec2 position) const {
         camPosition = camera_it->position;
     }
 
-    return position * m_scaleFactor[0] + m_positionOffset - camPosition;
+    return position * (m_offsetsApplied ? m_scaleFactor[0] : Math::Vec2::ONE) + (m_offsetsApplied ? m_positionOffset : Math::Vec2::ZERO) - camPosition;
 }
 
 void Renderer::worldToScreenPosition(f32 *x, f32 *y) const {
@@ -223,7 +223,7 @@ f32 Renderer::worldToScreenRotation(f32 rotation) const {
         camRotation = camera_it->rotation;
     }
 
-    return rotation + m_rotationOffset - camRotation;
+    return rotation + (m_offsetsApplied ? m_rotationOffset : 0.f) - camRotation;
 }
 
 void Renderer::worldToScreenRotation(f32 *rotation) const {
@@ -242,7 +242,7 @@ Math::Vec2 Renderer::screenToWorldPosition(Math::Vec2 position) const {
         camPosition = camera_it->position;
     }
 
-    return position - m_positionOffset / m_scaleFactor[0] + camPosition;
+    return position - (m_offsetsApplied ? m_positionOffset : Math::Vec2::ZERO) / (m_offsetsApplied ? m_scaleFactor[0] : Math::Vec2::ONE) + camPosition;
 }
 
 void Renderer::screenToWorldPosition(f32 *x, f32 *y) const {
@@ -262,7 +262,7 @@ f32 Renderer::screenToWorldRotation(f32 rotation) const {
         camRotation = camera_it->rotation;
     }
 
-    return rotation - m_rotationOffset + camRotation;
+    return rotation - (m_offsetsApplied ? m_rotationOffset : 0.f) + camRotation;
 }
 
 void Renderer::screenToWorldRotation(f32 *rotation) const {
@@ -281,5 +281,5 @@ Math::Vec2 Renderer::getWorldScale() const {
         camZoom = camera_it->zoom;
     }
 
-    return m_scaleFactor[0] / m_scaleFactor[1] / camZoom;
+    return m_scaleFactor[0] / (m_offsetsApplied ? m_scaleFactor[1] : Math::Vec2::ONE) / camZoom;
 }

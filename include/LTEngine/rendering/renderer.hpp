@@ -74,6 +74,9 @@ namespace LTEngine::Rendering {
         void drawImage(const Image *image, Math::Vec2i position, f32 rotation, ColorA color, RendererFlags flags);
         virtual void drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color, RendererFlags flags) = 0;
 
+        void setOffsetsApplied() { m_offsetsApplied = true; }
+        void clearOffsetsApplied() { m_offsetsApplied = false; }
+
         Math::Vec2 worldToScreenPosition(Math::Vec2 position) const;
         void worldToScreenPosition(f32 *x, f32 *y) const;
         f32 worldToScreenRotation(f32 rotation) const;
@@ -102,6 +105,8 @@ namespace LTEngine::Rendering {
     private:
         u32 m_nextCameraId = 0;
         u32 m_currentCamera = 0;
+
+        bool m_offsetsApplied:1 = true;
 
         Math::Vec2 m_positionOffset = Math::Vec2::ZERO;
         f32 m_rotationOffset = 0.f;
