@@ -92,6 +92,7 @@ void SoftwareRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags f
 	op.flags = flags;
 
 	worldToScreenPosition(&rect.x, &rect.y);
+	worldToScreenRotation(&rect.rotation);
 	op.dataRect = Shapes::Recti(rect.x, rect.y, rect.w, rect.h);
 
 	m_rendererQueueMutex.lock();
@@ -108,6 +109,7 @@ void SoftwareRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererF
 	op.flags = flags;
 
 	worldToScreenPosition(&circle.x, &circle.y);
+	worldToScreenRotation(&circle.rotation);
 	op.dataCircle = circle;
 
 	m_rendererQueueMutex.lock();
@@ -142,7 +144,10 @@ void SoftwareRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, Rendere
 	op.color = color;
 	op.zOrder = m_zOrder;
 	op.flags = flags;
+
+	worldToScreenRotation(&polygon.rotation);
 	op.dataPolygon = polygon;
+	for (Math::Vec2 &point : op.dataPolygon.points) { point = worldToScreenPosition(point); }
 
 	m_rendererQueueMutex.lock();
 	m_rendererQueue.push(op);
@@ -162,7 +167,7 @@ void SoftwareRenderer::drawImage(const Image *image, Math::Vec2i position, f32 r
 	f32 x = position.x, y = position.y;
 	worldToScreenPosition(&x, &y);
 	op.dataPosition = Math::Vec2i(x, y);
-	op.dataRotation = rotation;
+	op.dataRotation = worldToScreenRotation(rotation);
 	op.dataRegion = region;
 	op.dataImage = image;
 
