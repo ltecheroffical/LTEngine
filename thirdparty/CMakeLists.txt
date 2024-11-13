@@ -1,45 +1,41 @@
-# Rendering
-add_subdirectory(stb_image)
-
 # Windowing
 if (LTENGINE_BUILD_WITH_SDL)
     add_subdirectory(SDL) # Oof, this takes a while to compile
+    add_library(SDL2 ALIAS SDL2-static)
 endif()
 
-# OpenGL/Windowing
-add_subdirectory(glad)
 add_subdirectory(glfw)
+
+# GPU Graphics
+add_subdirectory(glad)
 
 # Physics
 add_subdirectory(box2d)
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-    # OpenGL/Windowing
-    glfw
-    glad
+# STB Utilites
+add_subdirectory(stb_image)
+add_subdirectory(stb_truetype)
 
-    # Physics
-    box2d
-)
 
+# Linking
 if (LTENGINE_BUILD_WITH_SDL)
-    if (NOT BUILD_SHARED_LIBS)
-        add_library(SDL2 ALIAS SDL2-static)
-    endif()
-
     target_link_libraries(${PROJECT_NAME} PUBLIC
+        # Windowing
         SDL2
     )
 endif()
 
+target_link_libraries(${PROJECT_NAME} PUBLIC
+    # Windowing
+    glfw
 
-# Linking
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    stb_image
+    # GPU Graphics
     glad
-)
 
-add_dependencies(${PROJECT_NAME} 
+    # Physics
+    box2d
+
+    # STB Utilities
     stb_image
-    glad
+    stb_truetype
 )
