@@ -3,6 +3,8 @@
 #include <string>
 #include <unordered_map>
 
+#include <LTEngine/common/types/inttypes.h>
+
 
 namespace LTEngine::Text {
 	class Localization {
@@ -36,6 +38,12 @@ namespace LTEngine::Text {
 		std::string getLocalized(Language lang, std::string path);
 
 	private:
-		std::unordered_map<std::pair<Language, std::string>, std::string> m_textPaths;
+		std::unordered_map<u32, std::string> m_textPaths;
+
+		std::unordered_map<std::string, u32> m_pathMapping;
+		std::unordered_map<u32, std::pair<Language, u32>> m_languageMapping;
+
+		u32 m_nextLanguageId = 0;
+		u32 m_nextTextId = 0;
 	};
 } // namespace LTEngine::Text
