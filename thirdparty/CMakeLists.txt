@@ -12,6 +12,9 @@ add_subdirectory(glad)
 # Physics
 add_subdirectory(box2d)
 
+# Audio
+add_subdirectory(soloud)
+
 # STB Utilites
 add_subdirectory(stb_image)
 add_subdirectory(stb_truetype)
@@ -34,6 +37,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 
     # Physics
     box2d
+
+    # Audio
+    soloud
 
     # STB Utilities
     stb_image
