@@ -1,0 +1,22 @@
+#pragma once
+
+#include <LTEngine/common/types/floattypes.h>
+#include <LTEngine/common/types/inttypes.h>
+
+#include <LTEngine/math/vec2.hpp>
+
+
+namespace LTEngine::Audio {
+	class Audio {
+	public:
+		virtual ~Audio() = default;
+
+		virtual u32 loadAudio(const u8 *data, u32 size) = 0;
+		virtual void unloadAudio(u32 id) = 0;
+
+		virtual void setListenerPosition(Math::Vec2 position) = 0;
+
+		virtual void playAudio(u32 id, f32 volume = 1.f, bool loop = false) = 0;
+		virtual void playAudioAt(u32 id, Math::Vec2 position, f32 volume = 1.f, bool loop = false) = 0;
+	};
+} // namespace LTEngine::Audio
