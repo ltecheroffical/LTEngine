@@ -15,5 +15,8 @@ bool Localization::doesMappingExist(Language lang, std::string path) {
 
 
 std::string Localization::getLocalized(Language lang, std::string path) {
+	if (!doesMappingExist(lang, path)) {
+		return path; // Very simple fallback, better than throwing an exception
+	}
 	return m_textPaths.at(std::make_pair(lang, path));
 }
