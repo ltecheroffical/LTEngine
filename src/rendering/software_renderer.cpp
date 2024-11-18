@@ -6,7 +6,7 @@ using namespace LTEngine::Rendering;
 
 
 SoftwareRenderer::SoftwareRenderer(u32 width, u32 height) : m_screenWidth(width), m_screenHeight(height) {
-	m_screen.resize(m_screenWidth * m_screenHeight, Color::BLACK);
+	m_screen.resize(m_screenWidth * m_screenHeight, Color::Black);
 	m_screenDepth.resize(m_screenWidth * m_screenHeight, 0);
 	m_screenOnly = false;
 }
@@ -16,11 +16,11 @@ void SoftwareRenderer::resize(u32 width, u32 height) {
 	m_screenWidth = width;
 	m_screenHeight = height;
 	std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(), [width, height](std::pair<u32, std::vector<Color>> output) {
-		output.second.resize(width * height, Color::BLACK);
+		output.second.resize(width * height, Color::Black);
 	});
 	std::for_each(m_cameraDepth.begin(), m_cameraDepth.end(),
 	              [width, height](std::pair<u32, std::vector<u16>> output) { output.second.resize(width * height, 0); });
-	m_screen.resize(m_screenWidth * m_screenHeight, Color::BLACK);
+	m_screen.resize(m_screenWidth * m_screenHeight, Color::Black);
 	m_screenDepth.resize(m_screenWidth * m_screenHeight, 0);
 }
 
@@ -88,7 +88,7 @@ void SoftwareRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags f
 	op.opType = RendererQueueOp::RenderOpType::Rect;
 	op.screenOnly = m_screenOnly;
 	op.color = color;
-	op.zOrder = m_zOrder;
+	op.zOrder = getZOrder();
 	op.flags = flags;
 
 	worldToScreenPosition(&rect.x, &rect.y);
@@ -105,7 +105,7 @@ void SoftwareRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererF
 	op.opType = RendererQueueOp::RenderOpType::Circle;
 	op.screenOnly = m_screenOnly;
 	op.color = color;
-	op.zOrder = m_zOrder;
+	op.zOrder = getZOrder();
 	op.flags = flags;
 
 	worldToScreenPosition(&circle.x, &circle.y);
@@ -123,7 +123,7 @@ void SoftwareRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, Color
 	op.opType = RendererQueueOp::RenderOpType::Line;
 	op.screenOnly = m_screenOnly;
 	op.color = color;
-	op.zOrder = m_zOrder;
+	op.zOrder = getZOrder();
 	op.flags = flags;
 
 	worldToScreenPosition(&a.x, &a.y);
@@ -142,7 +142,7 @@ void SoftwareRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, Rendere
 	op.opType = RendererQueueOp::RenderOpType::Polygon;
 	op.screenOnly = m_screenOnly;
 	op.color = color;
-	op.zOrder = m_zOrder;
+	op.zOrder = getZOrder();
 	op.flags = flags;
 
 	worldToScreenRotation(&polygon.rotation);
@@ -161,7 +161,7 @@ void SoftwareRenderer::drawImage(const Image *image, Math::Vec2i position, f32 r
 	op.opType = RendererQueueOp::RenderOpType::Image;
 	op.screenOnly = m_screenOnly;
 	op.color = color;
-	op.zOrder = m_zOrder;
+	op.zOrder = getZOrder();
 	op.flags = flags;
 
 	f32 x = position.x, y = position.y;
@@ -181,7 +181,7 @@ void SoftwareRenderer::drawCamera(u32 id, Shapes::Recti rect, ColorA color, Rend
 	op.opType = RendererQueueOp::RenderOpType::Camera;
 	op.screenOnly = m_screenOnly;
 	op.color = color;
-	op.zOrder = m_zOrder;
+	op.zOrder = getZOrder();
 	op.flags = flags;
 
 	f32 x = rect.x, y = rect.y;
@@ -227,11 +227,9 @@ bool SoftwareRenderer::process() {
 
 			std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(),
 			              [this, blendColors, op](std::pair<u32, std::vector<Color>> output) {
-				              auto it = std::find_if(m_cameras.begin(), m_cameras.end(),
-				                                     [output](const Camera &camera) { return camera.id == output.first; });
-
-				              if (it == m_cameras.end()) { return; }
-				              if (it->exclude) { return; }
+				              Camera *camera = getCameraById(output.first);
+				              if (camera == nullptr) { return; }
+				              if (camera->exclude) { return; }
 
 				              m_cameraMutexes[output.first].lock();
 				              const f32 A_n = op.color.a / 255.f;
@@ -252,11 +250,9 @@ bool SoftwareRenderer::process() {
 			}
 
 			std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(), [this, op](std::pair<u32, std::vector<Color>> output) {
-				auto it = std::find_if(m_cameras.begin(), m_cameras.end(),
-				                       [output](const Camera &camera) { return camera.id == output.first; });
-
-				if (it == m_cameras.end()) { return; }
-				if (it->exclude) { return; }
+				Camera *camera = getCameraById(output.first);
+				if (camera == nullptr) { return; }
+				if (camera->exclude) { return; }
 
 				m_cameraMutexes[output.first].lock();
 				std::fill(output.second.begin(), output.second.end(), op.color);
@@ -275,11 +271,9 @@ bool SoftwareRenderer::process() {
 			}
 			std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(),
 			              [this, op, blendColors](std::pair<u32, std::vector<Color>> output) {
-				              auto it = std::find_if(m_cameras.begin(), m_cameras.end(),
-				                                     [output](const Camera &camera) { return camera.id == output.first; });
-
-				              if (it == m_cameras.end()) { return; }
-				              if (it->exclude) { return; }
+				              Camera *camera = getCameraById(output.first);
+				              if (camera == nullptr) { return; }
+				              if (camera->exclude) { return; }
 
 				              m_cameraMutexes[output.first].lock();
 				              std::transform(output.second.begin(), output.second.end(), output.second.begin(),
@@ -513,7 +507,7 @@ void SoftwareRenderer::clearShader() {
 void SoftwareRenderer::prepareBuffer(u32 width, u32 height) {
 	m_bufferWidth = width;
 	m_bufferHeight = height;
-	m_bufferData.resize(width * height, ColorA::BLACK);
+	m_bufferData.resize(width * height, ColorA::Black);
 }
 
 void SoftwareRenderer::drawBufferPixel(u32 x, u32 y, ColorA color) {
@@ -573,17 +567,14 @@ void SoftwareRenderer::flushBuffer(i32 posX, i32 posY, const RendererQueueOp *op
 				continue;
 			}
 			std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(), [&](std::pair<u32, std::vector<Color>> output) {
-				auto it = std::find_if(m_cameras.begin(), m_cameras.end(),
-				                       [output](const Camera &camera) { return camera.id == output.first; });
+				Camera *camera = getCameraById(output.first);
+				if (camera == nullptr) { return; }
+				if (camera->exclude) { return; }
 
-				if (it == m_cameras.end()) { throw std::runtime_error("Camera not found"); }
-
-				if (it->exclude) { return; }
-
-				if (m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] > m_zOrder) { return; }
+				if (m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] > getZOrder()) { return; }
 
 				m_cameraMutexes[output.first].lock();
-				m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] = m_zOrder;
+				m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] = getZOrder();
 				output.second[(y + posY) * m_screenWidth + (x + posX)] = processPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
 				m_cameraMutexes[output.first].unlock();
 			});
@@ -593,7 +584,7 @@ void SoftwareRenderer::flushBuffer(i32 posX, i32 posY, const RendererQueueOp *op
 
 
 void SoftwareRenderer::cameraCreated(u32 id) {
-	m_cameraOutputs.insert({id, std::vector<Color>(m_screenWidth * m_screenHeight, Color::BLACK)});
+	m_cameraOutputs.insert({id, std::vector<Color>(m_screenWidth * m_screenHeight, Color::Black)});
 }
 
 void SoftwareRenderer::cameraDestroyed(u32 id) {

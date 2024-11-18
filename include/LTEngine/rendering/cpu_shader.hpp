@@ -7,39 +7,35 @@
 
 
 namespace LTEngine::Rendering {
-    struct CPUShaderIO {
-        Math::Vec2i position;
-        ColorA color;
+	struct CPUShaderIO {
+		Math::Vec2i position;
+		ColorA color;
 
-        const Color *screen;
-        const Math::Vec2u screenSize;
-        
-        const ColorA *texture;
-        const u32 textureWidth;
-        const u32 textureHeight;
-        const u32 textureX;
-        const u32 textureY;
+		const Color *screen;
+		const Math::Vec2u screenSize;
 
-        
-        Color getScreenColor(u32 x, u32 y) const {
-            if (x < 0 || x >= screenSize.x || y < 0 || y >= screenSize.y) {
-                return Color::BLACK;
-            }
-            return screen[y * screenSize.x + x];
-        }
+		const ColorA *texture;
+		const u32 textureWidth;
+		const u32 textureHeight;
+		const u32 textureX;
+		const u32 textureY;
 
-        ColorA getTextureColor(u32 x, u32 y) const {
-            if (x < 0 || x >= textureWidth || y < 0 || y >= textureHeight) {
-                return ColorA::CLEAR;
-            }
-            return texture[y * textureWidth + x];
-        }
-    };
 
-    class CPUShader {
-    public:
-        virtual ~CPUShader() = 0;
+		Color getScreenColor(u32 x, u32 y) const {
+			if (x < 0 || x >= screenSize.x || y < 0 || y >= screenSize.y) { return Color::Black; }
+			return screen[y * screenSize.x + x];
+		}
 
-        virtual void fragment(CPUShaderIO *io) = 0;
-    };
-}
+		ColorA getTextureColor(u32 x, u32 y) const {
+			if (x < 0 || x >= textureWidth || y < 0 || y >= textureHeight) { return ColorA::Clear; }
+			return texture[y * textureWidth + x];
+		}
+	};
+
+	class CPUShader {
+	public:
+		virtual ~CPUShader() = 0;
+
+		virtual void fragment(CPUShaderIO *io) = 0;
+	};
+} // namespace LTEngine::Rendering

@@ -64,27 +64,31 @@ namespace LTEngine::Rendering {
 		virtual void setPixel(Math::Vec2i position, ColorA color) = 0;
 		virtual Color getPixel(Math::Vec2i position) = 0;
 
-		virtual void drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) = 0;
-		virtual void drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags) = 0;
-		void drawTriangle(Shapes::Triangle triangle, ColorA color, RendererFlags flags);
+		virtual void drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags = 0) = 0;
+		virtual void drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags = 0) = 0;
+		void drawTriangle(Shapes::Triangle triangle, ColorA color, RendererFlags flags = 0);
 
-		virtual void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) = 0;
-		virtual void drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlags flags) = 0;
+		virtual void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags = 0) = 0;
+		virtual void drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlags flags = 0) = 0;
 
-		void drawImage(const Image *image, Math::Vec2i position, f32 rotation, ColorA color, RendererFlags flags);
+		void drawImage(const Image *image, Math::Vec2i position, f32 rotation, ColorA color, RendererFlags flags = 0);
 		virtual void drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color,
-		                       RendererFlags flags) = 0;
+		                       RendererFlags flags = 0) = 0;
 
 		void setOffsetsApplied() { m_offsetsApplied = true; }
 		void clearOffsetsApplied() { m_offsetsApplied = false; }
 
 		Math::Vec2 worldToScreenPosition(Math::Vec2 position) const;
+		Math::Vec2i worldToScreenPosition(Math::Vec2i position) const;
 		void worldToScreenPosition(f32 *x, f32 *y) const;
+		void worldToScreenPosition(i32 *x, i32 *y) const;
 		f32 worldToScreenRotation(f32 rotation) const;
 		void worldToScreenRotation(f32 *rotation) const;
 
 		Math::Vec2 screenToWorldPosition(Math::Vec2 position) const;
+		Math::Vec2i screenToWorldPosition(Math::Vec2i position) const;
 		void screenToWorldPosition(f32 *x, f32 *y) const;
+		void screenToWorldPosition(i32 *x, i32 *y) const;
 		f32 screenToWorldRotation(f32 rotation) const;
 		void screenToWorldRotation(f32 *rotation) const;
 
@@ -96,6 +100,14 @@ namespace LTEngine::Rendering {
 		virtual void cameraSelected(u32 id) {};
 		virtual void cameraDeselected() {};
 
+		u16 getZOrder() { return m_zOrder; }
+		bool isIsIrisMode() { return m_irisMode; }
+
+		Camera *getCameraById(u32 id);
+		u32 getCurrentCamera() { return m_currentCamera; }
+		bool isCameraActive() { return m_currentCameraActive; }
+
+	private:
 		u16 m_zOrder = 0;
 
 		bool m_irisMode : 1 = false;
@@ -103,14 +115,13 @@ namespace LTEngine::Rendering {
 
 		std::vector<Camera> m_cameras;
 
-	private:
 		u32 m_nextCameraId = 0;
 		u32 m_currentCamera = 0;
 
 		bool m_offsetsApplied : 1 = true;
 
-		Math::Vec2 m_positionOffset = Math::Vec2::ZERO;
+		Math::Vec2 m_positionOffset = Math::Vec2::Zero;
 		f32 m_rotationOffset = 0.f;
-		Math::Vec2 m_scaleFactor[2] = {Math::Vec2::ONE, Math::Vec2::ONE};
+		Math::Vec2 m_scaleFactor[2] = {Math::Vec2::One, Math::Vec2::One};
 	};
 } // namespace LTEngine::Rendering
