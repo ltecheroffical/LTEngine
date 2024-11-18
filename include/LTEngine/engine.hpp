@@ -12,8 +12,8 @@ namespace LTEngine {
 	class Engine {
 	public:
 		Engine(std::unique_ptr<Object::EngineStructure> structure);
-		Engine(std::function<void(f32 delta)> update, std::function<void(Rendering::Renderer renderer)> render);
-		Engine(std::function<void(f32 delta)> update, std::function<void(Rendering::Renderer renderer)> render,
+		Engine(std::function<void(f32 delta)> update, std::function<void(Rendering::Renderer *renderer)> render);
+		Engine(std::function<void(f32 delta)> update, std::function<void(Rendering::Renderer *renderer)> render,
 		       std::unique_ptr<Object::EngineStructure> structure);
 		~Engine() = default;
 
@@ -37,7 +37,7 @@ namespace LTEngine {
 
 		std::unique_ptr<Object::EngineStructure> m_objectStructure = nullptr;
 		std::function<void(f32 delta)> m_updateFunc = nullptr;
-		std::function<void(Rendering::Renderer renderer)> m_renderFunc = nullptr;
+		std::function<void(Rendering::Renderer *renderer)> m_renderFunc = nullptr;
 
 		std::vector<std::unique_ptr<Object::EngineStructure>> m_scenes;
 	};
