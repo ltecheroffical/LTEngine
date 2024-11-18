@@ -35,8 +35,8 @@ namespace LTEngine::AI {
 		bool isBlocked(Math::Vec2i pos);
 		std::vector<Math::Vec2i> tracePath(Cell *cellDetails);
 
-		Math::Vec2i m_start = Math::Vec2i::ZERO;
-		Math::Vec2i m_end = Math::Vec2i::ZERO;
+		Math::Vec2i m_start = Math::Vec2i::Zero;
+		Math::Vec2i m_end = Math::Vec2i::Zero;
 
 		u32 m_gridWidth;
 		u32 m_gridHeight;

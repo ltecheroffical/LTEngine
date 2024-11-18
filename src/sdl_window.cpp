@@ -1,7 +1,7 @@
 #ifdef LTENGINE_SDL_ENABLE
 
-#include <string>
 #include <stdexcept>
+#include <string>
 
 #include <LTEngine/sdl_window.hpp>
 
@@ -10,137 +10,135 @@ using namespace LTEngine;
 
 
 SDLWindow::SDLWindow(const char *title, u32 width, u32 height) {
-    if (!SDL_WasInit(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
-        SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
-    }
-    
-    m_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
-    if (m_window == nullptr) {
-        throw std::runtime_error("Failed to create SDL window");
-    }
+	if (!SDL_WasInit(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) { SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS); }
 
-    m_renderer = SDL_CreateRenderer(m_window, -1, 0);
-    if (m_renderer == nullptr) {
-        throw std::runtime_error("Failed to create SDL renderer");
-    }
+	m_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
+	if (m_window == nullptr) { throw std::runtime_error("Failed to create SDL window"); }
 
-    m_rgbTexture = nullptr;
-    m_rgbaTexture = nullptr;
+	m_renderer = SDL_CreateRenderer(m_window, -1, 0);
+	if (m_renderer == nullptr) { throw std::runtime_error("Failed to create SDL renderer"); }
+
+	m_rgbTexture = nullptr;
+	m_rgbaTexture = nullptr;
 }
 
 SDLWindow::~SDLWindow() {
-    SDL_DestroyRenderer(m_renderer);
-    SDL_DestroyWindow(m_window);
+	SDL_DestroyRenderer(m_renderer);
+	SDL_DestroyWindow(m_window);
 }
 
 
 void SDLWindow::setSize(u32 width, u32 height) {
-    SDL_SetWindowSize(m_window, width, height);
+	SDL_SetWindowSize(m_window, width, height);
 }
 
 void SDLWindow::setPosition(u32 x, u32 y) {
-    SDL_SetWindowPosition(m_window, x, y);
+	SDL_SetWindowPosition(m_window, x, y);
 }
 
 void SDLWindow::setTitle(const char *title) {
-    SDL_SetWindowTitle(m_window, title);
+	SDL_SetWindowTitle(m_window, title);
 }
 
 void SDLWindow::setResizable(bool resizable) {
-    SDL_SetWindowResizable(m_window, resizable ? SDL_TRUE : SDL_FALSE);
+	SDL_SetWindowResizable(m_window, resizable ? SDL_TRUE : SDL_FALSE);
 }
 
 void SDLWindow::setFullscreen(bool fullscreen) {
-    SDL_SetWindowFullscreen(m_window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
+	SDL_SetWindowFullscreen(m_window, fullscreen ? SDL_WINDOW_FULLSCREEN : 0);
 }
 
 void SDLWindow::setMinimized(bool minimized) {
-    if (minimized) {
-        SDL_MinimizeWindow(m_window);
-    } else {
-        SDL_RestoreWindow(m_window);
-    }
+	if (minimized) {
+		SDL_MinimizeWindow(m_window);
+	} else {
+		SDL_RestoreWindow(m_window);
+	}
 }
 
 
 void SDLWindow::show() {
-    SDL_ShowWindow(m_window);
+	SDL_ShowWindow(m_window);
 }
 
 void SDLWindow::hide() {
-    SDL_HideWindow(m_window);
+	SDL_HideWindow(m_window);
 }
 
 
 u32 SDLWindow::getWidth() {
-    int w, h;
-    SDL_GetWindowSize(m_window, &w, &h);
-    return w;
+	int w, h;
+	SDL_GetWindowSize(m_window, &w, &h);
+	return w;
 }
 
 u32 SDLWindow::getHeight() {
-    int w, h;
-    SDL_GetWindowSize(m_window, &w, &h);
-    return h;
+	int w, h;
+	SDL_GetWindowSize(m_window, &w, &h);
+	return h;
 }
 
 
 u32 SDLWindow::getX() {
-    int x, y;
-    SDL_GetWindowPosition(m_window, &x, &y);
-    return x;
+	int x, y;
+	SDL_GetWindowPosition(m_window, &x, &y);
+	return x;
 }
 
 u32 SDLWindow::getY() {
-    int x, y;
-    SDL_GetWindowPosition(m_window, &x, &y);
-    return y;
+	int x, y;
+	SDL_GetWindowPosition(m_window, &x, &y);
+	return y;
 }
 
 const char *SDLWindow::getTitle() {
-    return SDL_GetWindowTitle(m_window);
+	return SDL_GetWindowTitle(m_window);
 }
 
 bool SDLWindow::isResizable() {
-    return SDL_GetWindowFlags(m_window) & SDL_WINDOW_RESIZABLE;
+	return SDL_GetWindowFlags(m_window) & SDL_WINDOW_RESIZABLE;
 }
 
 bool SDLWindow::isFullscreen() {
-    return SDL_GetWindowFlags(m_window) & SDL_WINDOW_FULLSCREEN;
+	return SDL_GetWindowFlags(m_window) & SDL_WINDOW_FULLSCREEN;
 }
 
 bool SDLWindow::isMinimized() {
-    return SDL_GetWindowFlags(m_window) & SDL_WINDOW_MINIMIZED;
+	return SDL_GetWindowFlags(m_window) & SDL_WINDOW_MINIMIZED;
 }
 
 bool SDLWindow::isHidden() {
-    return SDL_GetWindowFlags(m_window) & SDL_WINDOW_HIDDEN;
+	return SDL_GetWindowFlags(m_window) & SDL_WINDOW_HIDDEN;
+}
+
+bool SDLWindow::isFocused() {
+	return SDL_GetWindowFlags(m_window) & SDL_WINDOW_INPUT_FOCUS;
 }
 
 
 void SDLWindow::pollEvents() {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            case SDL_QUIT:
-                m_shouldClose = true;
-                return;
-        }
-    }
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		switch (event.type) {
+			case SDL_QUIT:
+				m_shouldClose = true;
+				return;
+		}
+	}
 }
 
 void SDLWindow::clear(Rendering::ColorA color) {
-    SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
-    SDL_RenderClear(m_renderer);
+	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
+	SDL_RenderClear(m_renderer);
 }
 
 void SDLWindow::present() {
-    SDL_RenderPresent(m_renderer);
+	SDL_RenderPresent(m_renderer);
 }
 
 
 bool SDLWindow::shouldClose() {
-    return m_shouldClose;
+	return m_shouldClose;
 }
 
 
@@ -148,77 +146,75 @@ extern const int windowKeyToSDLKeyLookup[];
 extern const int windowMouseButtonToSDLMouseButtonLookup[];
 
 bool SDLWindow::isKeyPressed(WindowKey key) {
-    return SDL_GetKeyboardState(nullptr)[windowKeyToSDLKeyLookup[static_cast<int>(key)]];
+	return SDL_GetKeyboardState(nullptr)[windowKeyToSDLKeyLookup[static_cast<int>(key)]];
 }
 
 bool SDLWindow::isKeyReleased(WindowKey key) {
-    return !SDL_GetKeyboardState(nullptr)[windowKeyToSDLKeyLookup[static_cast<int>(key)]];
+	return !SDL_GetKeyboardState(nullptr)[windowKeyToSDLKeyLookup[static_cast<int>(key)]];
 }
 
 
 f64 SDLWindow::getMouseX() {
-    int x, y;
-    SDL_GetMouseState(&x, &y);
-    return x;
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+	return x;
 }
 
 f64 SDLWindow::getMouseY() {
-    int x, y;
-    SDL_GetMouseState(&x, &y);
-    return y;
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+	return y;
 }
 
 bool SDLWindow::isMousePressed(WindowMouseButton button) {
-    return SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(windowMouseButtonToSDLMouseButtonLookup[static_cast<int>(button)]);
+	return SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(windowMouseButtonToSDLMouseButtonLookup[static_cast<int>(button)]);
 }
 
 bool SDLWindow::isMouseReleased(WindowMouseButton button) {
-    return !(SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(windowMouseButtonToSDLMouseButtonLookup[static_cast<int>(button)]));
+	return !(SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(windowMouseButtonToSDLMouseButtonLookup[static_cast<int>(button)]));
 }
 
 
 void SDLWindow::display(Rendering::Color *screen, u32 width, u32 height) {
-    if (m_rgbTexture == nullptr || m_rgbTextureWidth != width || m_rgbTextureHeight != height) {
-        m_rgbTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, width, height);
-        m_rgbTextureWidth = width;
-        m_rgbTextureHeight = height;
-    }
+	if (m_rgbTexture == nullptr || m_rgbTextureWidth != width || m_rgbTextureHeight != height) {
+		m_rgbTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGB24, SDL_TEXTUREACCESS_STREAMING, width, height);
+		m_rgbTextureWidth = width;
+		m_rgbTextureHeight = height;
+	}
 
-    int pitch = 0;
-    void *pixels = nullptr;
-    if (SDL_LockTexture(m_rgbTexture, nullptr, &pixels, &pitch) != 0) {
-        throw std::runtime_error("Failed to lock texture! SDL error: " + std::string(SDL_GetError()));
-    }
+	int pitch = 0;
+	void *pixels = nullptr;
+	if (SDL_LockTexture(m_rgbTexture, nullptr, &pixels, &pitch) != 0) {
+		throw std::runtime_error("Failed to lock texture! SDL error: " + std::string(SDL_GetError()));
+	}
 
-    memcpy(pixels, screen, width * height * sizeof(Rendering::Color));
-    SDL_UnlockTexture(m_rgbTexture);
-    SDL_RenderCopy(m_renderer, m_rgbTexture, nullptr, nullptr);
+	memcpy(pixels, screen, width * height * sizeof(Rendering::Color));
+	SDL_UnlockTexture(m_rgbTexture);
+	SDL_RenderCopy(m_renderer, m_rgbTexture, nullptr, nullptr);
 }
 
 void SDLWindow::display(Rendering::ColorA *screen, u32 width, u32 height) {
-    if (m_rgbaTexture == nullptr || m_rgbaTextureWidth != width || m_rgbaTextureHeight != height) {
-        m_rgbaTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, width, height);
-        m_rgbaTextureWidth = width;
-        m_rgbaTextureHeight = height;
-    }
+	if (m_rgbaTexture == nullptr || m_rgbaTextureWidth != width || m_rgbaTextureHeight != height) {
+		m_rgbaTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING, width, height);
+		m_rgbaTextureWidth = width;
+		m_rgbaTextureHeight = height;
+	}
 
-    int pitch = 0;
-    void *pixels = nullptr;
-    if (SDL_LockTexture(m_rgbaTexture, nullptr, &pixels, &pitch) != 0) {
-        throw std::runtime_error("Failed to lock texture! SDL error: " + std::string(SDL_GetError()));
-    }
+	int pitch = 0;
+	void *pixels = nullptr;
+	if (SDL_LockTexture(m_rgbaTexture, nullptr, &pixels, &pitch) != 0) {
+		throw std::runtime_error("Failed to lock texture! SDL error: " + std::string(SDL_GetError()));
+	}
 
-    memcpy(pixels, screen, width * height * sizeof(Rendering::ColorA));
-    SDL_UnlockTexture(m_rgbaTexture);
-    SDL_RenderCopy(m_renderer, m_rgbaTexture, nullptr, nullptr);
+	memcpy(pixels, screen, width * height * sizeof(Rendering::ColorA));
+	SDL_UnlockTexture(m_rgbaTexture);
+	SDL_RenderCopy(m_renderer, m_rgbaTexture, nullptr, nullptr);
 }
 
 
 void SDLWindow::showMessageBox(SDL_MessageBoxFlags flags, const char *title, const char *message) {
-    SDL_ShowSimpleMessageBox(flags, title, message, nullptr);
+	SDL_ShowSimpleMessageBox(flags, title, message, nullptr);
 }
-
-
 
 
 const int windowKeyToSDLKeyLookup[] = {
@@ -321,10 +317,6 @@ const int windowKeyToSDLKeyLookup[] = {
     SDL_SCANCODE_RIGHT,
 };
 
-const int windowMouseButtonToSDLMouseButtonLookup[] = {
-    SDL_BUTTON_LEFT,
-    SDL_BUTTON_RIGHT,
-    SDL_BUTTON_MIDDLE
-};
+const int windowMouseButtonToSDLMouseButtonLookup[] = {SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_BUTTON_MIDDLE};
 
 #endif

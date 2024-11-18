@@ -68,14 +68,14 @@ namespace LTEngine::Rendering {
 
 			bool screenOnly : 1 = false;
 
-			ColorA color = ColorA::CLEAR;
+			ColorA color = ColorA::Clear;
 			RendererFlags flags = 0;
 			u16 zOrder = 0;
 
 			CPUShader *shader = nullptr;
 
 
-			Math::Vec2i dataPosition = Math::Vec2i::ZERO;
+			Math::Vec2i dataPosition = Math::Vec2i::Zero;
 			Shapes::Recti dataRegion = {0, 0, 0, 0};
 			f32 dataRotation = 0.f;
 
@@ -83,8 +83,8 @@ namespace LTEngine::Rendering {
 			Shapes::Circle dataCircle = {{0, 0}, 0.f};
 			Shapes::Polygon dataPolygon = {{}};
 
-			Math::Vec2 dataPointA = Math::Vec2::ZERO;
-			Math::Vec2 dataPointB = Math::Vec2::ZERO;
+			Math::Vec2 dataPointA = Math::Vec2::Zero;
+			Math::Vec2 dataPointB = Math::Vec2::Zero;
 			u16 dataThickness = 0;
 
 			const Image *dataImage = nullptr;

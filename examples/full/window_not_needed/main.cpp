@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 	LTEngine::Object::ObjectStructure *structure = dynamic_cast<LTEngine::Object::ObjectStructure *>(engine.getObjectStructure());
 	if (structure == nullptr) { return -1; }
 
-	structure->setClearColor(LTEngine::Rendering::Color::BLACK);
+	structure->setClearColor(LTEngine::Rendering::Color::Black);
 
 	const u32 snakeObj =
 	    structure->addObject(std::make_unique<Snake>(LTEngine::Math::Vec2((f32)SCREEN_WIDTH / 2, (f32)SCREEN_HEIGHT / 2)));

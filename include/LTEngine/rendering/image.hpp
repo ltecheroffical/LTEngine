@@ -10,34 +10,37 @@
 
 
 namespace LTEngine::Rendering {
-    class Image {
-    public:
-        Image(u32 width, u32 height);
-        Image(const Color *buffer, u32 width, u32 height);
-        Image(const ColorA *buffer, u32 width, u32 height);
-        ~Image() = default;
+	class Image {
+	public:
+		Image(u32 width, u32 height);
+		Image(const Color *buffer, u32 width, u32 height);
+		Image(const ColorA *buffer, u32 width, u32 height);
+		~Image() = default;
 
-        void setSize(u32 width, u32 height);
-        Math::Vec2u getSize() const;
+		void setSize(u32 width, u32 height);
+		Math::Vec2u getSize() const;
 
-        void setPixel(ColorA color, u32 x, u32 y);
-        ColorA getPixel(u32 x, u32 y) const;
+		void setPixel(ColorA color, u32 x, u32 y);
+		ColorA getPixel(u32 x, u32 y) const;
 
-        void flipH(), flipV();
+		void flipH(), flipV();
 
-        void load(const char *filename);
-        void load(u8 *buffer, u32 size);
+		void load(const char *filename);
+		void load(u8 *buffer, u32 size);
 
-        void savePNG(const char *filename) const;
-        void saveBMP(const char *filename) const;
-        void saveJPG(const char *filename) const;
-        std::vector<u8> savePNG() const;
-        std::vector<u8> saveBMP() const;
-        std::vector<u8> saveJPG() const;
+		const ColorA *getMemBuffer() const { return m_data.data(); }
+		ColorA *getMemBuffer() { return m_data.data(); }
 
-    private:
-        u32 m_width, m_height;
+		void savePNG(const char *filename) const;
+		void saveBMP(const char *filename) const;
+		void saveJPG(const char *filename) const;
+		std::vector<u8> savePNG() const;
+		std::vector<u8> saveBMP() const;
+		std::vector<u8> saveJPG() const;
 
-        std::vector<ColorA> m_data;
-    };
-}
+	private:
+		u32 m_width, m_height;
+
+		std::vector<ColorA> m_data;
+	};
+} // namespace LTEngine::Rendering
