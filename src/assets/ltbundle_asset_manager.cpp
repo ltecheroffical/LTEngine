@@ -76,7 +76,7 @@ const std::vector<u8> LTBundleAssetManager::loadPure(const std::string &path) {
 	throw std::runtime_error("Asset not found in bundle!");
 }
 
-void LTBundleAssetManager::saveAssetPure(const std::string &path, const u8 *data, u32 size) {
+void LTBundleAssetManager::saveAssetPure(const std::string &path, const u8 *data, size_t size) {
 	// Check if an existing header exists
 	std::fstream file(m_bundlePath, std::ios::binary | std::ios::in | std::ios::out);
 	if (!file.is_open()) {
