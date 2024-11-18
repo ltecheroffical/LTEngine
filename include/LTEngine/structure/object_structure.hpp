@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_OBJECT_STRUCTURE_HPP_
+#define _LTENGINE_OBJECT_STRUCTURE_HPP_
 
 #include <LTEngine/structure/engine_structure.hpp>
 
@@ -67,3 +68,5 @@ namespace LTEngine::Object {
 		u32 m_nextId;
 	};
 } // namespace LTEngine::Object
+
+#endif

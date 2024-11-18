@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_RENDERING_FONT_HPP_
+#define _LTENGINE_RENDERING_FONT_HPP_
 
 #include <vector>
 
@@ -26,8 +27,7 @@ namespace LTEngine::Rendering {
 
 		u32 getFontCount() { return m_fontCount; }
 
-		FontAtlas getAtlas(f32 fontSize, char codePointBegin = ' ',
-		                   char codePoints = 95);
+		FontAtlas getAtlas(f32 fontSize, char codePointBegin = ' ', char codePoints = 95);
 
 
 	private:
@@ -36,3 +36,5 @@ namespace LTEngine::Rendering {
 		std::vector<u8> m_fontData;
 	};
 } // namespace LTEngine::Rendering
+
+#endif

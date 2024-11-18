@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_FINITE_STATE_MACHINE_HPP_
+#define _LTENGINE_FINITE_STATE_MACHINE_HPP_
 
 #include <string>
 #include <unordered_map>
@@ -7,24 +8,26 @@
 
 
 namespace LTEngine::State {
-    class FSMState;
-    class FiniteStateMachine {
-    public:
-        FiniteStateMachine() = default;
-        ~FiniteStateMachine() = default;
+	class FSMState;
+	class FiniteStateMachine {
+	public:
+		FiniteStateMachine() = default;
+		~FiniteStateMachine() = default;
 
-        void update(f32 delta);
-        
-        void addState(const std::string &name, std::unique_ptr<FSMState> state);
-        FSMState *getState(const std::string &name);
+		void update(f32 delta);
 
-        bool isInState(const std::string &name);
-        void transition(const std::string &name);
+		void addState(const std::string &name, std::unique_ptr<FSMState> state);
+		FSMState *getState(const std::string &name);
 
-    private:
-        std::string m_currentState;
-        bool m_isInState = false;
+		bool isInState(const std::string &name);
+		void transition(const std::string &name);
 
-        std::unordered_map<std::string, std::unique_ptr<FSMState>> m_states;
-    };
-}
+	private:
+		std::string m_currentState;
+		bool m_isInState = false;
+
+		std::unordered_map<std::string, std::unique_ptr<FSMState>> m_states;
+	};
+} // namespace LTEngine::State
+
+#endif

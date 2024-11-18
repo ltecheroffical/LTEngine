@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_SOFTWARE_RENDERER_HPP_
+#define _LTENGINE_SOFTWARE_RENDERER_HPP_
 
 #include <mutex>
 #include <queue>
@@ -125,3 +126,5 @@ namespace LTEngine::Rendering {
 		std::mutex m_rendererQueueMutex;
 	};
 } // namespace LTEngine::Rendering
+
+#endif

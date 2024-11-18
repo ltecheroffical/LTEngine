@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_COLOR_HPP_
+#define _LTENGINE_COLOR_HPP_
 
 #include <LTEngine/common/types/inttypes.h>
 
@@ -224,3 +225,5 @@ namespace LTEngine::Rendering {
 	inline const ColorA ColorA::Cyan = ColorA(0, 255, 255, 255);
 	inline const ColorA ColorA::Clear = ColorA(0, 0, 0, 0);
 } // namespace LTEngine::Rendering
+
+#endif

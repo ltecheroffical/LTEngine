@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_TIMER_HPP_
+#define _LTENGINE_TIMER_HPP_
 
 #include <functional>
 
@@ -37,3 +38,5 @@ namespace LTEngine {
 		std::function<void()> m_callback = nullptr;
 	};
 } // namespace LTEngine
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_RENDERING_CAMERA_HPP_
+#define _LTENGINE_RENDERING_CAMERA_HPP_
 
 #include <LTEngine/math/vec2.hpp>
 
@@ -16,3 +17,5 @@ namespace LTEngine::Rendering {
 		u32 id;
 	};
 } // namespace LTEngine::Rendering
+
+#endif

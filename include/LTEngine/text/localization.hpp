@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_LOCALIZATION_HPP_
+#define _LTENGINE_LOCALIZATION_HPP_
 
 #include <string>
 #include <unordered_map>
@@ -47,3 +48,5 @@ namespace LTEngine::Text {
 		u32 m_nextTextId = 0;
 	};
 } // namespace LTEngine::Text
+
+#endif

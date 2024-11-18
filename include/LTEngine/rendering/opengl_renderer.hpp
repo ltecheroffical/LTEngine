@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_RENDERING_OPENGL_RENDERER_HPP_
+#define _LTENGINE_RENDERING_OPENGL_RENDERER_HPP_
 
 #include <functional>
 #include <queue>
@@ -131,3 +132,5 @@ namespace LTEngine::Rendering {
 		u32 m_defaultShaderProgram;
 	};
 } // namespace LTEngine::Rendering
+
+#endif

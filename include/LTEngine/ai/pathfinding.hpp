@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_PATHFINDING_HPP_
+#define _LTENGINE_PATHFINDING_HPP_
 
 #include <vector>
 
@@ -23,3 +24,5 @@ namespace LTEngine::AI {
 		virtual std::vector<Math::Vec2i> getPath() = 0;
 	};
 } // namespace LTEngine::AI
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_IMAGE_HPP_
+#define _LTENGINE_IMAGE_HPP_
 
 #include <vector>
 
@@ -44,3 +45,5 @@ namespace LTEngine::Rendering {
 		std::vector<ColorA> m_data;
 	};
 } // namespace LTEngine::Rendering
+
+#endif
