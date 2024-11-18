@@ -25,7 +25,7 @@ void SoftwareRenderer::resize(u32 width, u32 height) {
 }
 
 
-u32 SoftwareRenderer::getScreenData(Color *data) {
+size_t SoftwareRenderer::getScreenData(Color *data) {
 	if (data != nullptr) { memcpy(data, m_screen.data(), sizeof(Color) * m_screenWidth * m_screenHeight); }
 	return m_screen.size();
 }

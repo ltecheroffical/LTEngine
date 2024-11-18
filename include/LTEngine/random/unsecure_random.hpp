@@ -23,6 +23,8 @@ namespace LTEngine::Random {
 		f32 next_f32() override;
 		f64 next_f64() override;
 
+		void nextBytes(u8 *data, size_t length) override;
+
 	private:
 		u16 m_index = 0;
 	};

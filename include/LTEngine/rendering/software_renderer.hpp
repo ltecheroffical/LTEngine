@@ -19,7 +19,7 @@ namespace LTEngine::Rendering {
 
 		void resize(u32 width, u32 height);
 
-		u32 getScreenData(Color *data);
+		size_t getScreenData(Color *data);
 		void setScreenOnly();
 		void clearScreenOnly();
 
