@@ -72,9 +72,11 @@ int main(int argc, char *argv[]) {
 		Paddle *enemy = dynamic_cast<Paddle *>(structure->getObject(enemyPaddle));
 
 		if (player != nullptr && enemy != nullptr) {
-			player->position.y = std::clamp(player->position.y, 0.f, (f32)SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT);
-			enemy->position.y = std::clamp(enemy->position.y, 0.f, (f32)SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT);
-		}
+			player->setPosition(
+			    {player->getPosition().x, std::clamp(player->getPosition().y, 0.f, (f32)SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT)});
+			enemy->setPosition(
+			    {enemy->getPosition().x, std::clamp(enemy->getPosition().y, 0.f, (f32)SCREEN_HEIGHT - Paddle::PADDLE_HEIGHT)});
+		};
 
 		engine.update(deltaSeconds);
 		if (!window.isMinimized() && !window.isHidden()) { engine.render(); }

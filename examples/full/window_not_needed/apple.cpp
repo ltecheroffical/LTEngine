@@ -10,7 +10,7 @@ Apple::Apple(u32 snake, LTEngine::Math::Vec2u limits) : m_snake(snake), m_posLim
 
 void Apple::update(f32 delta) {
 	const f32 eilpision = 0.9999999999999f;
-	LTEngine::Math::Vec2 snakePosition = getObjectStructure()->getObject(m_snake)->position;
+	LTEngine::Math::Vec2 snakePosition = getObjectStructure()->getObject(m_snake)->getPosition();
 	if (fabs(snakePosition.x - position.x) < eilpision && fabs(snakePosition.y - position.y) < eilpision) {
 		Snake *snake = dynamic_cast<Snake *>(getObjectStructure()->getObject(m_snake));
 		if (snake != nullptr) { snake->grow(); }
