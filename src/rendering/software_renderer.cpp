@@ -521,20 +521,21 @@ void SoftwareRenderer::flushBuffer(i32 posX, i32 posY, const RendererQueueOp *op
 	posY = worldToScreenPosition(Math::Vec2(posX, posY)).y;
 
 	auto processPixel = [this, op, &posX, &posY](ColorA color, Math::Vec2u texturePosition) {
-		if (m_shader != nullptr) {
-			CPUShaderIO io = {
-			    .position = Math::Vec2i(posX, posY),
-			    .color = op->color,
+		if (op->shader != nullptr) {
+			CPUShaderIO io = {.position = Math::Vec2i(posX, posY),
+			                  .color = op->color,
 
-			    .screen = m_screen.data(),
-			    .screenSize = {m_screenWidth, m_screenHeight},
+			                  .screen = m_screen.data(),
+			                  .screenSize = {m_screenWidth, m_screenHeight},
 
-			    .texture = m_bufferData.data(),
-			    .textureWidth = m_bufferWidth,
-			    .textureHeight = m_bufferHeight,
-			    .textureX = texturePosition.x,
-			    .textureY = texturePosition.y,
-			};
+			                  .texture = m_bufferData.data(),
+			                  .textureWidth = m_bufferWidth,
+			                  .textureHeight = m_bufferHeight,
+			                  .textureX = texturePosition.x,
+			                  .textureY = texturePosition.y,
+
+			                  .time = (op->timestamp.time_since_epoch().count() - m_creationTime.time_since_epoch().count()) /
+			                          1000000000.f};
 
 			op->shader->fragment(&io);
 
