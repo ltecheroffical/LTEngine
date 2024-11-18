@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 add_executable(bundle_asset_manager_test bundle_asset_manager_test.cpp)
 
 target_link_libraries(bundle_asset_manager_test PRIVATE LTEngine)
