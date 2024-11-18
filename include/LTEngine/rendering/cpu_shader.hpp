@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_RENDERING_CPU_SHADER_HPP_
+#define _LTENGINE_RENDERING_CPU_SHADER_HPP_
 
 #include <LTEngine/common/types/inttypes.h>
 
@@ -39,3 +40,5 @@ namespace LTEngine::Rendering {
 		virtual void fragment(CPUShaderIO *io) = 0;
 	};
 } // namespace LTEngine::Rendering
+
+#endif

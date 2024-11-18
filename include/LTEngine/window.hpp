@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_WINDOW_HPP_
+#define _LTENGINE_WINDOW_HPP_
 
 #include <LTEngine/rendering/color.hpp>
 
@@ -150,3 +151,5 @@ namespace LTEngine {
 		virtual void display(Rendering::ColorA *screen, u32 width, u32 height) = 0;
 	};
 } // namespace LTEngine
+
+#endif

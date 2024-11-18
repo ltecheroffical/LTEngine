@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_HASH_HPP_
+#define _LTENGINE_HASH_HPP_
 
 #include <LTEngine/common/types/inttypes.h>
 
@@ -14,3 +15,5 @@ namespace LTEngine::Hash {
 	void sha512(const u8 *data, u32 size, u8 output[64]);
 	*/
 } // namespace LTEngine::Hash
+
+#endif

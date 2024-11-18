@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_AUDIO_HPP_
+#define _LTENGINE_AUDIO_HPP_
 
 #include <string>
 
@@ -26,3 +27,5 @@ namespace LTEngine::Audio {
 		virtual void playAudioAt(u32 id, Math::Vec2 position, f32 volume = 1.f) = 0;
 	};
 } // namespace LTEngine::Audio
+
+#endif

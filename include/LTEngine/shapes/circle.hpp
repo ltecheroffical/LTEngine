@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_SHAPES_CIRCLE_HPP_
+#define _LTENGINE_SHAPES_CIRCLE_HPP_
 
 #include <LTEngine/math/vec2.hpp>
 
@@ -6,7 +7,9 @@
 
 
 namespace LTEngine::Shapes {
-    struct Circle : public Shape {
-        float radius;
-    };
-}
+	struct Circle : public Shape {
+		float radius;
+	};
+} // namespace LTEngine::Shapes
+
+#endif

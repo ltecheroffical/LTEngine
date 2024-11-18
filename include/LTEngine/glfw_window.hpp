@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_GLFW_WINDOW_HPP_
+#define _LTENGINE_GLFW_WINDOW_HPP_
 
 #include <unordered_map>
 
@@ -60,3 +61,5 @@ namespace LTEngine {
 		bool m_cleanupGLFW;
 	};
 } // namespace LTEngine
+
+#endif

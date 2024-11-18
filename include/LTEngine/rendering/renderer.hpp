@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_RENDERER_HPP_
+#define _LTENGINE_RENDERER_HPP_
 
 #include <vector>
 
@@ -125,3 +126,5 @@ namespace LTEngine::Rendering {
 		Math::Vec2 m_scaleFactor[2] = {Math::Vec2::One, Math::Vec2::One};
 	};
 } // namespace LTEngine::Rendering
+
+#endif

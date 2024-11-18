@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_ASTAR_PATHFINDING_HPP_
+#define _LTENGINE_ASTAR_PATHFINDING_HPP_
 
 #include <functional>
 
@@ -49,3 +50,5 @@ namespace LTEngine::AI {
 		std::function<f64(Math::Vec2i, Math::Vec2i)> m_heristicFunc;
 	};
 } // namespace LTEngine::AI
+
+#endif

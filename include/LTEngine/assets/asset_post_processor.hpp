@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_ASSET_POST_PROCESSOR_HPP_
+#define _LTENGINE_ASSET_POST_PROCESSOR_HPP_
 
 #include <vector>
 
@@ -6,11 +7,13 @@
 
 
 namespace LTEngine {
-    class AssetManagerPostProcessor {
-    public:
-        virtual ~AssetManagerPostProcessor() = 0;
+	class AssetManagerPostProcessor {
+	public:
+		virtual ~AssetManagerPostProcessor() = 0;
 
-        virtual void preProcess(std::vector<u8> &data) = 0;
-        virtual void postProcess(std::vector<u8> &data) = 0;
-    };
-}
+		virtual void preProcess(std::vector<u8> &data) = 0;
+		virtual void postProcess(std::vector<u8> &data) = 0;
+	};
+} // namespace LTEngine
+
+#endif

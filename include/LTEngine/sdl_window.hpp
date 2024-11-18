@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_SDL_WINDOW_HPP_
+#define _LTENGINE_SDL_WINDOW_HPP_
 #ifdef LTENGINE_SDL_ENABLE
 
 #include <SDL2/SDL.h>
@@ -69,4 +70,5 @@ namespace LTEngine {
 	};
 } // namespace LTEngine
 
+#endif
 #endif

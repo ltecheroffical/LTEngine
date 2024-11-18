@@ -1,3 +1,6 @@
+#ifndef _LTENGINE_BOX2D_PHYSICS_ENGINE_HPP_
+#define _LTENGINE_BOX2D_PHYSICS_ENGINE_HPP_
+
 #include <unordered_map>
 
 #include <box2d/box2d.h>
@@ -55,3 +58,5 @@ namespace LTEngine::Physics {
 		std::unordered_map<u32, b2Vec2> m_bodySizes;
 	};
 } // namespace LTEngine::Physics
+
+#endif

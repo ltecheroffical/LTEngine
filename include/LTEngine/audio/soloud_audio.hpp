@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_SOLOUD_AUDIO_HPP_
+#define _LTENGINE_SOLOUD_AUDIO_HPP_
 
 #include <unordered_map>
 
@@ -36,3 +37,5 @@ namespace LTEngine::Audio {
 		u32 m_nextResourceId;
 	};
 } // namespace LTEngine::Audio
+
+#endif

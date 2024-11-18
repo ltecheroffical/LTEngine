@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_PHYSICS_ENGINE_HPP_
+#define _LTENGINE_PHYSICS_ENGINE_HPP_
 
 #include <LTEngine/common/types/inttypes.h>
 
@@ -51,3 +52,5 @@ namespace LTEngine::Physics {
 		virtual f32 getBodyRotation(u32 id) = 0;
 	};
 } // namespace LTEngine::Physics
+
+#endif

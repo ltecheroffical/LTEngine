@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_ENGINE_HPP_
+#define _LTENGINE_ENGINE_HPP_
 
 #include <functional>
 
@@ -41,3 +42,5 @@ namespace LTEngine {
 		std::vector<std::unique_ptr<Object::EngineStructure>> m_scenes;
 	};
 } // namespace LTEngine
+
+#endif

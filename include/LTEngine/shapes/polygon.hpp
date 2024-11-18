@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_POLYGON_HPP_
+#define _LTENGINE_POLYGON_HPP_
 
 #include <vector>
 
@@ -8,7 +9,9 @@
 
 
 namespace LTEngine::Shapes {
-    struct Polygon : public Shape {
-        std::vector<Math::Vec2> points;
-    };
-}
+	struct Polygon : public Shape {
+		std::vector<Math::Vec2> points;
+	};
+} // namespace LTEngine::Shapes
+
+#endif

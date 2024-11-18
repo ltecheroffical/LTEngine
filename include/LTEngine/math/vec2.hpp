@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_VEC2_HPP_
+#define _LTENGINE_VEC2_HPP_
 
 #include <LTEngine/common/types/floattypes.h>
 #include <LTEngine/common/types/inttypes.h>
@@ -232,3 +233,5 @@ namespace LTEngine::Math {
 	inline const Vec2u Vec2u::Zero = Vec2u(0, 0);
 	inline const Vec2u Vec2u::One = Vec2u(1, 1);
 } // namespace LTEngine::Math
+
+#endif

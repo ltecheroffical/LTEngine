@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _LTENGINE_SHAPES_TRIANGLE_HPP_
+#define _LTENGINE_SHAPES_TRIANGLE_HPP_
 
 #include <LTEngine/math/vec2.hpp>
 
@@ -6,9 +7,11 @@
 
 
 namespace LTEngine::Shapes {
-    struct Triangle : public Shape {
-        Math::Vec2 p1;
-        Math::Vec2 p2;
-        Math::Vec2 p3;
-    };
-}
+	struct Triangle : public Shape {
+		Math::Vec2 p1;
+		Math::Vec2 p2;
+		Math::Vec2 p3;
+	};
+} // namespace LTEngine::Shapes
+
+#endif
