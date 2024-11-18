@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 3.16)
 project(physics_simulation_example LANGUAGES CXX)
 
 file(GLOB_RECURSE CXX_SOURCE_FILES CONFIGURE_DEPENDS 

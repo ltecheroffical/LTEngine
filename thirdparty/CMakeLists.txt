@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 # Windowing
 if (LTENGINE_BUILD_WITH_SDL)
     add_subdirectory(SDL) # Oof, this takes a while to compile

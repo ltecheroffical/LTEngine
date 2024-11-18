@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 add_executable(software_renderer_test software_renderer_test.cpp)
 
 target_link_libraries(software_renderer_test PRIVATE LTEngine)
