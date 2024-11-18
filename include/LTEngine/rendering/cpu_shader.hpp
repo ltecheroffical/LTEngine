@@ -21,6 +21,8 @@ namespace LTEngine::Rendering {
 		const u32 textureX;
 		const u32 textureY;
 
+		const f32 time;
+
 
 		Color getScreenColor(u32 x, u32 y) const {
 			if (x < 0 || x >= screenSize.x || y < 0 || y >= screenSize.y) { return Color::Black; }

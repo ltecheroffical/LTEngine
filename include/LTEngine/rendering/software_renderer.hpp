@@ -73,6 +73,8 @@ namespace LTEngine::Rendering {
 			RendererFlags flags = 0;
 			u16 zOrder = 0;
 
+			std::chrono::high_resolution_clock::time_point timestamp = std::chrono::high_resolution_clock::now();
+
 			CPUShader *shader = nullptr;
 
 
@@ -124,6 +126,8 @@ namespace LTEngine::Rendering {
 
 		std::queue<RendererQueueOp> m_rendererQueue;
 		std::mutex m_rendererQueueMutex;
+
+		std::chrono::high_resolution_clock::time_point m_creationTime = std::chrono::high_resolution_clock::now();
 	};
 } // namespace LTEngine::Rendering
 
