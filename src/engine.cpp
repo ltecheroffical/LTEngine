@@ -55,6 +55,11 @@ void Engine::update(f32 delta) {
 void Engine::render() {
 	if (!m_displayInitialized) { return; }
 
+
+	m_renderer->resetTransform();
+	m_renderer->clearIrisMode();
+	m_renderer->setOffsetsApplied();
+
 	if (m_renderFunc != nullptr) { m_renderFunc(m_renderer); }
 	if (m_objectStructure != nullptr) {
 		m_renderer->clear(m_objectStructure->getClearColor());
