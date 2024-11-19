@@ -14,7 +14,7 @@ namespace LTEngine::AI {
 		virtual ~Pathfinding() = default;
 
 		virtual void setPath(Math::Vec2i start, Math::Vec2i end) = 0;
-		virtual bool isPossibleToReach();
+		virtual bool isPossibleToReach() = 0;
 
 		virtual void setWalkablePath(std::vector<Math::Vec2i> path) = 0;
 

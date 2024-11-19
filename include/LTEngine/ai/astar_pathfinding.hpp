@@ -10,7 +10,7 @@ namespace LTEngine::AI {
 	class AStarPathfinding : public Pathfinding {
 	public:
 		AStarPathfinding();
-		~AStarPathfinding() = default;
+		~AStarPathfinding() override = default;
 
 		void setPath(Math::Vec2i start, Math::Vec2i end) override;
 		bool isPossibleToReach() override;
@@ -22,7 +22,7 @@ namespace LTEngine::AI {
 
 		std::vector<Math::Vec2i> getPath() override;
 
-		void setCalculateHeristic(std::function<f64(Math::Vec2i, Math::Vec2i)> func) { m_heristicFunc = func; }
+		void setCalculateHeristic(std::function<f32(Math::Vec2i, Math::Vec2i)> func) { m_heristicFunc = func; }
 		void resetCalculateHeristic();
 
 	private:
@@ -34,20 +34,23 @@ namespace LTEngine::AI {
 
 		bool isValid(Math::Vec2i pos);
 		bool isBlocked(Math::Vec2i pos);
-		std::vector<Math::Vec2i> tracePath(Cell *cellDetails);
+		std::vector<Math::Vec2i> tracePath(std::vector<std::vector<Cell>> cellDetails);
 
 		Math::Vec2i m_start = Math::Vec2i::Zero;
 		Math::Vec2i m_end = Math::Vec2i::Zero;
 
-		u32 m_gridWidth;
-		u32 m_gridHeight;
+		i32 m_offsetX = 0;
+		i32 m_offsetY = 0;
 
-		u32 m_nextObstacleId;
+		u32 m_gridWidth = 0;
+		u32 m_gridHeight = 0;
+
+		u32 m_nextObstacleId = 0;
 
 		std::vector<Math::Vec2i> m_walkableTiles;
 		std::unordered_map<u32, Math::Vec2i> m_obstacles;
 
-		std::function<f64(Math::Vec2i, Math::Vec2i)> m_heristicFunc;
+		std::function<f32(Math::Vec2i, Math::Vec2i)> m_heristicFunc;
 	};
 } // namespace LTEngine::AI
 
