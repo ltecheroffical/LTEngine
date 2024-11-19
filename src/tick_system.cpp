@@ -12,7 +12,7 @@ TickSystem::TickSystem() {
 
 
 void TickSystem::step(f32 step) {
-	if (m_currentTickTime > 0.f) {
+	if (m_currentTickTime - step > 0.f) {
 		m_currentTickTime -= step;
 		return;
 	}
@@ -51,6 +51,6 @@ void TickSystem::unregisterTick(std::string name) {
 	m_tickClocks.erase(name);
 }
 
-void TickSystem::setTickCallback(std::function<void(u64)> callback) {
-	m_tickCallback = callback;
+void TickSystem::setTickCallback(std::string name, std::function<void(u64)> callback) {
+	m_tickClocks[name].second = callback;
 }

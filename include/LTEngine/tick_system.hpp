@@ -24,7 +24,7 @@ namespace LTEngine {
 
 		void registerTick(std::string name, u64 everyTicks);
 		void unregisterTick(std::string name);
-		void setTickCallback(std::function<void(u64)> callback);
+		void setTickCallback(std::string name, std::function<void(u64)> callback);
 
 	private:
 		u64 m_currentTick = 0;
