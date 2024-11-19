@@ -126,10 +126,8 @@ void SoftwareRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, Color
 	op.zOrder = getZOrder();
 	op.flags = flags;
 
-	worldToScreenPosition(&a.x, &a.y);
-	worldToScreenPosition(&b.x, &b.y);
-	op.dataPointA = a;
-	op.dataPointB = b;
+	op.dataPointA = worldToScreenPosition(a);
+	op.dataPointB = worldToScreenPosition(b);
 	op.dataThickness = thickness;
 
 	m_rendererQueueMutex.lock();
@@ -164,9 +162,7 @@ void SoftwareRenderer::drawImage(const Image *image, Math::Vec2i position, f32 r
 	op.zOrder = getZOrder();
 	op.flags = flags;
 
-	f32 x = position.x, y = position.y;
-	worldToScreenPosition(&x, &y);
-	op.dataPosition = Math::Vec2i(x, y);
+	op.dataPosition = worldToScreenPosition((Math::Vec2i){position.x, position.y});
 	op.dataRotation = worldToScreenRotation(rotation);
 	op.dataRegion = region;
 	op.dataImage = image;
@@ -184,9 +180,8 @@ void SoftwareRenderer::drawCamera(u32 id, Shapes::Recti rect, ColorA color, Rend
 	op.zOrder = getZOrder();
 	op.flags = flags;
 
-	f32 x = rect.x, y = rect.y;
-	worldToScreenPosition(&x, &y);
-	op.dataRect = Shapes::Recti(x, y, rect.w, rect.h);
+	worldToScreenPosition(&rect.x, &rect.y);
+	op.dataRect = Shapes::Recti(rect.x, rect.y, rect.w, rect.h);
 	op.dataCamId = id;
 
 	m_rendererQueueMutex.lock();
@@ -516,9 +511,6 @@ void SoftwareRenderer::drawBufferPixel(u32 x, u32 y, ColorA color) {
 
 void SoftwareRenderer::flushBuffer(i32 posX, i32 posY, const RendererQueueOp *op) {
 	if (m_screenOnly && m_cameraSelected) { return; }
-
-	posX = worldToScreenPosition(Math::Vec2(posX, posY)).x;
-	posY = worldToScreenPosition(Math::Vec2(posX, posY)).y;
 
 	auto processPixel = [this, op, &posX, &posY](ColorA color, Math::Vec2u texturePosition) {
 		if (op->shader != nullptr) {
