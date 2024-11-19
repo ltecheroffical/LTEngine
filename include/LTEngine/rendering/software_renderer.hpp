@@ -30,15 +30,15 @@ namespace LTEngine::Rendering {
 		void setPixel(Math::Vec2i position, ColorA color) override;
 		Color getPixel(Math::Vec2i position) override;
 
-		void drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) override;
-		void drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags) override;
+		void drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags = 0) override;
+		void drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags = 0) override;
 
-		void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) override;
-		void drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlags flags) override;
+		void drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags = 0) override;
+		void drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlags flags = 0) override;
 
 		void drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color,
-		               RendererFlags flags) override;
-		void drawCamera(u32 id, Shapes::Recti rect, ColorA color, RendererFlags flags);
+		               RendererFlags flags = 0) override;
+		void drawCamera(u32 id, Shapes::Recti rect, ColorA color, RendererFlags flags = 0);
 
 		bool process();
 		void processAll();

@@ -1,20 +1,22 @@
 #ifndef _LTENGINE_LTBUNDLE_ASSET_MANAGER_HPP_
 #define _LTENGINE_LTBUNDLE_ASSET_MANAGER_HPP_
 
+#include <LTEngine/os/file.hpp>
+
 #include <LTEngine/assets/asset_manager.hpp>
 
 
 namespace LTEngine {
 	class LTBundleAssetManager : public AssetManager {
 	public:
-		LTBundleAssetManager(std::string bundlePath);
+		LTBundleAssetManager(LTEngine::OS::File *file);
 		~LTBundleAssetManager() = default;
 
-		const std::vector<u8> loadPure(const std::string &path) override;
+		const std::vector<u8> loadAssetPure(const std::string &path) override;
 		void saveAssetPure(const std::string &path, const u8 *data, size_t size) override;
 
 	private:
-		std::string m_bundlePath;
+		LTEngine::OS::File *m_file;
 	};
 } // namespace LTEngine
 

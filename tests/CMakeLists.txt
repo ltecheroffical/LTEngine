@@ -1,6 +1,35 @@
 include_directories(include)
 
 
-add_subdirectory(rendering)
+# Building tests
+add_executable(hash_test hash_test.cpp)
 
-add_subdirectory(asset)
+add_executable(software_renderer_test software_renderer_test.cpp)
+
+add_executable(bundle_asset_manager_test bundle_asset_manager_test.cpp)
+
+
+target_link_libraries(hash_test PRIVATE LTEngine)
+
+target_link_libraries(software_renderer_test PRIVATE LTEngine)
+
+target_link_libraries(bundle_asset_manager_test PRIVATE LTEngine)
+
+
+# Hash tests
+add_test(test_crc32 hash_test test_crc32)
+add_test(test_md5 hash_test test_md5)
+
+# Software renderer tests
+add_test(NAME software_renderer_clear_test COMMAND software_renderer_test test_renderer_clear)
+
+add_test(NAME software_renderer_draw_rect_test COMMAND software_renderer_test test_renderer_draw_rect)
+add_test(NAME software_renderer_draw_circle_test COMMAND software_renderer_test test_renderer_draw_circle)
+add_test(NAME software_renderer_draw_line_test COMMAND software_renderer_test test_renderer_draw_line)
+
+# Asset manager tests
+add_test(test_bundle_asset_manager_writing bundle_asset_manager_test test_bundle_asset_manager_writing)
+add_test(test_bundle_asset_manager_reading bundle_asset_manager_test test_bundle_asset_manager_reading)
+
+add_test(test_bundle_asset_manager_save_already_exists bundle_asset_manager_test test_bundle_asset_manager_save_already_exists)
+add_test(test_bundle_asset_manger_load_non_existent_asset bundle_asset_manager_test test_bundle_asset_manger_load_non_existent_asset)

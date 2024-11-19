@@ -167,6 +167,12 @@ void Renderer::worldToScreenPosition(f32 *x, f32 *y) const {
 	*y = position.y;
 }
 
+void Renderer::worldToScreenPosition(i32 *x, i32 *y) const {
+	Math::Vec2 position = worldToScreenPosition(Math::Vec2(*x, *y));
+	*x = position.x;
+	*y = position.y;
+}
+
 f32 Renderer::worldToScreenRotation(f32 rotation) const {
 	auto camera_it =
 	    std::find_if(m_cameras.begin(), m_cameras.end(), [this](const Camera &camera) { return camera.id == m_currentCamera; });

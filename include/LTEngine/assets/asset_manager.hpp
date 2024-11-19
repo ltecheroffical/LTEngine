@@ -16,8 +16,8 @@ namespace LTEngine {
 		AssetManager() = default;
 		virtual ~AssetManager() = default;
 
-		const std::vector<u8> load(const std::string &path);
-		virtual const std::vector<u8> loadPure(const std::string &path) = 0;
+		const std::vector<u8> loadAsset(const std::string &path);
+		virtual const std::vector<u8> loadAssetPure(const std::string &path) = 0;
 		void saveAsset(const std::string &path, const u8 *data, size_t size);
 		virtual void saveAssetPure(const std::string &path, const u8 *data, size_t size) = 0;
 
