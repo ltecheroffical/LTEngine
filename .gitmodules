@@ -9,5 +9,5 @@
 	path = thirdparty/box2d
 	url = https://github.com/erincatto/box2d
 [submodule "thirdparty/soloud"]
-	path = thirdparty/soloud
+	path = thirdparty/soloud/soloud
 	url = https://github.com/jarikomppa/soloud
