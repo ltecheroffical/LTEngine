@@ -9,6 +9,8 @@ add_executable(software_renderer_test software_renderer_test.cpp)
 
 add_executable(ai_pathfinding_test ai_pathfinding_test.cpp)
 
+add_executable(timing_test timing_test.cpp)
+
 
 target_link_libraries(hash_test PRIVATE LTEngine)
 target_link_libraries(bundle_asset_manager_test PRIVATE LTEngine)
@@ -16,6 +18,8 @@ target_link_libraries(bundle_asset_manager_test PRIVATE LTEngine)
 target_link_libraries(software_renderer_test PRIVATE LTEngine)
 
 target_link_libraries(ai_pathfinding_test PRIVATE LTEngine)
+
+target_link_libraries(timing_test PRIVATE LTEngine)
 
 
 # Hash tests
@@ -38,3 +42,7 @@ add_test(NAME software_renderer_draw_line_test COMMAND software_renderer_test te
 
 # AI Pathfinding tests
 add_test(NAME astar_pathfinding_test COMMAND ai_pathfinding_test test_astar_pathfinding)
+
+# Timing Tests
+add_test(NAME tick_system_test COMMAND timing_test test_tick_system)
+add_test(NAME timer_test COMMAND timing_test test_timer)
