@@ -1,11 +1,14 @@
 #ifndef _LTENGINE_COLOR_HPP_
 #define _LTENGINE_COLOR_HPP_
 
+
+#include <LTEngine/common/compiler_utils.h>
+
 #include <LTEngine/common/types/inttypes.h>
 
 
 namespace LTEngine::Rendering {
-	struct Color {
+	LTENGINE_PACK_START() struct Color {
 		u8 r, g, b;
 
 		static const Color Black;
@@ -91,9 +94,9 @@ namespace LTEngine::Rendering {
 			this->g /= other;
 			this->b /= other;
 		}
-	};
+	} LTENGINE_PACK_END();
 
-	struct ColorA {
+	LTENGINE_PACK_START() struct ColorA {
 		u8 r, g, b, a;
 
 		static const ColorA Black;
@@ -206,7 +209,7 @@ namespace LTEngine::Rendering {
 			this->b /= other;
 			this->a /= other;
 		}
-	};
+	} LTENGINE_PACK_END();
 
 	inline const Color Color::Black = Color(0, 0, 0);
 	inline const Color Color::White = Color(255, 255, 255);

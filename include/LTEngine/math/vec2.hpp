@@ -3,12 +3,14 @@
 
 #include <cmath>
 
+#include <LTEngine/common/compiler_utils.h>
+
 #include <LTEngine/common/types/floattypes.h>
 #include <LTEngine/common/types/inttypes.h>
 
 
 namespace LTEngine::Math {
-	struct Vec2 {
+	LTENGINE_PACK_START() struct Vec2 {
 		f32 x, y;
 
 		static const Vec2 Zero;
@@ -89,11 +91,11 @@ namespace LTEngine::Math {
 			x /= b;
 			y /= b;
 		}
-	};
+	} LTENGINE_PACK_END();
 
 	typedef Vec2 Vec2f;
 
-	struct Vec2i {
+	LTENGINE_PACK_START() struct Vec2i {
 		i32 x, y;
 
 		static const Vec2i Zero;
@@ -172,9 +174,9 @@ namespace LTEngine::Math {
 			x /= b;
 			y /= b;
 		}
-	};
+	} LTENGINE_PACK_END();
 
-	struct Vec2u {
+	LTENGINE_PACK_START() struct Vec2u {
 		u32 x, y;
 
 		static const Vec2u Zero;
@@ -238,7 +240,7 @@ namespace LTEngine::Math {
 			x /= b;
 			y /= b;
 		}
-	};
+	} LTENGINE_PACK_END();
 
 	inline const Vec2 Vec2::Zero = Vec2(0, 0);
 	inline const Vec2 Vec2::One = Vec2(1, 1);
