@@ -12,6 +12,8 @@ namespace LTEngine::OS {
 		FStreamFile(const char *path, u8 mode);
 		~FStreamFile() override;
 
+		void open(const char *path, u8 mode);
+
 		void seekp(size_t offset, Seek origin) override;
 		size_t tellp() override;
 		void seekg(size_t offset, Seek origin) override;
