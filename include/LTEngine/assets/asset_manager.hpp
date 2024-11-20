@@ -16,14 +16,14 @@ namespace LTEngine {
 		AssetManager() = default;
 		virtual ~AssetManager() = default;
 
-		const std::vector<u8> loadAsset(const std::string &path);
-		virtual const std::vector<u8> loadAssetPure(const std::string &path) = 0;
-		void saveAsset(const std::string &path, const u8 *data, size_t size);
-		virtual void saveAssetPure(const std::string &path, const u8 *data, size_t size) = 0;
+		const std::vector<u8> loadAsset(std::string path);
+		virtual const std::vector<u8> loadAssetPure(std::string path) = 0;
+		void saveAsset(std::string path, const u8 *data, size_t size);
+		virtual void saveAssetPure(std::string path, const u8 *data, size_t size) = 0;
 
 		void clearCache() { m_cache.clear(); }
 
-		void removeCachedAsset(const std::string &path) { m_cache.erase(path); }
+		void removeCachedAsset(std::string path) { m_cache.erase(path); }
 
 		void setPostProcessor(AssetManagerPostProcessor *postProcessor) { m_postProcessor = postProcessor; }
 

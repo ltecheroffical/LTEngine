@@ -6,12 +6,23 @@ using namespace LTEngine::OS;
 
 
 FStreamFile::FStreamFile(const char *path, u8 mode) : File(mode) {
+	open(path, mode);
+}
+
+FStreamFile::~FStreamFile() {
+	m_stream.close();
+}
+
+
+void FStreamFile::open(const char *path, u8 mode) {
 	std::ios::openmode openMode = 0;
 	bool create = (mode & FILE_CREATE) != 0;
 
 	if (mode & FILE_READ) openMode |= std::ios::in;
 	if (mode & FILE_WRITE) openMode |= std::ios::out;
 	if (mode & FILE_APPEND) openMode |= std::ios::app;
+
+	if (m_stream.is_open()) { m_stream.close(); }
 
 	m_stream.open(path, openMode);
 	if (!m_stream.is_open()) {
@@ -23,10 +34,6 @@ FStreamFile::FStreamFile(const char *path, u8 mode) : File(mode) {
 		}
 		throw std::runtime_error("Failed to open file: " + std::string(path));
 	}
-}
-
-FStreamFile::~FStreamFile() {
-	m_stream.close();
 }
 
 

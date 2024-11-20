@@ -31,7 +31,7 @@ LTENGINE_PACK_START() struct LTBundleAssetEntry {
 LTBundleAssetManager::LTBundleAssetManager(LTEngine::OS::File *file) : m_file(file) {}
 
 
-const std::vector<u8> LTBundleAssetManager::loadAssetPure(const std::string &path) {
+const std::vector<u8> LTBundleAssetManager::loadAssetPure(std::string path) {
 	if (!(m_file->getMode() & OS::File::FILE_READ)) { throw std::runtime_error("Cannot load without read mode file!"); }
 
 	m_file->seekp(0, OS::File::Seek::Begin);
@@ -76,7 +76,7 @@ const std::vector<u8> LTBundleAssetManager::loadAssetPure(const std::string &pat
 	throw std::runtime_error("Asset not found in bundle!");
 }
 
-void LTBundleAssetManager::saveAssetPure(const std::string &path, const u8 *data, size_t size) {
+void LTBundleAssetManager::saveAssetPure(std::string path, const u8 *data, size_t size) {
 	if (m_file->getMode() & OS::File::FILE_APPEND) { throw std::runtime_error("Cannot save with append mode file!"); }
 	if (!(m_file->getMode() & OS::File::FILE_READ) || !(m_file->getMode() & OS::File::FILE_WRITE)) {
 		throw std::runtime_error("Cannot save without read AND write mode file!");

@@ -12,8 +12,8 @@ namespace LTEngine {
 		LTBundleAssetManager(LTEngine::OS::File *file);
 		~LTBundleAssetManager() = default;
 
-		const std::vector<u8> loadAssetPure(const std::string &path) override;
-		void saveAssetPure(const std::string &path, const u8 *data, size_t size) override;
+		const std::vector<u8> loadAssetPure(std::string path) override;
+		void saveAssetPure(std::string path, const u8 *data, size_t size) override;
 
 	private:
 		LTEngine::OS::File *m_file;
