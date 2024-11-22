@@ -93,6 +93,7 @@ namespace LTEngine::Rendering {
 
 			Math::Vec2i dataPosition = Math::Vec2i::Zero;
 			Shapes::Recti dataRegion = {0, 0, 0, 0};
+			Math::Vec2 dataScale = Math::Vec2::One;
 			f32 dataRotation = 0.f;
 
 			Shapes::Recti dataRect = {0, 0, 0, 0};
