@@ -166,10 +166,9 @@ void OpenGLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags fla
 
 	op.color = color;
 
-	worldToScreenPosition(&rect.x, &rect.y);
-	worldToScreenRotation(&rect.rotation);
-	op.dataRect = Shapes::Recti(rect.x, rect.y, rect.w, rect.h);
-	op.dataRect.rotation = rect.rotation;
+	op.dataRect = Shapes::Recti(rect.x, rect.y, rect.w * getWorldScale().x, rect.h * getWorldScale().y);
+	worldToScreenPosition(&op.dataRect.x, &op.dataRect.y);
+	op.dataRect.rotation = worldToScreenRotation(rect.rotation);
 
 	m_renderOpQueue.push(op);
 }
@@ -184,10 +183,11 @@ void OpenGLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFla
 
 	op.color = color;
 
-	worldToScreenPosition(&circle.x, &circle.y);
-	worldToScreenRotation(&circle.rotation);
 	op.dataCircle = circle;
-	op.dataCircle.rotation = circle.rotation;
+	worldToScreenPosition(&op.dataCircle.x, &op.dataCircle.y);
+	op.dataCircle.rotation = worldToScreenRotation(circle.rotation);
+
+	op.dataScale = getWorldScale();
 
 	m_renderOpQueue.push(op);
 }
@@ -203,8 +203,8 @@ void OpenGLRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA 
 
 	op.color = color;
 
-	op.dataPointA = worldToScreenPosition(a);
-	op.dataPointB = worldToScreenPosition(b);
+	op.dataPointA = worldToScreenPosition(a * getWorldScale());
+	op.dataPointB = worldToScreenPosition(b * getWorldScale());
 
 	m_renderOpQueue.push(op);
 }
@@ -220,7 +220,7 @@ void OpenGLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererF
 	op.color = color;
 
 	op.dataPolygon = polygon;
-	for (Math::Vec2 &point : op.dataPolygon.points) { point = worldToScreenPosition(point); }
+	for (Math::Vec2 &point : op.dataPolygon.points) { point = worldToScreenPosition(point * getWorldScale()); }
 }
 
 
@@ -237,6 +237,7 @@ void OpenGLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rot
 
 	op.dataPosition = worldToScreenPosition(position);
 	op.dataRotation = worldToScreenRotation(rotation);
+	op.dataScale = getWorldScale();
 	op.dataRegion = region;
 
 	op.dataImage = image;
@@ -322,6 +323,12 @@ void OpenGLRenderer::flush() {
 						f32 y = (f32)sin(theta) * op.dataCircle.radius;
 						vertices.push_back({(f32)op.dataCircle.x + x, (f32)op.dataCircle.y + y, op.color.r / 255.f,
 						                    op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f});
+					}
+
+					// Scale the vertices in accordance with op.dataScale
+					for (auto &vertex : vertices) {
+						vertex.x *= op.dataScale.x;
+						vertex.y *= op.dataScale.y;
 					}
 
 					glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
@@ -425,6 +432,12 @@ void OpenGLRenderer::flush() {
 					    {posToOpenGLX(op.dataPosition.x), posToOpenGLY(op.dataPosition.y + op.dataRegion.h), op.color.r / 255.f,
 					     op.color.g / 255.f},
 					};
+
+					// Scale the vertices according to op.dataScale
+					for (int i = 0; i < 6; i++) {
+						vertices[i].x *= op.dataScale.x;
+						vertices[i].y *= op.dataScale.y;
+					}
 
 					glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 					glBindTexture(GL_TEXTURE_2D, texture);
