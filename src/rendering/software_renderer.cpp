@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include <LTEngine/rendering/software_renderer.hpp>
 
 
@@ -94,6 +96,7 @@ void SoftwareRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags f
 	worldToScreenPosition(&rect.x, &rect.y);
 	worldToScreenRotation(&rect.rotation);
 	op.dataRect = Shapes::Recti(rect.x, rect.y, rect.w, rect.h);
+	op.dataScale = getWorldScale();
 
 	m_rendererQueueMutex.lock();
 	m_rendererQueue.push(op);
@@ -130,6 +133,8 @@ void SoftwareRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, Color
 	op.dataPointB = worldToScreenPosition(b);
 	op.dataThickness = thickness;
 
+	op.dataScale = getWorldScale();
+
 	m_rendererQueueMutex.lock();
 	m_rendererQueue.push(op);
 	m_rendererQueueMutex.unlock();
@@ -142,6 +147,8 @@ void SoftwareRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, Rendere
 	op.color = color;
 	op.zOrder = getZOrder();
 	op.flags = flags;
+
+	op.dataScale = getWorldScale();
 
 	worldToScreenRotation(&polygon.rotation);
 	op.dataPolygon = polygon;
@@ -165,6 +172,7 @@ void SoftwareRenderer::drawImage(const Image *image, Math::Vec2i position, f32 r
 	op.dataPosition = worldToScreenPosition((Math::Vec2i){position.x, position.y});
 	op.dataRotation = worldToScreenRotation(rotation);
 	op.dataRegion = region;
+	op.dataScale = getWorldScale();
 	op.dataImage = image;
 
 	m_rendererQueueMutex.lock();
@@ -285,7 +293,7 @@ bool SoftwareRenderer::process() {
 					drawBufferPixel(x, y, op.color);
 				}
 			}
-			flushBuffer(op.dataRect.x, op.dataRect.y, &op);
+			displayBuffer(op.dataRect.x, op.dataRect.y, &op, op.dataRect.rotation);
 			break;
 		case RendererQueueOp::RenderOpType::Circle:
 			{
@@ -332,7 +340,7 @@ bool SoftwareRenderer::process() {
 				}
 
 
-				flushBuffer(op.dataCircle.x - radius - 1, op.dataCircle.y - radius - 1, &op);
+				displayBuffer(op.dataCircle.x - radius - 1, op.dataCircle.y - radius - 1, &op, op.dataCircle.rotation);
 				break;
 			}
 		case RendererQueueOp::RenderOpType::Line:
@@ -380,7 +388,7 @@ bool SoftwareRenderer::process() {
 					}
 				}
 
-				flushBuffer(positionX, positionY, &op);
+				displayBuffer(positionX, positionY, &op, 0.f);
 				break;
 			}
 
@@ -437,7 +445,7 @@ bool SoftwareRenderer::process() {
 
 					u32 posX = min_x;
 					u32 posY = min_y;
-					flushBuffer(posX, posY, &op);
+					displayBuffer(posX, posY, &op, op.dataPolygon.rotation);
 				}
 				break;
 			}
@@ -454,7 +462,7 @@ bool SoftwareRenderer::process() {
 					}
 				}
 
-				flushBuffer(op.dataPosition.x, op.dataPosition.y, &op);
+				displayBuffer(op.dataPosition.x, op.dataPosition.y, &op, op.dataRotation);
 				break;
 			}
 		case RendererQueueOp::RenderOpType::Camera:
@@ -469,7 +477,7 @@ bool SoftwareRenderer::process() {
 				}
 			}
 
-			flushBuffer(op.dataRect.x, op.dataRect.y, &op);
+			displayBuffer(op.dataRect.x, op.dataRect.y, &op, op.dataRect.rotation);
 			break;
 
 		default:
@@ -502,40 +510,17 @@ void SoftwareRenderer::clearShader() {
 void SoftwareRenderer::prepareBuffer(u32 width, u32 height) {
 	m_bufferWidth = width;
 	m_bufferHeight = height;
-	m_bufferData.resize(width * height, ColorA::Black);
+	if (m_bufferData.size() < m_bufferWidth * m_bufferHeight) { m_bufferData.resize(m_bufferWidth * m_bufferHeight); }
 }
 
 void SoftwareRenderer::drawBufferPixel(u32 x, u32 y, ColorA color) {
 	m_bufferData[y * m_bufferWidth + x] = color;
 }
 
-void SoftwareRenderer::flushBuffer(i32 posX, i32 posY, const RendererQueueOp *op) {
+void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *op, f32 rotation) {
 	if (m_screenOnly && m_cameraSelected) { return; }
 
-	auto processPixel = [this, op, &posX, &posY](ColorA color, Math::Vec2u texturePosition) {
-		if (op->shader != nullptr) {
-			CPUShaderIO io = {.position = Math::Vec2i(posX, posY),
-			                  .color = op->color,
-
-			                  .screen = m_screen.data(),
-			                  .screenSize = {m_screenWidth, m_screenHeight},
-
-			                  .texture = m_bufferData.data(),
-			                  .textureWidth = m_bufferWidth,
-			                  .textureHeight = m_bufferHeight,
-			                  .textureX = texturePosition.x,
-			                  .textureY = texturePosition.y,
-
-			                  .time = (op->timestamp.time_since_epoch().count() - m_creationTime.time_since_epoch().count()) /
-			                          1000000000.f};
-
-			op->shader->fragment(&io);
-
-			color = io.color;
-			posX = io.position.x;
-			posY = io.position.y;
-		}
-
+	const auto blendPixel = [this, op, &posX, &posY](ColorA color, Math::Vec2u texturePosition) -> Color {
 		Color bg = m_screen[(texturePosition.y + posY) * m_screenWidth + (texturePosition.x + posX)];
 		const f32 A_n = color.a / 255.f;
 
@@ -546,15 +531,121 @@ void SoftwareRenderer::flushBuffer(i32 posX, i32 posY, const RendererQueueOp *op
 		return Color(out_r, out_g, out_b);
 	};
 
+	if (m_bufferWorkspace1.size() < m_bufferWidth * m_bufferHeight) { m_bufferWorkspace1.resize(m_bufferWidth * m_bufferHeight); }
+
 	for (u32 y = 0; y < m_bufferHeight; y++) {
 		for (u32 x = 0; x < m_bufferWidth; x++) {
+			ColorA color = m_bufferData[y * m_bufferWidth + x];
+			if (op->shader != nullptr) {
+				CPUShaderIO io = {.position = Math::Vec2i(posX, posY),
+				                  .color = op->color,
+
+				                  .screen = m_screen.data(),
+				                  .screenSize = {m_screenWidth, m_screenHeight},
+
+				                  .texture = m_bufferData.data(),
+				                  .textureWidth = m_bufferWidth,
+				                  .textureHeight = m_bufferHeight,
+				                  .textureX = x,
+				                  .textureY = y,
+
+				                  .time = (op->timestamp.time_since_epoch().count() - m_creationTime.time_since_epoch().count()) /
+				                          1000000000.f};
+
+				op->shader->fragment(&io);
+
+				color = io.color;
+				posX = io.position.x;
+				posY = io.position.y;
+			}
+			m_bufferWorkspace1[y * m_bufferWidth + x] = color;
+		}
+	}
+
+	if (m_bufferWorkspace2.size() < (m_bufferWidth * op->dataScale.x) * (m_bufferHeight * op->dataScale.y)) {
+		m_bufferWorkspace2.resize((m_bufferWidth * op->dataScale.x) * (m_bufferHeight * op->dataScale.y));
+	}
+
+	switch (m_scalingMode) {
+		case ScalingMode::Nearest:
+			for (u32 y = 0; y < m_bufferHeight * op->dataScale.y; y++) {
+				for (u32 x = 0; x < m_bufferWidth * op->dataScale.x; x++) {
+					m_bufferWorkspace2[y * (m_bufferWidth * getWorldScale().x) + x] =
+					    m_bufferWorkspace1[y / op->dataScale.y * m_bufferWidth + x / op->dataScale.x];
+				}
+			}
+			break;
+		case ScalingMode::Linear:
+			// Uh oh... (This requires lots of math)
+			for (u32 y = 0; y < m_bufferHeight * op->dataScale.y; y++) {
+				for (u32 x = 0; x < m_bufferWidth * op->dataScale.x; x++) {
+					f32 origX = x / op->dataScale.x;
+					f32 origY = y / op->dataScale.y;
+
+					u32 x1 = static_cast<u32>(std::floor(origX));
+					u32 y1 = static_cast<u32>(std::floor(origY));
+					u32 x2 = std::min(x1 + 1, m_bufferWidth - 1);
+					u32 y2 = std::min(y1 + 1, m_bufferHeight - 1);
+
+					f32 xLerp = origX - x1;
+					f32 yLerp = origY - y1;
+
+					ColorA topLeft = m_bufferWorkspace1[y1 * m_bufferWidth + x1];
+					ColorA topRight = m_bufferWorkspace1[y1 * m_bufferWidth + x2];
+					ColorA bottomLeft = m_bufferWorkspace1[y2 * m_bufferWidth + x1];
+					ColorA bottomRight = m_bufferWorkspace1[y2 * m_bufferWidth + x2];
+
+					ColorA topRow = {static_cast<u8>(topLeft.r + xLerp * (topRight.r - topLeft.r)),
+					                 static_cast<u8>(topLeft.g + xLerp * (topRight.g - topLeft.g)),
+					                 static_cast<u8>(topLeft.b + xLerp * (topRight.b - topLeft.b)),
+					                 static_cast<u8>(topLeft.a + xLerp * (topRight.a - topLeft.a))};
+
+					ColorA bottomRow = {static_cast<u8>(bottomLeft.r + xLerp * (bottomRight.r - bottomLeft.r)),
+					                    static_cast<u8>(bottomLeft.g + xLerp * (bottomRight.g - bottomLeft.g)),
+					                    static_cast<u8>(bottomLeft.b + xLerp * (bottomRight.b - bottomLeft.b)),
+					                    static_cast<u8>(bottomLeft.a + xLerp * (bottomRight.a - bottomLeft.a))};
+
+					m_bufferWorkspace2[y * (m_bufferWidth * op->dataScale.x) + x] = {
+					    static_cast<u8>(topRow.r + yLerp * (bottomRow.r - topRow.r)),
+					    static_cast<u8>(topRow.g + yLerp * (bottomRow.g - topRow.g)),
+					    static_cast<u8>(topRow.b + yLerp * (bottomRow.b - topRow.b)),
+					    static_cast<u8>(topRow.a + yLerp * (bottomRow.a - topRow.a))};
+				}
+			}
+			break;
+	}
+
+	if (m_bufferWorkspace1.size() < (m_bufferWidth * op->dataScale.x) * (m_bufferHeight * op->dataScale.y)) {
+		m_bufferWorkspace1.resize((m_bufferWidth * op->dataScale.x) * (m_bufferHeight * op->dataScale.y));
+	}
+
+	for (u32 x = 0; x < m_bufferWidth * op->dataScale.x; x++) {
+		for (u32 y = 0; y < m_bufferHeight * op->dataScale.y; y++) {
+			/* According to some SO guy (https://stackoverflow.com/a/13476713/22126820), we can get
+			 x_rotated from x * cos(angle) - y * sin(angle)
+			 and y_rotated from x * sin(angle) + y * cos(angle) */
+			i32 rotatedX = x * cos(rotation) - y * sin(rotation);
+			i32 rotatedY = x * sin(rotation) + y * cos(rotation);
+
+			if (rotatedX < 0 || rotatedX >= m_bufferWidth * op->dataScale.x || rotatedY < 0 ||
+			    rotatedY >= m_bufferHeight * op->dataScale.y) {
+				continue;
+			}
+
+			m_bufferWorkspace1[rotatedY * (m_bufferWidth * op->dataScale.x) + rotatedX] =
+			    m_bufferWorkspace2[y * (m_bufferWidth * op->dataScale.x) + x];
+		}
+	}
+
+	for (u32 y = 0; y < m_bufferHeight * op->dataScale.y; y++) {
+		for (u32 x = 0; x < m_bufferWidth * op->dataScale.x; x++) {
 			if (op->screenOnly) {
 				if (x + posX < 0 || x + posX >= m_screenWidth || y + posY < 0 || y + posY >= m_screenHeight) { continue; }
 
 				if (m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] > op->zOrder) { continue; }
 
 				m_screenMutex.lock();
-				m_screen[((y + posY) * m_screenWidth + (x + posX))] = processPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
+				m_screen[((y + posY) * m_screenWidth + (x + posX))] = blendPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
 				m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] = op->zOrder;
 				m_screenMutex.unlock();
 				continue;
@@ -568,11 +659,40 @@ void SoftwareRenderer::flushBuffer(i32 posX, i32 posY, const RendererQueueOp *op
 
 				m_cameraMutexes[output.first].lock();
 				m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] = getZOrder();
-				output.second[(y + posY) * m_screenWidth + (x + posX)] = processPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
+				output.second[(y + posY) * m_screenWidth + (x + posX)] = blendPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
 				m_cameraMutexes[output.first].unlock();
 			});
 		}
 	}
+
+	/*
+	for (u32 y = 0; y < m_bufferHeight; y++) {
+	    for (u32 x = 0; x < m_bufferWidth; x++) {
+	        if (op->screenOnly) {
+	            if (x + posX < 0 || x + posX >= m_screenWidth || y + posY < 0 || y + posY >= m_screenHeight) { continue; }
+
+	            if (m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] > op->zOrder) { continue; }
+
+	            m_screenMutex.lock();
+	            m_screen[((y + posY) * m_screenWidth + (x + posX))] = processPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
+	            m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] = op->zOrder;
+	            m_screenMutex.unlock();
+	            continue;
+	        }
+	        std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(), [&](std::pair<u32, std::vector<Color>> output) {
+	            Camera *camera = getCameraById(output.first);
+	            if (camera == nullptr) { return; }
+	            if (camera->exclude) { return; }
+
+	            if (m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] > getZOrder()) { return; }
+
+	            m_cameraMutexes[output.first].lock();
+	            m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] = getZOrder();
+	            output.second[(y + posY) * m_screenWidth + (x + posX)] = processPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
+	            m_cameraMutexes[output.first].unlock();
+	        });
+	    }
+	}*/
 }
 
 
