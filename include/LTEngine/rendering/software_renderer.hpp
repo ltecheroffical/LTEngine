@@ -15,7 +15,7 @@ namespace LTEngine::Rendering {
 		SoftwareRenderer(u32 width, u32 height);
 		~SoftwareRenderer() override = default;
 
-		enum class ScalingMode { SCALING_MODE_NEAREST, SCALING_MODE_LINEAR };
+		enum class ScalingMode { Nearest, Linear };
 
 		void resize(u32 width, u32 height);
 
@@ -79,6 +79,7 @@ namespace LTEngine::Rendering {
 
 
 			Math::Vec2i dataPosition = Math::Vec2i::Zero;
+			Math::Vec2 dataScale = Math::Vec2::One;
 			Shapes::Recti dataRegion = {0, 0, 0, 0};
 			f32 dataRotation = 0.f;
 
@@ -96,7 +97,7 @@ namespace LTEngine::Rendering {
 
 		void prepareBuffer(u32 width, u32 height);
 		void drawBufferPixel(u32 x, u32 y, ColorA color);
-		void flushBuffer(i32 x, i32 y, const RendererQueueOp *op);
+		void displayBuffer(i32 x, i32 y, const RendererQueueOp *op, f32 rotation);
 
 		void cameraCreated(u32 id) override;
 		void cameraDestroyed(u32 id) override;
@@ -116,6 +117,8 @@ namespace LTEngine::Rendering {
 		u32 m_screenHeight;
 
 		std::vector<ColorA> m_bufferData;
+		std::vector<ColorA> m_bufferWorkspace1;
+		std::vector<ColorA> m_bufferWorkspace2;
 		u32 m_bufferWidth = 0;
 		u32 m_bufferHeight = 0;
 
