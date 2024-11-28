@@ -3,7 +3,7 @@
 #include <LTEngine/hash.hpp>
 
 
-u32 LTEngine::Hash::crc32(const u8 *data, u32 size) {
+LTEngine::u32 LTEngine::Hash::crc32(const u8 *data, u32 size) {
 	static u32 table[256];
 	static bool initialized = false;
 

@@ -22,7 +22,7 @@ void Timer::step(f32 timeStep) {
 	if (m_timeLeft <= timeStep) {
 		m_timeLeft = m_repeat ? m_time : 0.f;
 		if (!m_repeat) { m_running = false; }
-		if (m_callback != nullptr) { m_callback(); }
+		onEnd();
 		return;
 	}
 	m_timeLeft -= timeStep;

@@ -20,20 +20,16 @@ void TickSystem::step(f32 step) {
 	m_currentTickTime = m_tickDelay;
 	m_currentTick++;
 
-	if (m_tickCallback != nullptr) { m_tickCallback(m_currentTick); }
+	onTick(m_currentTick);
 
 	for (auto &clock : m_tickClocks) {
-		if (m_currentTick % clock.second.first == 0 && clock.second.second != nullptr) { clock.second.second(m_currentTick); }
+		if (m_currentTick % clock.second == 0) { onSpecificTick(m_currentTick, clock.first); }
 	}
 }
 
 
 void TickSystem::setTickDelay(f32 delaySeconds) {
 	m_tickDelay = delaySeconds;
-}
-
-void TickSystem::setCallback(std::function<void(u64)> callback) {
-	m_tickCallback = callback;
 }
 
 
@@ -44,13 +40,9 @@ u64 TickSystem::getTicks() {
 
 void TickSystem::registerTick(std::string name, u64 everyTicks) {
 	if (everyTicks == 0) { throw std::runtime_error("`everyTicks` cannot be 0 or it will cause division by zero"); }
-	m_tickClocks[name] = std::make_pair(everyTicks, nullptr);
+	m_tickClocks[name] = everyTicks;
 }
 
 void TickSystem::unregisterTick(std::string name) {
 	m_tickClocks.erase(name);
-}
-
-void TickSystem::setTickCallback(std::string name, std::function<void(u64)> callback) {
-	m_tickClocks[name].second = callback;
 }

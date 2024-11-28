@@ -9,6 +9,7 @@
 namespace LTEngine::OS {
 	class FStreamFile : public File {
 	public:
+		FStreamFile() : File(0) {}
 		FStreamFile(const char *path, u8 mode);
 		~FStreamFile() override;
 

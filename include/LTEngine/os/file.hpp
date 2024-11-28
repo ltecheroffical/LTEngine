@@ -34,6 +34,9 @@ namespace LTEngine::OS {
 
 		virtual void flush() = 0;
 
+	protected:
+		void setMode(u8 mode) { m_mode = mode; }
+
 	private:
 		u8 m_mode;
 	};

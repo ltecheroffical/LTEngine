@@ -170,9 +170,17 @@ bool GLFWWindow::isMouseReleased(WindowMouseButton button) {
 }
 
 
-void GLFWWindow::display(Rendering::Color *screen, u32 width, u32 height) {}
+void GLFWWindow::display(Rendering::Color *screen, u32 width, u32 height) {
+	glfwMakeContextCurrent(m_glfwWindow);
 
-void GLFWWindow::display(Rendering::ColorA *screen, u32 width, u32 height) {}
+	// TODO: Implement this
+}
+
+void GLFWWindow::display(Rendering::ColorA *screen, u32 width, u32 height) {
+	glfwMakeContextCurrent(m_glfwWindow);
+
+	// TODO: Implement this
+}
 
 
 void GLFWWindow::makeContextCurrent() {

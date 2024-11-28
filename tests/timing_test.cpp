@@ -1,3 +1,5 @@
+#define LTENGINE_GLOBAL_BASIC_TYPES
+
 #include <acutest.h>
 
 #include <LTEngine/tick_system.hpp>
@@ -14,8 +16,10 @@ void test_tick_system() {
 	bool tick1 = false;
 	bool tick2 = false;
 
-	tickSystem.setTickCallback("test_tick1", [&tick1](u64 tick) { tick1 = true; });
-	tickSystem.setTickCallback("test_tick2", [&tick2](u64 tick) { tick2 = true; });
+	tickSystem.onSpecificTick += [&tick1, &tick2](u64 tick, std::string tickName) {
+		if (tickName == "test_tick1") { tick1 = true; }
+		if (tickName == "test_tick2") { tick2 = true; }
+	};
 
 	tickSystem.step(0.1f);
 	TEST_CHECK(!tick1 && !tick2);
@@ -35,7 +39,9 @@ void test_timer() {
 
 	bool callbackCalled = false;
 
-	timer.setCallback([&callbackCalled]() { callbackCalled = true; });
+	timer.onEnd += [&callbackCalled]() {
+		callbackCalled = true;
+	};
 	timer.start(time);
 
 	timer.step(time / 2.f);

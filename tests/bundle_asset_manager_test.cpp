@@ -1,3 +1,5 @@
+#define LTENGINE_GLOBAL_BASIC_TYPES
+
 #include <acutest.h>
 
 #include <LTEngine/os/fstream_file.hpp>

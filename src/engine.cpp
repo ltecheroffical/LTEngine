@@ -8,18 +8,6 @@ Engine::Engine(std::unique_ptr<Object::EngineStructure> structure) {
 	m_objectStructure = std::move(structure);
 }
 
-Engine::Engine(std::function<void(f32 delta)> update, std::function<void(Rendering::Renderer *renderer)> render) {
-	m_updateFunc = update;
-	m_renderFunc = render;
-}
-
-Engine::Engine(std::function<void(f32 delta)> update, std::function<void(Rendering::Renderer *renderer)> render,
-               std::unique_ptr<Object::EngineStructure> structure) {
-	m_updateFunc = update;
-	m_renderFunc = render;
-	m_objectStructure = std::move(structure);
-}
-
 
 void Engine::initDisplay(Rendering::Renderer *renderer) {
 	m_renderer = renderer;
@@ -48,7 +36,7 @@ void Engine::deleteScene(u32 id) {
 
 
 void Engine::update(f32 delta) {
-	if (m_updateFunc != nullptr) { m_updateFunc(delta); }
+	onUpdate(delta);
 	if (m_objectStructure != nullptr) { m_objectStructure->update(delta); }
 }
 
@@ -60,7 +48,7 @@ void Engine::render() {
 	m_renderer->clearIrisMode();
 	m_renderer->setOffsetsApplied();
 
-	if (m_renderFunc != nullptr) { m_renderFunc(m_renderer); }
+	onRender(m_renderer);
 	if (m_objectStructure != nullptr) {
 		m_renderer->clear(m_objectStructure->getClearColor());
 		m_objectStructure->render(m_renderer);

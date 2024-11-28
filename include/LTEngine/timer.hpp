@@ -1,9 +1,9 @@
 #ifndef _LTENGINE_TIMER_HPP_
 #define _LTENGINE_TIMER_HPP_
 
-#include <functional>
-
 #include <LTEngine/common/types/floattypes.h>
+
+#include <LTEngine/event.hpp>
 
 
 namespace LTEngine {
@@ -11,6 +11,8 @@ namespace LTEngine {
 	public:
 		Timer() = default;
 		~Timer() = default;
+
+		Event<> onEnd;
 
 		void start();
 		void start(f32 time);
@@ -20,7 +22,6 @@ namespace LTEngine {
 		void step(f32 timeStep);
 
 		void setRepeat(bool repeat) { m_repeat = repeat; }
-		void setCallback(std::function<void()> callback) { m_callback = callback; }
 
 		f32 getTime() const { return m_time; }
 		f32 getTimeLeft() const { return m_timeLeft; }
@@ -34,8 +35,6 @@ namespace LTEngine {
 
 		f32 m_time = 0.f;
 		f32 m_timeLeft = 0.f;
-
-		std::function<void()> m_callback = nullptr;
 	};
 } // namespace LTEngine
 

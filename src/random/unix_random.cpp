@@ -3,6 +3,7 @@
 #include <LTEngine/random/unix_random.hpp>
 
 
+using namespace LTEngine;
 using namespace LTEngine::Random;
 
 
