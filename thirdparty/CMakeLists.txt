@@ -11,6 +11,9 @@ add_subdirectory(glfw)
 # GPU Graphics
 add_subdirectory(glad)
 
+# Math
+add_subdirectory(glm)
+
 # Physics
 add_subdirectory(box2d)
 
@@ -36,6 +39,9 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 
     # GPU Graphics
     glad
+
+    # Math
+    glm::glm
 
     # Physics
     box2d

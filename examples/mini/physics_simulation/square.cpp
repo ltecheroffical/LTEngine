@@ -21,7 +21,7 @@ void Square::update(f32 delta) {
 }
 
 void Square::render(LTEngine::Rendering::Renderer *renderer) {
-	renderer->drawRect({0, 0, BOX_WIDTH, BOX_HEIGHT}, m_color, 0);
+	renderer->drawRect({0, 0, BOX_WIDTH, BOX_HEIGHT}, m_color);
 }
 
 

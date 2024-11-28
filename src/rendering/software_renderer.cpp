@@ -171,7 +171,7 @@ void SoftwareRenderer::drawImage(const Image *image, Math::Vec2i position, f32 r
 
 	op.dataPosition = worldToScreenPosition((Math::Vec2i){position.x, position.y});
 	op.dataRotation = worldToScreenRotation(rotation);
-	op.dataRegion = region;
+	op.dataRect = region;
 	op.dataScale = getWorldScale();
 	op.dataImage = image;
 
@@ -451,14 +451,14 @@ bool SoftwareRenderer::process() {
 			}
 		case RendererQueueOp::RenderOpType::Image:
 			{
-				u32 imageWidth = op.dataRegion.w;
-				u32 imageHeight = op.dataRegion.h;
+				u32 imageWidth = op.dataRect.w;
+				u32 imageHeight = op.dataRect.h;
 
 				prepareBuffer(imageWidth, imageHeight);
 
 				for (u32 y = 0; y < imageHeight; y++) {
 					for (u32 x = 0; x < imageWidth; x++) {
-						drawBufferPixel(x, y, op.dataImage->getPixel(op.dataRegion.x + x, op.dataRegion.y + y));
+						drawBufferPixel(x, y, op.dataImage->getPixel(op.dataRect.x + x, op.dataRect.y + y));
 					}
 				}
 
@@ -619,6 +619,8 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 		m_bufferWorkspace1.resize((m_bufferWidth * op->dataScale.x) * (m_bufferHeight * op->dataScale.y));
 	}
 
+	std::fill(m_bufferWorkspace1.begin(), m_bufferWorkspace1.end(), ColorA::Clear);
+
 	for (u32 x = 0; x < m_bufferWidth * op->dataScale.x; x++) {
 		for (u32 y = 0; y < m_bufferHeight * op->dataScale.y; y++) {
 			/* According to some SO guy (https://stackoverflow.com/a/13476713/22126820), we can get
@@ -645,7 +647,7 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 				if (m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] > op->zOrder) { continue; }
 
 				m_screenMutex.lock();
-				m_screen[((y + posY) * m_screenWidth + (x + posX))] = blendPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
+				m_screen[((y + posY) * m_screenWidth + (x + posX))] = blendPixel(m_bufferWorkspace1[y * m_bufferWidth + x], {x, y});
 				m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] = op->zOrder;
 				m_screenMutex.unlock();
 				continue;
@@ -659,7 +661,8 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 
 				m_cameraMutexes[output.first].lock();
 				m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] = getZOrder();
-				output.second[(y + posY) * m_screenWidth + (x + posX)] = blendPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
+				output.second[(y + posY) * m_screenWidth + (x + posX)] =
+				    blendPixel(m_bufferWorkspace1[y * m_bufferWidth + x], {x, y});
 				m_cameraMutexes[output.first].unlock();
 			});
 		}

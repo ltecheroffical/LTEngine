@@ -152,8 +152,7 @@ Math::Vec2 Renderer::worldToScreenPosition(Math::Vec2 position) const {
 
 	if (m_currentCameraActive && camera_it != m_cameras.end()) { camPosition = camera_it->position; }
 
-	return position * (m_offsetsApplied ? m_scaleFactor[0] : Math::Vec2::One) +
-	       (m_offsetsApplied ? m_positionOffset : Math::Vec2::Zero) - camPosition;
+	return position + (m_offsetsApplied ? m_positionOffset : Math::Vec2::Zero) - camPosition;
 }
 
 Math::Vec2i Renderer::worldToScreenPosition(Math::Vec2i position) const {
