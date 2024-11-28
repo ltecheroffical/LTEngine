@@ -1,2 +1,1 @@
-add_subdirectory(pong)
 add_subdirectory(window_not_needed)

@@ -1,3 +1,5 @@
+#define LTENGINE_GLOBAL_BASIC_TYPES
+
 #include <chrono>
 #include <iostream>
 #include <thread>
@@ -31,8 +33,7 @@ int main(int argc, char *argv[]) {
 	                            {{GLFW_CONTEXT_VERSION_MAJOR, 3},
 	                             {GLFW_CONTEXT_VERSION_MINOR, 3},
 	                             {GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE},
-	                             {GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE},
-	                             {GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE}});
+	                             {GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE}});
 
 	window.setResizable(true);
 

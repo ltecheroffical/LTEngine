@@ -4,7 +4,7 @@
 using namespace LTEngine;
 
 
-const std::vector<u8> AssetManager::loadAsset(const std::string &path) {
+const std::vector<u8> AssetManager::loadAsset(std::string path) {
 	// Check if in cache
 	if (m_cache.contains(path)) { return std::move(m_cache[path]); }
 
@@ -23,7 +23,7 @@ const std::vector<u8> AssetManager::loadAsset(const std::string &path) {
 	return std::move(data);
 }
 
-void AssetManager::saveAsset(const std::string &path, const u8 *data, size_t size) {
+void AssetManager::saveAsset(std::string path, const u8 *data, size_t size) {
 	std::vector<u8> processedData(size);
 	for (u32 i = 0; i < size; i++) { processedData[i] = data[i]; }
 

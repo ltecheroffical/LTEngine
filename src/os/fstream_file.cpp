@@ -34,6 +34,8 @@ void FStreamFile::open(const char *path, u8 mode) {
 		}
 		throw std::runtime_error("Failed to open file: " + std::string(path));
 	}
+
+	setMode(mode);
 }
 
 
