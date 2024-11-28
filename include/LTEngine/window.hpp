@@ -1,6 +1,8 @@
 #ifndef _LTENGINE_WINDOW_HPP_
 #define _LTENGINE_WINDOW_HPP_
 
+#include <LTEngine/event.hpp>
+
 #include <LTEngine/rendering/color.hpp>
 
 #include <LTEngine/common/types/floattypes.h>
@@ -115,6 +117,23 @@ namespace LTEngine {
 	class Window {
 	public:
 		virtual ~Window() = default;
+
+		Event<> onWindowClose;
+
+		Event<> onWindowFocus;
+		Event<> onWindowUnfocus;
+
+		Event<u32, u32> onWindowResize;
+		Event<> onWindowMinimize;
+		Event<> onWindowRestore;
+
+		Event<u32, u32> onWindowMove;
+
+		Event<WindowKey> onWindowKeyPress;
+		Event<WindowKey> onWindowKeyRelease;
+
+		Event<WindowMouseButton> onWindowMousePress;
+		Event<WindowMouseButton> onWindowMouseRelease;
 
 		virtual void setSize(u32 width, u32 height) = 0;
 		virtual void setPosition(u32 x, u32 y) = 0;

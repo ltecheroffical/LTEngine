@@ -9,6 +9,10 @@
 using namespace LTEngine;
 
 
+extern const int windowKeyToSDLKeyLookup[];
+extern const int windowMouseButtonToSDLMouseButtonLookup[];
+
+
 SDLWindow::SDLWindow(const char *title, u32 width, u32 height) {
 	if (!SDL_WasInit(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) { SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS); }
 
@@ -123,6 +127,65 @@ void SDLWindow::pollEvents() {
 			case SDL_QUIT:
 				m_shouldClose = true;
 				return;
+
+			case SDL_WINDOWEVENT:
+				switch (event.window.event) {
+					case SDL_WINDOWEVENT_RESIZED:
+						onWindowResize(event.window.data1, event.window.data2);
+						break;
+					case SDL_WINDOWEVENT_MOVED:
+						onWindowMove(event.window.data1, event.window.data2);
+						break;
+					case SDL_WINDOWEVENT_MINIMIZED:
+						onWindowMinimize();
+						break;
+					case SDL_WINDOWEVENT_RESTORED:
+						onWindowRestore();
+						break;
+					case SDL_WINDOWEVENT_FOCUS_GAINED:
+						onWindowFocus();
+						break;
+					case SDL_WINDOWEVENT_FOCUS_LOST:
+						onWindowUnfocus();
+						break;
+				}
+				break;
+
+			case SDL_KEYDOWN:
+				// Find the correct index
+				for (u32 i = 0; i < (u32)WindowKey::KEY_COUNT; i++) {
+					if (windowKeyToSDLKeyLookup[i] == event.key.keysym.sym) {
+						onWindowKeyPress((WindowKey)i);
+						break;
+					}
+				}
+				break;
+			case SDL_KEYUP:
+				for (u32 i = 0; i < (u32)WindowKey::KEY_COUNT; i++) {
+					if (windowKeyToSDLKeyLookup[i] == event.key.keysym.sym) {
+						onWindowKeyRelease((WindowKey)i);
+						break;
+					}
+				}
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				if (event.button.button == SDL_BUTTON_LEFT) {
+					onWindowMousePress(WindowMouseButton::MOUSE_LEFT);
+				} else if (event.button.button == SDL_BUTTON_RIGHT) {
+					onWindowMousePress(WindowMouseButton::MOUSE_RIGHT);
+				} else {
+					onWindowMousePress(WindowMouseButton::MOUSE_MIDDLE);
+				}
+				break;
+			case SDL_MOUSEBUTTONUP:
+				if (event.button.button == SDL_BUTTON_LEFT) {
+					onWindowMousePress(WindowMouseButton::MOUSE_LEFT);
+				} else if (event.button.button == SDL_BUTTON_RIGHT) {
+					onWindowMousePress(WindowMouseButton::MOUSE_RIGHT);
+				} else {
+					onWindowMousePress(WindowMouseButton::MOUSE_MIDDLE);
+				}
+				break;
 		}
 	}
 }
@@ -141,9 +204,6 @@ bool SDLWindow::shouldClose() {
 	return m_shouldClose;
 }
 
-
-extern const int windowKeyToSDLKeyLookup[];
-extern const int windowMouseButtonToSDLMouseButtonLookup[];
 
 bool SDLWindow::isKeyPressed(WindowKey key) {
 	return SDL_GetKeyboardState(nullptr)[windowKeyToSDLKeyLookup[static_cast<int>(key)]];
