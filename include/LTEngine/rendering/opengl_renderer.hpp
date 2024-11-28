@@ -61,8 +61,6 @@ namespace LTEngine::Rendering {
 		bool getMessage(OpenGLMessage *message);
 
 	private:
-		const u32 MAX_IMAGE_LIFETIME = 5000;
-
 		LTENGINE_PACK_START() struct Vertex {
 			f32 x, y;
 			f32 r, g, b, a;
@@ -92,7 +90,6 @@ namespace LTEngine::Rendering {
 
 
 			Math::Vec2i dataPosition = Math::Vec2i::Zero;
-			Shapes::Recti dataRegion = {0, 0, 0, 0};
 			Math::Vec2 dataScale = Math::Vec2::One;
 			f32 dataRotation = 0.f;
 
@@ -113,6 +110,18 @@ namespace LTEngine::Rendering {
 
 		f32 posToOpenGLX(f32 x) { return 2.f * (x / (f32)m_width) - 1.f; }
 		f32 posToOpenGLY(f32 y) { return 1.f - 2.f * (y / (f32)m_height); }
+		f32 openGLToPosX(f32 x) { return (x + 1.f) * (f32)m_width / 2.f; }
+		f32 openGLToPosY(f32 y) { return (1.f - (y + 1.f)) * (f32)m_height / 2.f; }
+
+		Math::Vec2 rotatePosition(Math::Vec2 position, Math::Vec2 center, f32 angle) {
+			Math::Vec2 result;
+			result.x = center.x + (position.x - center.x) * cos(angle) - (position.y - center.y) * sin(angle);
+			result.y = center.y + (position.x - center.x) * sin(angle) + (position.y - center.y) * cos(angle);
+			return result;
+		}
+
+
+		const u32 MAX_IMAGE_LIFETIME = 5000;
 
 		std::queue<OpenGLMessage> m_messageQueue;
 

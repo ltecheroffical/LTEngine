@@ -1,3 +1,7 @@
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <LTEngine/rendering/opengl_renderer.hpp>
 
 
@@ -22,11 +26,11 @@ const char *vertexShaderSource = "#version 330 core\n"
 const char *fragmentShaderSource = "#version 330 core\n"
                                    "out vec4 finalColor;\n"
                                    "\n"
-                                   "uniform bool useTexture;\n"
-                                   "uniform sampler2D myTexture;\n"
-                                   "\n"
                                    "in vec4 fragColor;\n"
                                    "in vec2 texCoord;\n"
+                                   "\n"
+                                   "uniform bool useTexture;\n"
+                                   "uniform sampler2D myTexture;\n"
                                    "\n"
                                    "void main() {\n"
                                    "   if (useTexture) {\n"
@@ -37,7 +41,7 @@ const char *fragmentShaderSource = "#version 330 core\n"
                                    "}\0";
 
 
-const GLenum ZDepthFunc = GL_ALWAYS; // GL_GEQUAL; // Simulates Z order, higher is closer
+const GLenum ZDepthFunc = GL_GEQUAL; // Simulates Z order, higher is closer
 
 
 OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> switchContextCallback) {
@@ -70,19 +74,21 @@ OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> swit
 	glBindVertexArray(m_vao);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	Vertex vertices[] = {};
-	glBufferData(GL_ARRAY_BUFFER, 0, &vertices, GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, x));
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, r));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, u));
-
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, r));
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, u));
 	glEnableVertexAttribArray(2);
 
+	/* BUG: Enabling depth test makes nothing visible
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(ZDepthFunc);
+	glDepthMask(GL_TRUE);*/
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
@@ -91,11 +97,15 @@ OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> swit
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
-	glDeleteProgram(m_defaultShaderProgram);
+	std::for_each(m_imageCache.begin(), m_imageCache.end(),
+	              [](std::pair<const Image *, u32> image) { glDeleteTextures(1, &image.second); });
+	m_imageCache.clear();
+	m_imageCacheLifetime.clear();
 
-	// We don't want an invalid pointer when the debug message callback is called
-	glDebugMessageCallback(nullptr, nullptr);
-	glDisable(GL_DEBUG_OUTPUT);
+	glDeleteVertexArrays(1, &m_vao);
+	glDeleteBuffers(1, &m_vbo);
+
+	glDeleteProgram(m_defaultShaderProgram);
 }
 
 
@@ -170,6 +180,11 @@ void OpenGLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags fla
 	worldToScreenPosition(&op.dataRect.x, &op.dataRect.y);
 	op.dataRect.rotation = worldToScreenRotation(rect.rotation);
 
+	if (op.dataRect.x + op.dataRect.w < 0 || op.dataRect.y + op.dataRect.h < 0 || op.dataRect.x >= m_width ||
+	    op.dataRect.y >= m_height) {
+		return;
+	}
+
 	m_renderOpQueue.push(op);
 }
 
@@ -205,6 +220,7 @@ void OpenGLRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA 
 
 	op.dataPointA = worldToScreenPosition(a * getWorldScale());
 	op.dataPointB = worldToScreenPosition(b * getWorldScale());
+	op.dataRotation = worldToScreenRotation(0.f);
 
 	m_renderOpQueue.push(op);
 }
@@ -238,7 +254,7 @@ void OpenGLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rot
 	op.dataPosition = worldToScreenPosition(position);
 	op.dataRotation = worldToScreenRotation(rotation);
 	op.dataScale = getWorldScale();
-	op.dataRegion = region;
+	op.dataRect = region;
 
 	op.dataImage = image;
 }
@@ -269,6 +285,8 @@ void OpenGLRenderer::flush() {
 					glUniform1i(glGetUniformLocation(m_currentShaderProgram, "useTexture"), 0);
 
 					glBindVertexArray(m_vao);
+					glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
 					glDrawArrays(GL_POINTS, 0, 1);
 					glDepthFunc(ZDepthFunc);
 					break;
@@ -276,31 +294,35 @@ void OpenGLRenderer::flush() {
 
 			case RenderQueueOp::RenderOpType::Clear:
 				glClearColor(op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f, 1.f);
+				glClearDepth(1.f);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				break;
 			case RenderQueueOp::RenderOpType::ClearA:
 				glClearColor(op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f);
+				glClearDepth(1.f);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				break;
 
 			case RenderQueueOp::RenderOpType::Rect:
 				{
-					Vertex vertices[] = {
+					const auto getRectVertex = [this, op](f32 rectX, f32 rectY) {
+						auto [x, y] = rotatePosition({rectX, rectY},
+						                             {op.dataRect.x + op.dataRect.w / 2.f, op.dataRect.y + op.dataRect.h / 2.f},
+						                             op.dataRect.rotation);
+						return (Vertex){posToOpenGLX(x),    posToOpenGLY(y),    op.color.r / 255.f,
+						                op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f};
+					};
+
+					Vertex vertices[6] = {
 					    // Triangle 1
-					    {posToOpenGLX(op.dataRect.x), (f32)posToOpenGLY(op.dataRect.y), op.color.r / 255.f, op.color.g / 255.f,
-					     op.color.b / 255.f, op.color.a / 255.f},
-					    {posToOpenGLX(op.dataRect.x + op.dataRect.w), posToOpenGLY(op.dataRect.y), op.color.r / 255.f,
-					     op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f},
-					    {posToOpenGLX(op.dataRect.x + op.dataRect.w), posToOpenGLY(op.dataRect.y + op.dataRect.h),
-					     op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f},
+					    getRectVertex(op.dataRect.x, op.dataRect.y),
+					    getRectVertex(op.dataRect.x + op.dataRect.w, op.dataRect.y),
+					    getRectVertex(op.dataRect.x + op.dataRect.w, op.dataRect.y + op.dataRect.h),
 
 					    // Triangle 2
-					    {posToOpenGLX(op.dataRect.x), posToOpenGLY(op.dataRect.y), op.color.r / 255.f, op.color.g / 255.f,
-					     op.color.b / 255.f, op.color.a / 255.f},
-					    {posToOpenGLX(op.dataRect.x), posToOpenGLY(op.dataRect.y + op.dataRect.h), op.color.r / 255.f,
-					     op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f},
-					    {posToOpenGLX(op.dataRect.x + op.dataRect.w), posToOpenGLY(op.dataRect.y + op.dataRect.h),
-					     op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f},
+					    getRectVertex(op.dataRect.x, op.dataRect.y),
+					    getRectVertex(op.dataRect.x + op.dataRect.w, op.dataRect.y + op.dataRect.h),
+					    getRectVertex(op.dataRect.x, op.dataRect.y + op.dataRect.h),
 					};
 
 					glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
@@ -309,77 +331,85 @@ void OpenGLRenderer::flush() {
 					glUniform1i(glGetUniformLocation(m_currentShaderProgram, "useTexture"), 0);
 
 					glBindVertexArray(m_vao);
+					glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
 					glDrawArrays(GL_TRIANGLES, 0, 6);
 					break;
 				}
 			case RenderQueueOp::RenderOpType::Circle:
 				{
-					std::vector<Vertex> vertices;
+					const u32 TRIANGLE_COUNT = op.dataCircle.radius * 5;
+					Vertex vertices[TRIANGLE_COUNT];
 
-					const u32 TRIANGLE_COUNT = 70;
 					for (u32 i = 0; i < TRIANGLE_COUNT; i++) {
 						f32 theta = (f32)i / (f32)TRIANGLE_COUNT * 2 * M_PI;
 						f32 x = (f32)cos(theta) * op.dataCircle.radius;
 						f32 y = (f32)sin(theta) * op.dataCircle.radius;
-						vertices.push_back({(f32)op.dataCircle.x + x, (f32)op.dataCircle.y + y, op.color.r / 255.f,
-						                    op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f});
-					}
-
-					// Scale the vertices in accordance with op.dataScale
-					for (auto &vertex : vertices) {
-						vertex.x *= op.dataScale.x;
-						vertex.y *= op.dataScale.y;
-					}
-
-					glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
-
-					glUseProgram(m_currentShaderProgram);
-					glUniform1i(glGetUniformLocation(m_currentShaderProgram, "useTexture"), 0);
-
-					glBindVertexArray(m_vao);
-					glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size());
-					break;
-				}
-			case RenderQueueOp::RenderOpType::Line:
-				{
-					Vertex vertices[] = {
-					    {(f32)op.dataPointA.x, (f32)op.dataPointA.y, op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f,
-					     op.color.a / 255.f},
-					    {(f32)op.dataPointB.x, (f32)op.dataPointB.y, op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f,
-					     op.color.a / 255.f},
-					};
-
-					glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-
-					glUseProgram(m_currentShaderProgram);
-					glUniform1i(glGetUniformLocation(m_currentShaderProgram, "useTexture"), 0);
-
-					glBindVertexArray(m_vao);
-					glDrawArrays(GL_LINES, 0, 2);
-					break;
-				}
-			case RenderQueueOp::RenderOpType::Polygon:
-				{
-					// This gotta be the easiest to draw in OpenGL
-					// The hardest part is making the data the correct into vertexes
-					std::vector<Vertex> vertices(op.dataPolygon.points.size());
-
-					for (u32 i = 0; i < op.dataPolygon.points.size(); i++) {
-						vertices[i] = {(f32)op.dataPolygon.points[i].x,
-						               (f32)op.dataPolygon.points[i].y,
+						vertices[i] = {posToOpenGLX((f32)op.dataCircle.x + x * op.dataScale.x),
+						               posToOpenGLY((f32)op.dataCircle.y + y * op.dataScale.y),
 						               op.color.r / 255.f,
 						               op.color.g / 255.f,
 						               op.color.b / 255.f,
 						               op.color.a / 255.f};
 					}
 
-					glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_DYNAMIC_DRAW);
+					glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * TRIANGLE_COUNT, vertices, GL_DYNAMIC_DRAW);
 
 					glUseProgram(m_currentShaderProgram);
 					glUniform1i(glGetUniformLocation(m_currentShaderProgram, "useTexture"), 0);
 
 					glBindVertexArray(m_vao);
-					glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size());
+					glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+					glDrawArrays(GL_TRIANGLE_FAN, 0, TRIANGLE_COUNT);
+					break;
+				}
+			case RenderQueueOp::RenderOpType::Line:
+				{
+					auto [xA, yA] = rotatePosition({(f32)op.dataPointA.x, (f32)op.dataPointA.y}, op.dataPointA, op.dataRotation);
+					auto [xB, yB] = rotatePosition({(f32)op.dataPointB.x, (f32)op.dataPointB.y}, op.dataPointA, op.dataRotation);
+
+					Vertex vertices[2] = {
+					    {posToOpenGLX(xA), posToOpenGLY(yA), op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f,
+					     op.color.a / 255.f},
+					    {posToOpenGLX(xB), posToOpenGLY(yB), op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f,
+					     op.color.a / 255.f},
+					};
+
+					glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+
+					glUseProgram(m_currentShaderProgram);
+					glUniform1i(glGetUniformLocation(m_currentShaderProgram, "useTexture"), 0);
+
+					glBindVertexArray(m_vao);
+					glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+					glDrawArrays(GL_LINES, 0, 2);
+					break;
+				}
+			case RenderQueueOp::RenderOpType::Polygon:
+				{
+					if (op.dataPolygon.points.empty()) { break; }
+
+					// This gotta be the easiest to draw in OpenGL
+					// The hardest part is making the data into vertexes
+					Vertex vertices[op.dataPolygon.points.size()];
+
+					for (u32 i = 0; i < op.dataPolygon.points.size(); i++) {
+						auto [x, y] = rotatePosition({(f32)op.dataPolygon.points[i].x, (f32)op.dataPolygon.points[i].y},
+						                             op.dataPolygon.points[0], op.dataRotation);
+						vertices[i] = {x, y, op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f};
+					}
+
+					glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * op.dataPolygon.points.size(), vertices, GL_DYNAMIC_DRAW);
+
+					glUseProgram(m_currentShaderProgram);
+					glUniform1i(glGetUniformLocation(m_currentShaderProgram, "useTexture"), 0);
+
+					glBindVertexArray(m_vao);
+					glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+					glDrawArrays(GL_TRIANGLE_FAN, 0, op.dataPolygon.points.size());
 					break;
 				}
 
@@ -417,27 +447,29 @@ void OpenGLRenderer::flush() {
 						return true;
 					});
 
-					Vertex vertices[] = {
-					    // Triangle 1
-					    {posToOpenGLX(op.dataPosition.x), posToOpenGLY(op.dataPosition.y), op.color.r / 255.f, op.color.g / 255.f},
-					    {posToOpenGLX(op.dataPosition.x + op.dataRegion.w), posToOpenGLY(op.dataPosition.y), op.color.r / 255.f,
-					     op.color.g / 255.f},
-					    {posToOpenGLX(op.dataPosition.x + op.dataRegion.w), posToOpenGLY(op.dataPosition.y + op.dataRegion.h),
-					     op.color.r / 255.f, op.color.g / 255.f},
-
-					    // Triangle 2
-					    {posToOpenGLX(op.dataPosition.x), posToOpenGLY(op.dataPosition.y), op.color.r / 255.f, op.color.g / 255.f},
-					    {posToOpenGLX(op.dataPosition.x + op.dataRegion.w), posToOpenGLY(op.dataPosition.y + op.dataRegion.h),
-					     op.color.r / 255.f, op.color.g / 255.f},
-					    {posToOpenGLX(op.dataPosition.x), posToOpenGLY(op.dataPosition.y + op.dataRegion.h), op.color.r / 255.f,
-					     op.color.g / 255.f},
+					const auto getImageVertex = [this, op](f32 rectX, f32 rectY) {
+						auto [x, y] = rotatePosition({rectX, rectY},
+						                             {op.dataRect.x + op.dataRect.w / 2.f, op.dataRect.y + op.dataRect.h / 2.f},
+						                             op.dataRect.rotation);
+						return (Vertex){posToOpenGLX(x),
+						                posToOpenGLY(y),
+						                op.color.r / 255.f,
+						                op.color.g / 255.f,
+						                op.color.b / 255.f,
+						                op.color.a / 255.f,
+						                (f32)op.dataRect.x / op.dataImage->getSize().x,
+						                (f32)op.dataRect.y / op.dataImage->getSize().y};
 					};
 
-					// Scale the vertices according to op.dataScale
-					for (int i = 0; i < 6; i++) {
-						vertices[i].x *= op.dataScale.x;
-						vertices[i].y *= op.dataScale.y;
-					}
+					Vertex vertices[6] = {// Triangle 1
+					                      getImageVertex(op.dataPosition.x, op.dataPosition.y),
+					                      getImageVertex(op.dataPosition.x + op.dataRect.w, op.dataPosition.y),
+					                      getImageVertex(op.dataPosition.x + op.dataRect.w, op.dataPosition.y + op.dataRect.h),
+
+					                      // Triangle 2
+					                      getImageVertex(op.dataPosition.x, op.dataPosition.y),
+					                      getImageVertex(op.dataPosition.x + op.dataRect.w, op.dataPosition.y + op.dataRect.h),
+					                      getImageVertex(op.dataPosition.x, op.dataPosition.y + op.dataRect.h)};
 
 					glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 					glBindTexture(GL_TEXTURE_2D, texture);
@@ -446,6 +478,8 @@ void OpenGLRenderer::flush() {
 					glUniform1i(glGetUniformLocation(m_defaultShaderProgram, "useTexture"), 1);
 
 					glBindVertexArray(m_vao);
+					glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
 					glDrawArrays(GL_TRIANGLES, 0, 6);
 				}
 

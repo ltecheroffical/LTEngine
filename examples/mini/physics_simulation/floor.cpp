@@ -27,7 +27,7 @@ void Floor::update(f32 delta) {
 }
 
 void Floor::render(LTEngine::Rendering::Renderer *renderer) {
-	renderer->drawRect({0, 0, (u32)m_size.x, (u32)m_size.y}, LTEngine::Rendering::ColorA(30, 30, 30, 255), 0);
+	renderer->drawRect({0, 0, (u32)m_size.x, (u32)m_size.y}, LTEngine::Rendering::ColorA(30, 30, 30, 255));
 }
 
 
