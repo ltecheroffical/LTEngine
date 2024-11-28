@@ -6,11 +6,18 @@
 using namespace LTEngine;
 
 
+extern const int windowKeyToGLFWKeyLookup[(u32)WindowKey::KEY_COUNT];
+extern const int windowMouseButtonToGLFWMouseButtonLookup[3];
+
+
 GLFWWindow::GLFWWindow(const char *title, u32 width, u32 height) {
 	glfwInit();
 
 	m_glfwWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
 	if (m_glfwWindow == nullptr) { throw std::runtime_error("Failed to create GLFW window"); }
+
+	glfwSetWindowUserPointer(m_glfwWindow, this);
+	registerCallbacks();
 	m_cleanupGLFW = true;
 }
 
@@ -21,6 +28,9 @@ GLFWWindow::GLFWWindow(const char *title, u32 width, u32 height, const std::unor
 
 	m_glfwWindow = glfwCreateWindow(width, height, "LTEngine", nullptr, nullptr);
 	if (m_glfwWindow == nullptr) { throw std::runtime_error("Failed to create GLFW window"); }
+
+	glfwSetWindowUserPointer(m_glfwWindow, this);
+	registerCallbacks();
 	m_cleanupGLFW = true;
 }
 
@@ -125,6 +135,15 @@ bool GLFWWindow::isFocused() {
 
 void GLFWWindow::pollEvents() {
 	glfwPollEvents();
+
+	// Check keys
+	for (int i = 0; i < (u32)WindowKey::KEY_COUNT; i++) {
+		if (glfwGetKey(m_glfwWindow, i) == GLFW_PRESS) {
+			onWindowKeyPress((WindowKey)i);
+		} else if (glfwGetKey(m_glfwWindow, i) == GLFW_RELEASE) {
+			onWindowKeyRelease((WindowKey)i);
+		}
+	}
 }
 
 void GLFWWindow::swapBuffers() {
@@ -136,9 +155,6 @@ bool GLFWWindow::shouldClose() {
 	return glfwWindowShouldClose(m_glfwWindow);
 }
 
-
-extern const int windowKeyToGLFWKeyLookup[];
-extern const int windowMouseButtonToGLFWMouseButtonLookup[];
 
 bool GLFWWindow::isKeyPressed(WindowKey key) {
 	return glfwGetKey(m_glfwWindow, windowKeyToGLFWKeyLookup[static_cast<int>(key)]) == GLFW_PRESS;
@@ -194,6 +210,47 @@ GLFWwindow *GLFWWindow::getGLFWWindow() {
 
 void GLFWWindow::setCleanupGLFW(bool value) {
 	m_cleanupGLFW = value;
+}
+
+
+void GLFWWindow::registerCallbacks() {
+	glfwSetWindowCloseCallback(
+	    m_glfwWindow, +[](GLFWwindow *window) {
+		    GLFWWindow *glfwWindow = static_cast<GLFWWindow *>(glfwGetWindowUserPointer(window));
+		    glfwWindow->onWindowClose();
+	    });
+
+	glfwSetWindowFocusCallback(
+	    m_glfwWindow, +[](GLFWwindow *window, int focused) {
+		    GLFWWindow *glfwWindow = static_cast<GLFWWindow *>(glfwGetWindowUserPointer(window));
+		    if (focused == GLFW_TRUE) {
+			    glfwWindow->onWindowFocus();
+		    } else {
+			    glfwWindow->onWindowUnfocus();
+		    }
+	    });
+
+	glfwSetWindowIconifyCallback(
+	    m_glfwWindow, +[](GLFWwindow *window, int iconified) {
+		    GLFWWindow *glfwWindow = static_cast<GLFWWindow *>(glfwGetWindowUserPointer(window));
+		    if (iconified == GLFW_TRUE) {
+			    glfwWindow->onWindowMinimize();
+		    } else {
+			    glfwWindow->onWindowRestore();
+		    }
+	    });
+
+	glfwSetWindowPosCallback(
+	    m_glfwWindow, +[](GLFWwindow *window, int x, int y) {
+		    GLFWWindow *glfwWindow = static_cast<GLFWWindow *>(glfwGetWindowUserPointer(window));
+		    glfwWindow->onWindowMove(x, y);
+	    });
+
+	glfwSetWindowSizeCallback(
+	    m_glfwWindow, +[](GLFWwindow *window, int width, int height) {
+		    GLFWWindow *glfwWindow = static_cast<GLFWWindow *>(glfwGetWindowUserPointer(window));
+		    glfwWindow->onWindowResize(width, height);
+	    });
 }
 
 

@@ -56,6 +56,8 @@ namespace LTEngine {
 		void setCleanupGLFW(bool value);
 
 	private:
+		void registerCallbacks();
+
 		GLFWwindow *m_glfwWindow;
 
 		bool m_cleanupGLFW;
