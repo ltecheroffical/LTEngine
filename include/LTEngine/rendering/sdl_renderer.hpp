@@ -13,7 +13,7 @@ namespace LTEngine::Rendering {
 	class SDLRenderer : public Renderer {
 	public:
 		SDLRenderer(SDL_Renderer *renderer);
-		~SDLRenderer() override = default;
+		~SDLRenderer() override;
 
 		void clear(Color color) override;
 		void clear(ColorA color) override;
@@ -32,7 +32,16 @@ namespace LTEngine::Rendering {
 		               RendererFlags flags) override;
 
 	private:
-		const u32 MAX_IMAGE_CACHE_LIFETIME = 500;
+		Math::Vec2 rotatePosition(Math::Vec2 position, Math::Vec2 center, f32 angle) {
+			Math::Vec2 result;
+			result.x = center.x + (position.x - center.x) * cos(angle) - (position.y - center.y) * sin(angle);
+			result.y = center.y + (position.x - center.x) * sin(angle) + (position.y - center.y) * cos(angle);
+			return result;
+		}
+
+		const u32 MAX_IMAGE_CACHE_LIFETIME = 5000;
+
+		SDL_Texture *m_squareTexture; // SDL can't rotate squares 💀, something that should be very basic
 
 		std::unordered_map<const Image *, u32> m_imageCacheLifetime;
 		std::unordered_map<const Image *, SDL_Texture *> m_imageCache;
