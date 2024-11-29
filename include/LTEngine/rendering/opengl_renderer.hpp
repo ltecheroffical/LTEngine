@@ -29,8 +29,6 @@ namespace LTEngine::Rendering {
 			std::string msg;
 		};
 
-		static void loadOpenGL(GLADloadproc loadProc);
-
 		void resize(u32 width, u32 height);
 
 		void clear(Color color) override;
@@ -62,7 +60,7 @@ namespace LTEngine::Rendering {
 
 	private:
 		LTENGINE_PACK_START() struct Vertex {
-			f32 x, y;
+			f32 x, y, z;
 			f32 r, g, b, a;
 			f32 u = 0, v = 0;
 		} LTENGINE_PACK_END();

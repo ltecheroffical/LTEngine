@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 
 	window.makeContextCurrent();
 
-	LTEngine::Rendering::OpenGLRenderer::loadOpenGL((GLADloadproc)glfwGetProcAddress);
+	LTEngine::GLFWWindow::loadGL();
 	LTEngine::Rendering::OpenGLRenderer renderer(SCREEN_WIDTH, SCREEN_HEIGHT, [&window]() { window.makeContextCurrent(); });
 
 	window.setCleanupGLFW(true);

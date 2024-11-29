@@ -1,5 +1,7 @@
 #include <stdexcept>
 
+#include <glad/glad.h>
+
 #include <LTEngine/glfw_window.hpp>
 
 
@@ -39,6 +41,11 @@ GLFWWindow::~GLFWWindow() {
 	glfwDestroyWindow(m_glfwWindow);
 
 	if (m_cleanupGLFW) { glfwTerminate(); }
+}
+
+
+void GLFWWindow::loadGL() {
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) { throw std::runtime_error("Failed to load OpenGL functions"); }
 }
 
 
@@ -187,15 +194,11 @@ bool GLFWWindow::isMouseReleased(WindowMouseButton button) {
 
 
 void GLFWWindow::display(Rendering::Color *screen, u32 width, u32 height) {
-	glfwMakeContextCurrent(m_glfwWindow);
-
-	// TODO: Implement this
+	throw std::runtime_error("Use LTEngine::Rendering::OpenGLRenderer instead of LTEngine::GLFWWindow::display");
 }
 
 void GLFWWindow::display(Rendering::ColorA *screen, u32 width, u32 height) {
-	glfwMakeContextCurrent(m_glfwWindow);
-
-	// TODO: Implement this
+	throw std::runtime_error("Use LTEngine::Rendering::OpenGLRenderer instead of LTEngine::GLFWWindow::display");
 }
 
 

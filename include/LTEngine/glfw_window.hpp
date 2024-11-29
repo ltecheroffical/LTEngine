@@ -15,6 +15,8 @@ namespace LTEngine {
 		GLFWWindow(const char *title, u32 width, u32 height, const std::unordered_map<int, int> &hints);
 		~GLFWWindow() override;
 
+		static void loadGL();
+
 		void setSize(u32 width, u32 height) override;
 		void setPosition(u32 x, u32 y) override;
 		void setTitle(const char *title) override;

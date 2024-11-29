@@ -45,6 +45,7 @@ void Engine::render() {
 
 
 	m_renderer->resetTransform();
+	m_renderer->setZOrder(0);
 	m_renderer->clearIrisMode();
 	m_renderer->setOffsetsApplied();
 

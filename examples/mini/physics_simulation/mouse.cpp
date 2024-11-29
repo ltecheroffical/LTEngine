@@ -22,7 +22,7 @@ void PhysicsMouse::update(f32 delta) {
 }
 
 void PhysicsMouse::render(LTEngine::Rendering::Renderer *renderer) {
-	renderer->drawCircle({{0, 0}, (f32)CIRCLE_RADIUS}, LTEngine::Rendering::ColorA(255, 0, 0, 100));
+	renderer->drawCircle({{0, 0}, (f32)CIRCLE_RADIUS}, LTEngine::Rendering::ColorA(255, 0, 0, 160));
 }
 
 
