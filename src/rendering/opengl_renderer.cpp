@@ -10,7 +10,7 @@ using namespace LTEngine::Rendering;
 
 
 const char *vertexShaderSource = "#version 330 core\n"
-                                 "layout(location = 0) in vec2 vPosition;\n"
+                                 "layout(location = 0) in vec3 vPosition;\n"
                                  "layout(location = 1) in vec4 vColor;\n"
                                  "layout(location = 2) in vec2 vTexCoord;\n"
                                  "\n"
@@ -18,7 +18,7 @@ const char *vertexShaderSource = "#version 330 core\n"
                                  "out vec2 texCoord;\n"
                                  "\n"
                                  "void main() {\n"
-                                 "   gl_Position = vec4(vPosition, 0.0, 1.0);\n"
+                                 "   gl_Position = vec4(vPosition, 1.f);\n"
                                  "   fragColor = vColor;\n"
                                  "   texCoord = vTexCoord;\n"
                                  "}\0";
@@ -52,6 +52,17 @@ OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> swit
 	m_width = width;
 	m_height = height;
 
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+	glDepthFunc(ZDepthFunc);
+	glDepthRange(0.f, 1.f);
+
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
 	u32 vertexShader = compileShader(vertexShaderSource, GL_VERTEX_SHADER);
 	u32 fragmentShader = compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
 
@@ -75,20 +86,12 @@ OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> swit
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, x));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, x));
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, r));
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, u));
 	glEnableVertexAttribArray(2);
-
-	/* BUG: Enabling depth test makes nothing visible
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(ZDepthFunc);
-	glDepthMask(GL_TRUE);*/
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
@@ -106,11 +109,6 @@ OpenGLRenderer::~OpenGLRenderer() {
 	glDeleteBuffers(1, &m_vbo);
 
 	glDeleteProgram(m_defaultShaderProgram);
-}
-
-
-void OpenGLRenderer::loadOpenGL(GLADloadproc loadProc) {
-	if (!gladLoadGLLoader(loadProc)) { throw std::runtime_error("Failed to initialize OpenGL!"); }
 }
 
 
@@ -294,12 +292,12 @@ void OpenGLRenderer::flush() {
 
 			case RenderQueueOp::RenderOpType::Clear:
 				glClearColor(op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f, 1.f);
-				glClearDepth(1.f);
+				glClearDepth(0.f);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				break;
 			case RenderQueueOp::RenderOpType::ClearA:
 				glClearColor(op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f);
-				glClearDepth(1.f);
+				glClearDepth(0.f);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				break;
 
@@ -309,8 +307,9 @@ void OpenGLRenderer::flush() {
 						auto [x, y] = rotatePosition({rectX, rectY},
 						                             {op.dataRect.x + op.dataRect.w / 2.f, op.dataRect.y + op.dataRect.h / 2.f},
 						                             op.dataRect.rotation);
-						return (Vertex){posToOpenGLX(x),    posToOpenGLY(y),    op.color.r / 255.f,
-						                op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f};
+						return (Vertex){posToOpenGLX(x),    posToOpenGLY(y),    (f32)op.zOrder / std::numeric_limits<u16>().max(),
+						                op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f,
+						                op.color.a / 255.f};
 					};
 
 					Vertex vertices[6] = {
@@ -347,6 +346,7 @@ void OpenGLRenderer::flush() {
 						f32 y = (f32)sin(theta) * op.dataCircle.radius;
 						vertices[i] = {posToOpenGLX((f32)op.dataCircle.x + x * op.dataScale.x),
 						               posToOpenGLY((f32)op.dataCircle.y + y * op.dataScale.y),
+						               (f32)op.zOrder / std::numeric_limits<u16>().max(),
 						               op.color.r / 255.f,
 						               op.color.g / 255.f,
 						               op.color.b / 255.f,
@@ -370,10 +370,10 @@ void OpenGLRenderer::flush() {
 					auto [xB, yB] = rotatePosition({(f32)op.dataPointB.x, (f32)op.dataPointB.y}, op.dataPointA, op.dataRotation);
 
 					Vertex vertices[2] = {
-					    {posToOpenGLX(xA), posToOpenGLY(yA), op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f,
-					     op.color.a / 255.f},
-					    {posToOpenGLX(xB), posToOpenGLY(yB), op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f,
-					     op.color.a / 255.f},
+					    {posToOpenGLX(xA), posToOpenGLY(yA), (f32)op.zOrder / std::numeric_limits<u16>().max(), op.color.r / 255.f,
+					     op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f},
+					    {posToOpenGLX(xB), posToOpenGLY(yB), (f32)op.zOrder / std::numeric_limits<u16>().max(), op.color.r / 255.f,
+					     op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f},
 					};
 
 					glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
@@ -398,7 +398,13 @@ void OpenGLRenderer::flush() {
 					for (u32 i = 0; i < op.dataPolygon.points.size(); i++) {
 						auto [x, y] = rotatePosition({(f32)op.dataPolygon.points[i].x, (f32)op.dataPolygon.points[i].y},
 						                             op.dataPolygon.points[0], op.dataRotation);
-						vertices[i] = {x, y, op.color.r / 255.f, op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f};
+						vertices[i] = {x,
+						               y,
+						               (f32)op.zOrder / std::numeric_limits<u16>().max(),
+						               op.color.r / 255.f,
+						               op.color.g / 255.f,
+						               op.color.b / 255.f,
+						               op.color.a / 255.f};
 					}
 
 					glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * op.dataPolygon.points.size(), vertices, GL_DYNAMIC_DRAW);
@@ -421,7 +427,6 @@ void OpenGLRenderer::flush() {
 					u32 texture = 0;
 					if (!m_imageCache.contains(op.dataImage)) {
 						glGenTextures(1, &texture);
-						glBindTexture(GL_TEXTURE_2D, texture);
 
 						glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, op.dataImageNearestFilter ? GL_NEAREST : GL_LINEAR);
 						glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, op.dataImageNearestFilter ? GL_NEAREST : GL_LINEAR);
@@ -453,6 +458,7 @@ void OpenGLRenderer::flush() {
 						                             op.dataRect.rotation);
 						return (Vertex){posToOpenGLX(x),
 						                posToOpenGLY(y),
+						                (f32)op.zOrder / std::numeric_limits<u16>().max(),
 						                op.color.r / 255.f,
 						                op.color.g / 255.f,
 						                op.color.b / 255.f,

@@ -60,6 +60,7 @@ void ObjectStructure::render(LTEngine::Rendering::Renderer *renderer) {
 		renderer->setPositionOffset(object->getPosition());
 		renderer->setRotationOffset(object->getRotation());
 		renderer->setScaleFactor(object->getScale());
+		renderer->setZOrder(0);
 		renderer->clearIrisMode();
 		renderer->setOffsetsApplied();
 
