@@ -29,6 +29,23 @@ Box2D::~Box2D() {
 
 void Box2D::update(f32 timeStep) {
 	b2World_Step(m_world, timeStep, 4);
+	std::for_each(m_bodies.begin(), m_bodies.end(), [this](std::pair<u32, b2BodyId> pair) {
+		b2ContactData contactData[b2Body_GetContactCapacity(pair.second)];
+		u32 contactCount = b2Body_GetContactData(pair.second, contactData, b2Body_GetContactCapacity(pair.second));
+
+		for (u32 i = 0; i < contactCount; i++) {
+			b2ContactData *contactData = &contactData[i];
+			b2BodyId bodyB = b2Shape_GetBody(contactData->shapeIdB);
+
+			auto otherBody = std::find_if(m_bodies.begin(), m_bodies.end(), [bodyB](std::pair<u32, b2BodyId> bodyPair) {
+				// We have to compare everything since Box2D doesn't provide an id comparison function
+				return bodyB.revision == bodyPair.second.revision && bodyB.index1 == bodyPair.second.index1 &&
+				       bodyB.world0 == bodyPair.second.world0;
+			});
+
+			onBodyCollision(pair.first, otherBody->first);
+		}
+	});
 }
 
 
