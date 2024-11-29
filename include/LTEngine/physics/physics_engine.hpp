@@ -10,12 +10,16 @@
 #include <LTEngine/shapes/rect.hpp>
 #include <LTEngine/shapes/triangle.hpp>
 
+#include <LTEngine/event.hpp>
+
 
 namespace LTEngine::Physics {
 	class PhysicsEngine {
 		// It actually quite hard to create a base class for all physics engines
 	public:
 		virtual ~PhysicsEngine() = default;
+
+		Event<u32, u32> onBodyCollision;
 
 		enum class BodyType { BODY_TYPE_STATIC = 0, BODY_TYPE_KINEMATIC = 1, BODY_TYPE_DYNAMIC = 2 };
 
