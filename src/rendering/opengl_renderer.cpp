@@ -369,6 +369,11 @@ void OpenGLRenderer::flush() {
 					auto [xA, yA] = rotatePosition({(f32)op.dataPointA.x, (f32)op.dataPointA.y}, op.dataPointA, op.dataRotation);
 					auto [xB, yB] = rotatePosition({(f32)op.dataPointB.x, (f32)op.dataPointB.y}, op.dataPointA, op.dataRotation);
 
+					if (op.flags & FLAG_FLIP_H || op.flags & FLAG_FLIP_V) {
+						std::swap(xA, xB);
+						std::swap(yA, yB);
+					}
+
 					Vertex vertices[2] = {
 					    {posToOpenGLX(xA), posToOpenGLY(yA), (f32)op.zOrder / std::numeric_limits<u16>().max(), op.color.r / 255.f,
 					     op.color.g / 255.f, op.color.b / 255.f, op.color.a / 255.f},
@@ -476,6 +481,16 @@ void OpenGLRenderer::flush() {
 					                      getImageVertex(op.dataPosition.x, op.dataPosition.y),
 					                      getImageVertex(op.dataPosition.x + op.dataRect.w, op.dataPosition.y + op.dataRect.h),
 					                      getImageVertex(op.dataPosition.x, op.dataPosition.y + op.dataRect.h)};
+
+					if (op.flags & FLAG_FLIP_H) {
+						std::swap(vertices[0], vertices[3]);
+						std::swap(vertices[1], vertices[4]);
+						std::swap(vertices[2], vertices[5]);
+					} else if (op.flags & FLAG_FLIP_V) {
+						std::swap(vertices[0], vertices[1]);
+						std::swap(vertices[2], vertices[3]);
+						std::swap(vertices[4], vertices[5]);
+					}
 
 					glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 					glBindTexture(GL_TEXTURE_2D, texture);

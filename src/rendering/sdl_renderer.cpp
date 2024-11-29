@@ -7,7 +7,21 @@ using namespace LTEngine;
 using namespace LTEngine::Rendering;
 
 
-SDLRenderer::SDLRenderer(SDL_Renderer *renderer) : m_renderer(renderer) {}
+SDLRenderer::SDLRenderer(SDL_Renderer *renderer) : m_renderer(renderer) {
+	if (!SDL_WasInit(SDL_INIT_VIDEO)) { SDL_Init(SDL_INIT_VIDEO); }
+
+	m_squareTexture = SDL_CreateTexture(m_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 1, 1);
+
+	// Write all white to the square
+	SDL_SetRenderTarget(m_renderer, m_squareTexture);
+	SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
+	SDL_RenderClear(m_renderer);
+	SDL_SetRenderTarget(m_renderer, nullptr);
+}
+
+SDLRenderer::~SDLRenderer() {
+	SDL_DestroyTexture(m_squareTexture);
+}
 
 
 void SDLRenderer::clear(Color color) {
@@ -43,8 +57,13 @@ void SDLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags)
 
 	worldToScreenPosition(&rect.x, &rect.y);
 
-	SDL_FRect sdlRect = {rect.x, rect.y, (f32)rect.w * getWorldScale().x, (f32)rect.h * getWorldScale().y};
-	SDL_RenderFillRectF(m_renderer, &sdlRect);
+	// Draw square texture using RenderCopyEx
+	SDL_Rect dst;
+	dst.x = rect.x;
+	dst.y = rect.y;
+	dst.w = rect.w;
+	dst.h = rect.h;
+	SDL_RenderCopyEx(m_renderer, m_squareTexture, NULL, &dst, worldToScreenRotation(rect.rotation), NULL, SDL_FLIP_NONE);
 }
 
 void SDLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags) {
@@ -96,6 +115,8 @@ void SDLRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA col
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 	if (flags & Renderer::FLAG_FLIP_H || flags & Renderer::FLAG_FLIP_V) { std::swap(a, b); }
 
+	a = rotatePosition(a, a, worldToScreenRotation(0.f));
+	b = rotatePosition(b, a, worldToScreenRotation(0.f));
 	worldToScreenPosition(&a.x, &a.y);
 	worldToScreenPosition(&b.x, &b.y);
 
@@ -114,11 +135,11 @@ void SDLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlag
 	Math::Vec2 *points = polygon.points.data();
 
 	for (u32 i = 0; i < count; i++) {
-		u32 aX = worldToScreenPosition(points[i]).x;
-		u32 aY = worldToScreenPosition(points[i]).y;
-		u32 bX = points[(i + 1) % count].x;
-		u32 bY = points[(i + 1) % count].y;
-		SDL_RenderDrawLine(m_renderer, aX, aY, bX, bY);
+		Math::Vec2 a = rotatePosition(points[i], points[0], worldToScreenRotation(polygon.rotation));
+		Math::Vec2 b = rotatePosition(points[(i + 1) % count], points[0], worldToScreenRotation(polygon.rotation));
+		worldToScreenPosition(&a.x, &a.y);
+		worldToScreenPosition(&b.x, &b.y);
+		SDL_RenderDrawLine(m_renderer, a.x, a.y, b.x, b.y);
 	}
 
 	if (flags & Renderer::FLAG_FILL) {
@@ -216,7 +237,7 @@ void SDLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rotati
 		return true;
 	});
 
-	SDL_RenderCopyEx(m_renderer, texture, &rect, &rect, rotation, &center, flip);
+	SDL_RenderCopyEx(m_renderer, texture, &rect, &rect, worldToScreenRotation(rotation), &center, flip);
 }
 
 #endif
