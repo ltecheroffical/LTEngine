@@ -8,7 +8,7 @@
 
 namespace LTEngine::Shapes {
 	struct Circle : public Shape {
-		float radius;
+		f32 radius;
 	};
 } // namespace LTEngine::Shapes
 

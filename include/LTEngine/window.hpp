@@ -114,6 +114,13 @@ namespace LTEngine {
 
 	enum class WindowMouseButton { MOUSE_LEFT, MOUSE_RIGHT, MOUSE_MIDDLE };
 
+	/**
+	 * @brief The window interface for all windows.
+	 *
+	 * @details
+	 * All window implementations for LTEngine must implement this interface. This is a type that can be created without anything
+	 * else.
+	 */
 	class Window {
 	public:
 		virtual ~Window() = default;
@@ -123,10 +130,23 @@ namespace LTEngine {
 		Event<> onWindowFocus;
 		Event<> onWindowUnfocus;
 
+		/**
+		 * @brief Triggered when the window is resized.
+		 *
+		 * The first argument is the new width.
+		 * The second argument is the new height.
+		 */
 		Event<u32, u32> onWindowResize;
 		Event<> onWindowMinimize;
 		Event<> onWindowRestore;
 
+		/**
+		 * @brief Triggered when the window is moved.
+		 *
+		 * @details
+		 * The first argument is the new x position.
+		 * The second argument is the new y position.
+		 */
 		Event<u32, u32> onWindowMove;
 
 		Event<WindowKey> onWindowKeyPress;
@@ -134,6 +154,7 @@ namespace LTEngine {
 
 		Event<WindowMouseButton> onWindowMousePress;
 		Event<WindowMouseButton> onWindowMouseRelease;
+
 
 		virtual void setSize(u32 width, u32 height) = 0;
 		virtual void setPosition(u32 x, u32 y) = 0;
@@ -166,7 +187,25 @@ namespace LTEngine {
 		virtual bool isMousePressed(WindowMouseButton button) = 0;
 		virtual bool isMouseReleased(WindowMouseButton button) = 0;
 
+		/**
+		 * @brief Displays an image on the window.
+		 *
+		 * @param screen The image to display in RGB24 format, no padding
+		 * @param width The width of the image.
+		 * @param height The height of the image.
+		 *
+		 * @details
+		 * The image must be in RGB24 format, no padding.
+		 * The image size is calculated automatiically by the width and height.
+		 */
 		virtual void display(Rendering::Color *screen, u32 width, u32 height) = 0;
+		/**
+		 * @brief Displays an image on the window.
+		 *
+		 * @param screen The image to display in RGBA32 format, no padding.
+		 * @param width The width of the image.
+		 * @param height The height of the image.
+		 */
 		virtual void display(Rendering::ColorA *screen, u32 width, u32 height) = 0;
 	};
 } // namespace LTEngine

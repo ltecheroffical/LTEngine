@@ -23,7 +23,7 @@ namespace LTEngine {
 
 		void setRepeat(bool repeat) { m_repeat = repeat; }
 
-		f32 getTime() const { return m_time; }
+		f32 getTimeSet() const { return m_time; }
 		f32 getTimeLeft() const { return m_timeLeft; }
 		bool isRepeating() const { return m_repeat; }
 		bool isRunning() const { return m_running; }

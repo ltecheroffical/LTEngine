@@ -5,12 +5,13 @@ using namespace LTEngine;
 
 
 void FrameHeap::endFrame() {
-    m_heap.clear();
+	m_nextHeapIndex = 0;
 }
 
 
 void *FrameHeap::alloc(size_t size) {
-    void *ptr = &(*m_heap.end());
-    m_heap.resize(m_heap.size() + size);
-    return ptr;
+	if (m_nextHeapIndex + size > m_heap.size()) { m_heap.resize(m_nextHeapIndex + size); }
+	void *ptr = &(*m_heap.end());
+	m_nextHeapIndex += size;
+	return ptr;
 }

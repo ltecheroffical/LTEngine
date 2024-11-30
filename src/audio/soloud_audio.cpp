@@ -16,9 +16,9 @@ u32 SoLoudAudio::loadAudio(const u8 *data, u32 size) {
 	return id;
 }
 
-u32 SoLoudAudio::loadStreamedAudio(const u8 *data, u32 size) {
+u32 SoLoudAudio::loadStreamedAudio(const char *path) {
 	u32 id = m_nextResourceId++;
-	m_streamedResources[id].loadMem(data, size, true);
+	m_streamedResources[id].load(path);
 	return id;
 }
 
