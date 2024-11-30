@@ -29,6 +29,9 @@ namespace LTEngine::Rendering {
 			std::string msg;
 		};
 
+		void setNearestFilter() { m_nearestFilter = true; }
+		void clearNearestFilter() { m_nearestFilter = false; }
+
 		void resize(u32 width, u32 height);
 
 		void clear(Color color) override;
@@ -46,8 +49,6 @@ namespace LTEngine::Rendering {
 
 		void drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color,
 		               RendererFlags flags) override;
-		void drawImageNearest(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color,
-		                      RendererFlags flags);
 
 		void flush();
 
@@ -138,6 +139,8 @@ namespace LTEngine::Rendering {
 		std::unordered_map<const Image *, u32> m_imageCache;
 
 		std::function<void()> m_switchContextCallback = nullptr;
+
+		bool m_nearestFilter : 1 = false;
 
 		u32 m_width;
 		u32 m_height;

@@ -235,6 +235,8 @@ void OpenGLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererF
 
 	op.dataPolygon = polygon;
 	for (Math::Vec2 &point : op.dataPolygon.points) { point = worldToScreenPosition(point * getWorldScale()); }
+
+	m_renderOpQueue.push(op);
 }
 
 
@@ -255,6 +257,9 @@ void OpenGLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rot
 	op.dataRect = region;
 
 	op.dataImage = image;
+	op.dataImageNearestFilter = m_nearestFilter;
+
+	m_renderOpQueue.push(op);
 }
 
 
@@ -433,11 +438,7 @@ void OpenGLRenderer::flush() {
 					if (!m_imageCache.contains(op.dataImage)) {
 						glGenTextures(1, &texture);
 
-						glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, op.dataImageNearestFilter ? GL_NEAREST : GL_LINEAR);
-						glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, op.dataImageNearestFilter ? GL_NEAREST : GL_LINEAR);
-						glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-						glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
+						glBindTexture(GL_TEXTURE_2D, texture);
 						glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, op.dataImage->getSize().x, op.dataImage->getSize().y, 0, GL_RGBA,
 						             GL_UNSIGNED_BYTE, op.dataImage->getMemBuffer());
 						glGenerateMipmap(GL_TEXTURE_2D);
@@ -452,12 +453,11 @@ void OpenGLRenderer::flush() {
 					std::erase_if(m_imageCacheLifetime, [this](std::pair<const Image *, u32> pair) {
 						if (--pair.second > 0) { return false; }
 						glDeleteTextures(1, &m_imageCache[pair.first]);
-						const auto it = m_imageCache.find(pair.first);
-						if (it != m_imageCache.end()) { m_imageCache.erase(it); }
+						m_imageCache.erase(pair.first);
 						return true;
 					});
 
-					const auto getImageVertex = [this, op](f32 rectX, f32 rectY) {
+					const auto getImageVertex = [this, op](f32 rectX, f32 rectY, f32 u, f32 v) {
 						auto [x, y] = rotatePosition({rectX, rectY},
 						                             {op.dataRect.x + op.dataRect.w / 2.f, op.dataRect.y + op.dataRect.h / 2.f},
 						                             op.dataRect.rotation);
@@ -468,19 +468,31 @@ void OpenGLRenderer::flush() {
 						                op.color.g / 255.f,
 						                op.color.b / 255.f,
 						                op.color.a / 255.f,
-						                (f32)op.dataRect.x / op.dataImage->getSize().x,
-						                (f32)op.dataRect.y / op.dataImage->getSize().y};
+						                u,
+						                v};
 					};
 
-					Vertex vertices[6] = {// Triangle 1
-					                      getImageVertex(op.dataPosition.x, op.dataPosition.y),
-					                      getImageVertex(op.dataPosition.x + op.dataRect.w, op.dataPosition.y),
-					                      getImageVertex(op.dataPosition.x + op.dataRect.w, op.dataPosition.y + op.dataRect.h),
 
-					                      // Triangle 2
-					                      getImageVertex(op.dataPosition.x, op.dataPosition.y),
-					                      getImageVertex(op.dataPosition.x + op.dataRect.w, op.dataPosition.y + op.dataRect.h),
-					                      getImageVertex(op.dataPosition.x, op.dataPosition.y + op.dataRect.h)};
+					f32 atlasWidth = op.dataImage->getSize().x;
+					f32 atlasHeight = op.dataImage->getSize().y;
+
+					f32 u1 = op.dataRect.x / atlasWidth;                    // Left edge of the sub-region
+					f32 v1 = op.dataRect.y / atlasHeight;                   // Top edge of the sub-region
+					f32 u2 = (op.dataRect.x + op.dataRect.w) / atlasWidth;  // Right edge of the sub-region
+					f32 v2 = (op.dataRect.y + op.dataRect.h) / atlasHeight; // Bottom edge of the sub-region
+
+					Vertex vertices[6] = {
+					    // Triangle 1
+					    getImageVertex(op.dataPosition.x, op.dataPosition.y, u1, v1),
+					    getImageVertex(op.dataPosition.x + op.dataRect.w * op.dataScale.x, op.dataPosition.y, u2, v1),
+					    getImageVertex(op.dataPosition.x + op.dataRect.w * op.dataScale.x,
+					                   op.dataPosition.y + op.dataRect.h * op.dataScale.y, u2, v2),
+
+					    // Triangle 2
+					    getImageVertex(op.dataPosition.x, op.dataPosition.y, u1, v1),
+					    getImageVertex(op.dataPosition.x + op.dataRect.w * op.dataScale.x,
+					                   op.dataPosition.y + op.dataRect.h * op.dataScale.y, u2, v2),
+					    getImageVertex(op.dataPosition.x, op.dataPosition.y + op.dataRect.h * op.dataScale.y, u1, v2)};
 
 					if (op.flags & FLAG_FLIP_H) {
 						std::swap(vertices[0], vertices[3]);
@@ -493,14 +505,19 @@ void OpenGLRenderer::flush() {
 					}
 
 					glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-					glBindTexture(GL_TEXTURE_2D, texture);
 
 					glUseProgram(m_currentShaderProgram);
-					glUniform1i(glGetUniformLocation(m_defaultShaderProgram, "useTexture"), 1);
+					glUniform1i(glGetUniformLocation(m_currentShaderProgram, "useTexture"), 1);
 
 					glBindVertexArray(m_vao);
 					glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, op.dataImageNearestFilter ? GL_NEAREST : GL_LINEAR);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, op.dataImageNearestFilter ? GL_NEAREST : GL_LINEAR);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+					glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+					glBindTexture(GL_TEXTURE_2D, texture);
 					glDrawArrays(GL_TRIANGLES, 0, 6);
 				}
 
