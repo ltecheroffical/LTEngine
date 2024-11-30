@@ -1,6 +1,7 @@
 #ifndef _LTENGINE_IMAGE_LEVEL_LOADER_HPP_
 #define _LTENGINE_IMAGE_LEVEL_LOADER_HPP_
 
+#include <functional>
 #include <map>
 
 #include <LTEngine/rendering/image.hpp>
@@ -11,10 +12,10 @@ namespace LTEngine {
 	public:
 		ImageLevelLoader() = default;
 
-		const static u32 TILE_NONE = 0;
+		const static u32 TILE_NONE = std::numeric_limits<u32>().max();
 
 		void loadLevel(const Rendering::Image *image);
-		void buildLevel(void (*addObjCallback)(u32 x, u32 y, u32 tile));
+		void buildLevel(std::function<void(u32 x, u32 y, u32 tile)> addObjCallback);
 
 		void addMapping(Rendering::Color color, u32 tile);
 		void removeMapping(Rendering::Color color);

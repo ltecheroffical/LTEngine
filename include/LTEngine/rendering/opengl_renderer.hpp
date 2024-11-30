@@ -56,6 +56,15 @@ namespace LTEngine::Rendering {
 		void useShader(u32 vertexShader, u32 fragmentShader);
 		void resetShader();
 
+		/**
+		 * @brief Get any messags OpenGL might have
+		 *
+		 * @returns True if there are any messges
+		 *
+		 * @details
+		 * Currently this function is unused, in a later version, the messages will be used for debugging
+		 * but with that comes the fact the `OpenGLMessage` structure will be changed.
+		 */
 		bool getMessage(OpenGLMessage *message);
 
 	private:

@@ -16,9 +16,11 @@ void test_tick_system() {
 	bool tick1 = false;
 	bool tick2 = false;
 
-	tickSystem.onSpecificTick += [&tick1, &tick2](u64 tick, std::string tickName) {
-		if (tickName == "test_tick1") { tick1 = true; }
-		if (tickName == "test_tick2") { tick2 = true; }
+	*tickSystem.getTickEvent("test_tick1") += [&tick1](u64 tick) {
+		tick1 = true;
+	};
+	*tickSystem.getTickEvent("test_tick2") += [&tick2](u64 tick) {
+		tick2 = true;
 	};
 
 	tickSystem.step(0.1f);

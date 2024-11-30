@@ -17,7 +17,17 @@ namespace LTEngine::Audio {
 		~SoLoudAudio();
 
 		u32 loadAudio(const u8 *data, u32 size) override;
-		u32 loadStreamedAudio(const u8 *data, u32 size);
+		/**
+		 * @brief Loads audio streamed from disk.
+		 *
+		 * @details
+		 * SoLoud provides a function that loads audio that is streamed from disk.
+		 * This is great for any sort of audio that isn't played often, however this means that this
+		 * can only be loaded from a file path, a side effect of this is that loading this from an asset manager breaks the purpose
+		 * of this function and streamed audio.
+		 *
+		 */
+		u32 loadStreamedAudio(const char *path);
 		void unloadAudio(u32 id) override;
 
 		void setAudioLoop(u32 id, bool loop) override;

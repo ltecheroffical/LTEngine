@@ -29,6 +29,17 @@ namespace LTEngine::Rendering {
 		const static RendererFlags FLAG_FLIP_H = ((RendererFlags)1 << 0);
 		const static RendererFlags FLAG_FLIP_V = ((RendererFlags)1 << 1);
 
+		/**
+		 * @brief Fills the shape
+		 *
+		 * @details
+		 * Depending on the renderer, certain shapes will not get affected, the current list (that will change) is:
+		 *  - Rectangles
+		 *  - Lines
+		 *  - Polygons
+		 *
+		 *  So far, all the listed unaffected shapes can be replicated by drawing lines or by calculating the paramters to fill.
+		 */
 		const static RendererFlags FLAG_FILL = ((RendererFlags)1 << 2);
 
 
