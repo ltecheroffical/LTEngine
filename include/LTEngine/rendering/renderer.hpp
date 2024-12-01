@@ -86,6 +86,13 @@ namespace LTEngine::Rendering {
 		void drawImage(const Image *image, Math::Vec2i position, f32 rotation, ColorA color, RendererFlags flags = 0);
 		virtual void drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color,
 		                       RendererFlags flags = 0) = 0;
+		void drawImage(const Image *image, Math::Vec2 position, f32 rotation, ColorA color, RendererFlags flags = 0) {
+			drawImage(image, Math::Vec2i{(i32)position.x, (i32)position.y}, rotation, color, flags);
+		}
+		void drawImage(const Image *image, Math::Vec2 position, f32 rotation, Shapes::Recti region, ColorA color,
+		               RendererFlags flags = 0) {
+			drawImage(image, Math::Vec2i{(i32)position.x, (i32)position.y}, rotation, region, color, flags);
+		}
 
 		void setOffsetsApplied() { m_offsetsApplied = true; }
 		void clearOffsetsApplied() { m_offsetsApplied = false; }
