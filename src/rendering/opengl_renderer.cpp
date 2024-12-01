@@ -178,10 +178,12 @@ void OpenGLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags fla
 	worldToScreenPosition(&op.dataRect.x, &op.dataRect.y);
 	op.dataRect.rotation = worldToScreenRotation(rect.rotation);
 
-	if (op.dataRect.x + op.dataRect.w < 0 || op.dataRect.y + op.dataRect.h < 0 || op.dataRect.x >= m_width ||
-	    op.dataRect.y >= m_height) {
-		return;
-	}
+	const bool tooFarLeft = op.dataRect.x + op.dataRect.w < 0;
+	const bool tooFarRight = op.dataRect.x > (f32)m_width;
+	const bool tooFarUp = op.dataRect.y + op.dataRect.h < 0;
+	const bool tooFarDown = op.dataRect.y > (f32)m_height;
+
+	if (tooFarLeft || tooFarRight || tooFarUp || tooFarDown) { return; }
 
 	m_renderOpQueue.push(op);
 }
@@ -201,6 +203,13 @@ void OpenGLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFla
 	op.dataCircle.rotation = worldToScreenRotation(circle.rotation);
 
 	op.dataScale = getWorldScale();
+
+	const bool tooFarLeft = op.dataCircle.x + op.dataCircle.radius * op.dataScale.x < 0;
+	const bool tooFarRight = op.dataCircle.x - op.dataCircle.radius * op.dataScale.x > (f32)m_width;
+	const bool tooFarUp = op.dataCircle.y + op.dataCircle.radius * op.dataScale.y < 0;
+	const bool tooFarDown = op.dataCircle.y - op.dataCircle.radius * op.dataScale.y > (f32)m_height;
+
+	if (tooFarLeft || tooFarRight || tooFarUp || tooFarDown) { return; }
 
 	m_renderOpQueue.push(op);
 }
@@ -255,6 +264,13 @@ void OpenGLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rot
 	op.dataRotation = worldToScreenRotation(rotation);
 	op.dataScale = getWorldScale();
 	op.dataRect = region;
+
+	const bool tooFarLeft = op.dataPosition.x + op.dataRect.w * op.dataScale.x < 0;
+	const bool tooFarRight = op.dataPosition.x > (i32)m_width;
+	const bool tooFarUp = op.dataPosition.y + op.dataRect.h * op.dataScale.y < 0;
+	const bool tooFarDown = op.dataPosition.y > (i32)m_height;
+
+	if (tooFarLeft || tooFarRight || tooFarUp || tooFarDown) { return; }
 
 	op.dataImage = image;
 	op.dataImageNearestFilter = m_nearestFilter;
@@ -458,9 +474,9 @@ void OpenGLRenderer::flush() {
 					});
 
 					const auto getImageVertex = [this, op](f32 rectX, f32 rectY, f32 u, f32 v) {
-						auto [x, y] = rotatePosition({rectX, rectY},
-						                             {op.dataRect.x + op.dataRect.w / 2.f, op.dataRect.y + op.dataRect.h / 2.f},
-						                             op.dataRect.rotation);
+						auto [x, y] = rotatePosition(
+						    {rectX, rectY}, {op.dataPosition.x + op.dataRect.w / 2.f, op.dataPosition.y + op.dataRect.h / 2.f},
+						    op.dataRotation);
 						return (Vertex){posToOpenGLX(x),
 						                posToOpenGLY(y),
 						                (f32)op.zOrder / std::numeric_limits<u16>().max(),
@@ -481,6 +497,9 @@ void OpenGLRenderer::flush() {
 					f32 u2 = (op.dataRect.x + op.dataRect.w) / atlasWidth;  // Right edge of the sub-region
 					f32 v2 = (op.dataRect.y + op.dataRect.h) / atlasHeight; // Bottom edge of the sub-region
 
+					if (op.flags & FLAG_FLIP_H) { std::swap(u1, u2); }
+					if (op.flags & FLAG_FLIP_V) { std::swap(v1, v2); }
+
 					Vertex vertices[6] = {
 					    // Triangle 1
 					    getImageVertex(op.dataPosition.x, op.dataPosition.y, u1, v1),
@@ -493,16 +512,6 @@ void OpenGLRenderer::flush() {
 					    getImageVertex(op.dataPosition.x + op.dataRect.w * op.dataScale.x,
 					                   op.dataPosition.y + op.dataRect.h * op.dataScale.y, u2, v2),
 					    getImageVertex(op.dataPosition.x, op.dataPosition.y + op.dataRect.h * op.dataScale.y, u1, v2)};
-
-					if (op.flags & FLAG_FLIP_H) {
-						std::swap(vertices[0], vertices[3]);
-						std::swap(vertices[1], vertices[4]);
-						std::swap(vertices[2], vertices[5]);
-					} else if (op.flags & FLAG_FLIP_V) {
-						std::swap(vertices[0], vertices[1]);
-						std::swap(vertices[2], vertices[3]);
-						std::swap(vertices[4], vertices[5]);
-					}
 
 					glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
 
