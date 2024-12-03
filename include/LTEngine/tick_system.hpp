@@ -7,6 +7,8 @@
 #include <LTEngine/common/types/floattypes.h>
 #include <LTEngine/common/types/inttypes.h>
 
+#include <LTEngine/timer.hpp>
+
 #include <LTEngine/event.hpp>
 
 
@@ -34,15 +36,18 @@ namespace LTEngine {
 
 		u64 getTicks();
 
+		void resetTicks() { m_currentTick = 0; }
+
 		void registerTick(std::string name, u64 everyTicks);
 		void unregisterTick(std::string name);
 		Event<u64> *getTickEvent(std::string name);
 
 	private:
+		void onTimerEnd();
+
 		u64 m_currentTick = 0;
 
-		f32 m_currentTickTime = 0.f;
-		f32 m_tickDelay = 0.05f;
+		Timer m_tickTimer;
 
 		std::unordered_map<std::string, u64> m_tickClocks;
 		std::unordered_map<std::string, Event<u64>> m_tickEvents;

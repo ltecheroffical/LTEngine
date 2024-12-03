@@ -23,7 +23,7 @@ namespace LTEngine::Random {
 		virtual f32 next_f32();
 		virtual f64 next_f64();
 
-		virtual void nextBytes(u8 *data, size_t length);
+		virtual void nextBytes(void *data, size_t size);
 	};
 } // namespace LTEngine::Random
 

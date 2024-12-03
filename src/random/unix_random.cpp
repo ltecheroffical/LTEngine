@@ -92,14 +92,14 @@ i64 UnixRandom::next_i64() {
 
 
 f32 UnixRandom::next_f32() {
-	return static_cast<f32>(next_u16()) / static_cast<f32>(std::numeric_limits<u16>::max());
+	return (f32)next_u16() / std::numeric_limits<u16>::max();
 }
 
 f64 UnixRandom::next_f64() {
-	return static_cast<f64>(next_u32()) / static_cast<f64>(std::numeric_limits<u32>::max());
+	return (f64)next_u32() / std::numeric_limits<u32>::max();
 }
 
 
-void UnixRandom::nextBytes(u8 *data, size_t length) {
-	for (size_t i = 0; i < length; i++) { data[i] = next_u8(); }
+void UnixRandom::nextBytes(void *data, size_t size) {
+	for (size_t i = 0; i < size; i++) { ((u8 *)data)[i] = next_u8(); }
 }
