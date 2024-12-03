@@ -4,8 +4,11 @@
 #include <functional>
 #include <vector>
 
+#include <LTEngine/common/compiler_utils.h>
+
+
 namespace LTEngine {
-	template <typename... argsTy> class Event {
+	template <typename... argsTy> class LTENGINE_API Event {
 	public:
 		Event() = default;
 		~Event() = default;

@@ -5,9 +5,11 @@
 
 #include <LTEngine/shapes/shape.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Shapes {
-	struct Circle : public Shape {
+	struct LTENGINE_API Circle : public Shape {
 		f32 radius;
 	};
 } // namespace LTEngine::Shapes

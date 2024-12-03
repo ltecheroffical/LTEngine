@@ -6,6 +6,7 @@
 
 #include <LTEngine/shapes/rect.hpp>
 
+
 namespace LTEngine::Math {
 	typedef LTEngine::Shapes::Rect Rect;
 	typedef LTEngine::Shapes::Recti Recti;

@@ -3,9 +3,11 @@
 
 #include <LTEngine/random/random.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Random {
-	class RandomUnsecure : public Random {
+	class LTENGINE_API RandomUnsecure : public Random {
 	public:
 		RandomUnsecure() = default;
 		virtual ~RandomUnsecure() = default;

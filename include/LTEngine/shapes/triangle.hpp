@@ -5,9 +5,11 @@
 
 #include <LTEngine/shapes/shape.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Shapes {
-	struct Triangle : public Shape {
+	struct LTENGINE_API Triangle : public Shape {
 		Math::Vec2 p1;
 		Math::Vec2 p2;
 		Math::Vec2 p3;

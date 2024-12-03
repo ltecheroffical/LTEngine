@@ -5,9 +5,11 @@
 
 #include <LTEngine/os/file.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::OS {
-	class MemFile : public File {
+	class LTENGINE_API MemFile : public File {
 	public:
 		MemFile(u8 mode);
 		MemFile(const void *buffer, size_t size, u8 mode);

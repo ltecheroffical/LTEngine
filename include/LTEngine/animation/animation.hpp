@@ -1,12 +1,12 @@
+#ifndef _LTENGINE_ANIMATION_HPP_
+#define _LTENGINE_ANIMATION_HPP_
+
 #include <string>
 
 #include <LTEngine/common/types/floattypes.h>
 
 #include <LTEngine/event.hpp>
 
-
-#ifndef _LTENGINE_ANIMATION_HPP_
-#define _LTENGINE_ANIMATION_HPP_
 
 namespace LTEngine::Animation {
 	template <typename T> class Animation {

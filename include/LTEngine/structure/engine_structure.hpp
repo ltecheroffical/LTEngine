@@ -3,9 +3,11 @@
 
 #include <LTEngine/rendering/renderer.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Object {
-	class EngineStructure {
+	class LTENGINE_API EngineStructure {
 	public:
 		virtual ~EngineStructure() = default;
 

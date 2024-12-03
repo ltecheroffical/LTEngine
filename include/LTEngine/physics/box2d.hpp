@@ -7,9 +7,11 @@
 
 #include <LTEngine/physics/physics_engine.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Physics {
-	class Box2D : public PhysicsEngine {
+	class LTENGINE_API Box2D : public PhysicsEngine {
 	public:
 		Box2D();
 		~Box2D();

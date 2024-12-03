@@ -5,6 +5,8 @@
 
 #include <LTEngine/common/types/inttypes.h>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
 	/**
@@ -21,7 +23,7 @@ namespace LTEngine {
 	 * This is very useful for large games, times when the dev doesn't want users to access the asset,
 	 * and live service games.
 	 */
-	class AssetManagerPostProcessor {
+	class LTENGINE_API AssetManagerPostProcessor {
 	public:
 		virtual ~AssetManagerPostProcessor() = 0;
 

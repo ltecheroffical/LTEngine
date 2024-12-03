@@ -10,7 +10,7 @@
 
 
 namespace LTEngine::Math {
-	LTENGINE_PACK_START() struct Vec2 {
+	LTENGINE_PACK_START() struct LTENGINE_API Vec2 {
 		f32 x, y;
 
 		static const Vec2 Zero;
@@ -95,7 +95,7 @@ namespace LTEngine::Math {
 
 	typedef Vec2 Vec2f;
 
-	LTENGINE_PACK_START() struct Vec2i {
+	LTENGINE_PACK_START() struct LTENGINE_API Vec2i {
 		i32 x, y;
 
 		static const Vec2i Zero;
@@ -176,7 +176,7 @@ namespace LTEngine::Math {
 		}
 	} LTENGINE_PACK_END();
 
-	LTENGINE_PACK_START() struct Vec2u {
+	LTENGINE_PACK_START() struct LTENGINE_API Vec2u {
 		u32 x, y;
 
 		static const Vec2u Zero;

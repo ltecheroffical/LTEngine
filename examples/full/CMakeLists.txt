@@ -1,2 +1,2 @@
 add_subdirectory(flappy_bird)
-add_subdirectory(window_not_needed)
+add_subdirectory(sorting_visualizer)

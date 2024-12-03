@@ -8,9 +8,11 @@
 
 #include <LTEngine/rendering/renderer.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Rendering {
-	class SDLRenderer : public Renderer {
+	class LTENGINE_API SDLRenderer : public Renderer {
 	public:
 		SDLRenderer(SDL_Renderer *renderer);
 		~SDLRenderer() override;

@@ -9,6 +9,8 @@
 
 #include <LTEngine/common/types/inttypes.h>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
 	/**
@@ -23,7 +25,7 @@ namespace LTEngine {
 	 *  - It's easier to encrypt, compress, download from server and more with a manager like this.
 	 * Release)
 	 */
-	class AssetManager {
+	class LTENGINE_API AssetManager {
 	public:
 		AssetManager() = default;
 		virtual ~AssetManager() = default;

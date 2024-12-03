@@ -131,8 +131,8 @@ void ObjectStructure::removeObject(u32 id) {
 	if (it != m_objects.end()) { m_objects.erase(it); }
 }
 
-std::shared_ptr<ObjectStructure::Object> ObjectStructure::getObject(u32 id) {
-	auto it = std::find_if(m_objects.begin(), m_objects.end(), [id](const std::shared_ptr<Object> &x) {
+ObjectStructure::Object *ObjectStructure::getObject(u32 id) {
+	auto it = std::find_if(begin(), end(), [id](const Object *x) {
 		if (x == nullptr) { return false; }
 		return x->getId() == id;
 	});

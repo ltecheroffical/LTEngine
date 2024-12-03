@@ -235,7 +235,7 @@ Math::Vec2 Renderer::getWorldScale() const {
 }
 
 
-Camera *Renderer::getCameraById(u32 id) {
+Renderer::Camera *Renderer::getCameraById(u32 id) {
 	auto it = std::find_if(m_cameras.begin(), m_cameras.end(), [id](const Camera &camera) { return camera.id == id; });
 	if (it == m_cameras.end()) { return nullptr; }
 	return &(*it);

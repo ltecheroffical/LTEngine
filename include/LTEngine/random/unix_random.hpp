@@ -6,9 +6,11 @@
 
 #include <LTEngine/random/random.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Random {
-	class UnixRandom : public Random {
+	class LTENGINE_API UnixRandom : public Random {
 	public:
 		UnixRandom(size_t bufferSize = 512);
 		~UnixRandom() override;

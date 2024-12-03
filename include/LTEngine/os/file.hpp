@@ -5,9 +5,11 @@
 
 #include <LTEngine/common/types/inttypes.h>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::OS {
-	class File {
+	class LTENGINE_API File {
 	public:
 		enum class Seek { Begin, Current, End };
 

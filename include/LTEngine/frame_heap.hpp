@@ -6,6 +6,8 @@
 
 #include <LTEngine/common/types/inttypes.h>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
 	/**
@@ -15,7 +17,7 @@ namespace LTEngine {
 	 * The heap is cleared at the end of the frame once `endFrame()` is called. The memory is not zeroed however.
 	 *
 	 */
-	class FrameHeap {
+	class LTENGINE_API FrameHeap {
 	public:
 		FrameHeap() = default;
 		~FrameHeap() = default;

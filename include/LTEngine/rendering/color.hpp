@@ -8,7 +8,7 @@
 
 
 namespace LTEngine::Rendering {
-	LTENGINE_PACK_START() struct Color {
+	LTENGINE_PACK_START() struct LTENGINE_API Color {
 		u8 r, g, b;
 
 		static const Color Black;
@@ -96,7 +96,7 @@ namespace LTEngine::Rendering {
 		}
 	} LTENGINE_PACK_END();
 
-	LTENGINE_PACK_START() struct ColorA {
+	LTENGINE_PACK_START() struct LTENGINE_API ColorA {
 		u8 r, g, b, a;
 
 		static const ColorA Black;
