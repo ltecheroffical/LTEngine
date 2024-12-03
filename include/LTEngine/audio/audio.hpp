@@ -8,9 +8,11 @@
 
 #include <LTEngine/math/vec2.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Audio {
-	class Audio {
+	class LTENGINE_API Audio {
 	public:
 		virtual ~Audio() = default;
 

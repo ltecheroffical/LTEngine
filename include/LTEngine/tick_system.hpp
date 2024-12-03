@@ -11,9 +11,11 @@
 
 #include <LTEngine/event.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
-	class TickSystem {
+	class LTENGINE_API TickSystem {
 	public:
 		TickSystem();
 		~TickSystem() = default;

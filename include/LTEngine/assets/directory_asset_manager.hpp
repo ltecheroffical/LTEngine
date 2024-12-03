@@ -8,9 +8,11 @@
 
 #include <LTEngine/assets/asset_manager.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
-	class DirectoryAssetManager : public AssetManager {
+	class LTENGINE_API DirectoryAssetManager : public AssetManager {
 		DirectoryAssetManager(std::string directory);
 		~DirectoryAssetManager() = default;
 

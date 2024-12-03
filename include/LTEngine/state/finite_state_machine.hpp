@@ -6,10 +6,12 @@
 
 #include <LTEngine/common/types/floattypes.h>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::State {
 	class FSMState;
-	class FiniteStateMachine {
+	class LTENGINE_API FiniteStateMachine {
 	public:
 		FiniteStateMachine() = default;
 		~FiniteStateMachine() = default;

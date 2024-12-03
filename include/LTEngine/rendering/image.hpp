@@ -9,9 +9,11 @@
 
 #include <LTEngine/rendering/color.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Rendering {
-	class Image {
+	class LTENGINE_API Image {
 	public:
 		Image(u32 width, u32 height);
 		Image(const Color *buffer, u32 width, u32 height);

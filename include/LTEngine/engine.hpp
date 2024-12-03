@@ -7,9 +7,11 @@
 
 #include <LTEngine/rendering/renderer.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
-	class Engine {
+	class LTENGINE_API Engine {
 	public:
 		Engine(std::unique_ptr<Object::EngineStructure> structure);
 		~Engine() = default;

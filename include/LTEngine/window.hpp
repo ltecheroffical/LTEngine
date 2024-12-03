@@ -8,9 +8,11 @@
 #include <LTEngine/common/types/floattypes.h>
 #include <LTEngine/common/types/inttypes.h>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
-	enum class WindowKey {
+	enum class LTENGINE_API WindowKey {
 		KEY_UNKNOWN = 0,
 
 		KEY_ESCAPE,
@@ -121,7 +123,7 @@ namespace LTEngine {
 	 * All window implementations for LTEngine must implement this interface. This is a type that can be created without anything
 	 * else.
 	 */
-	class Window {
+	class LTENGINE_API Window {
 	public:
 		virtual ~Window() = default;
 

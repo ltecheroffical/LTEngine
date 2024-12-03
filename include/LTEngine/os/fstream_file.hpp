@@ -5,9 +5,11 @@
 
 #include <LTEngine/os/file.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::OS {
-	class FStreamFile : public File {
+	class LTENGINE_API FStreamFile : public File {
 	public:
 		FStreamFile() : File(0) {}
 		FStreamFile(const char *path, u8 mode);

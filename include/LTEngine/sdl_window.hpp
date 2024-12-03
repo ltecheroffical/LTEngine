@@ -6,9 +6,11 @@
 
 #include <LTEngine/window.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
-	class SDLWindow : public Window {
+	class LTENGINE_API SDLWindow : public Window {
 	public:
 		SDLWindow(const char *title, u32 width, u32 height);
 		~SDLWindow() override;

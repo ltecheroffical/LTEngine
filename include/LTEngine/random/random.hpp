@@ -4,9 +4,11 @@
 #include <LTEngine/common/types/floattypes.h>
 #include <LTEngine/common/types/inttypes.h>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Random {
-	class Random {
+	class LTENGINE_API Random {
 	public:
 		virtual ~Random() = 0;
 

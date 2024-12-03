@@ -9,9 +9,11 @@
 
 #include <LTEngine/audio/audio.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Audio {
-	class SoLoudAudio : public Audio {
+	class LTENGINE_API SoLoudAudio : public Audio {
 	public:
 		SoLoudAudio();
 		~SoLoudAudio();

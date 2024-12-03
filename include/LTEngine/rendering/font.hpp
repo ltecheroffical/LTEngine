@@ -9,9 +9,11 @@
 
 #include <LTEngine/rendering/image.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Rendering {
-	class Font {
+	class LTENGINE_API Font {
 	public:
 		Font(std::string fontPath);
 		Font(const u8 *fontData, u32 fontDataSize);

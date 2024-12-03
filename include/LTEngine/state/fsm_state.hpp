@@ -3,11 +3,13 @@
 
 #include <LTEngine/common/types/floattypes.h>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::State {
 	class FiniteStateMachine;
 
-	class FSMState {
+	class LTENGINE_API FSMState {
 	public:
 		FSMState(FiniteStateMachine *machine) : m_machine(machine) {}
 		virtual ~FSMState() = default;

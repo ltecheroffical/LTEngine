@@ -5,9 +5,11 @@
 
 #include <LTEngine/ai/pathfinding.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::AI {
-	class AStarPathfinding : public Pathfinding {
+	class LTENGINE_API AStarPathfinding : public Pathfinding {
 	public:
 		AStarPathfinding();
 		~AStarPathfinding() override = default;

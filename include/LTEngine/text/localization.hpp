@@ -6,11 +6,13 @@
 
 #include <LTEngine/common/types/inttypes.h>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Text {
-	class Localization {
+	class LTENGINE_API Localization {
 	public:
-		enum class Language {
+		enum class LTENGINE_API Language {
 			en_US = 0,
 			en_GB,
 			en_CA,

@@ -13,16 +13,28 @@
 #include <LTEngine/shapes/rect.hpp>
 #include <LTEngine/shapes/triangle.hpp>
 
-#include <LTEngine/rendering/camera.hpp>
 #include <LTEngine/rendering/color.hpp>
 #include <LTEngine/rendering/image.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Rendering {
-	class Renderer {
+	class LTENGINE_API Renderer {
 	public:
 		Renderer() = default;
 		virtual ~Renderer() = default;
+
+		struct Camera {
+
+			Math::Vec2 position = Math::Vec2::Zero;
+			Math::Vec2 zoom = Math::Vec2::One;
+			f32 rotation = 0.f;
+
+			bool exclude : 1;
+
+			u32 id;
+		};
 
 		typedef u16 RendererFlags;
 

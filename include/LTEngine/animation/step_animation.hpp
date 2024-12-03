@@ -1,12 +1,13 @@
+#ifndef _LTENGINE_STEP_ANIMATION_HPP_
+#define _LTENGINE_STEP_ANIMATION_HPP_
+
+
 #include <unordered_map>
 
 #include <LTEngine/animation/animation.hpp>
 
 #include <LTEngine/tick_system.hpp>
 
-
-#ifndef _LTENGINE_STEP_ANIMATION_HPP_
-#define _LTENGINE_STEP_ANIMATION_HPP_
 
 namespace LTEngine::Animation {
 	template <typename T> class StepAnimation : public Animation<T> {

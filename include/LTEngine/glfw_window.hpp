@@ -7,9 +7,11 @@
 
 #include <LTEngine/window.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
-	class GLFWWindow : public Window {
+	class LTENGINE_API GLFWWindow : public Window {
 	public:
 		GLFWWindow(const char *title, u32 width, u32 height);
 		GLFWWindow(const char *title, u32 width, u32 height, const std::unordered_map<int, int> &hints);

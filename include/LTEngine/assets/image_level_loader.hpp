@@ -6,9 +6,11 @@
 
 #include <LTEngine/rendering/image.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
-	class ImageLevelLoader {
+	class LTENGINE_API ImageLevelLoader {
 	public:
 		ImageLevelLoader() = default;
 

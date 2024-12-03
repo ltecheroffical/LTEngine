@@ -10,4 +10,14 @@
 #warning "This compiler doesn't support packing, there may be compatibility issues."
 #endif
 
+#ifdef _WIN32
+#ifdef LTENGINE_SHARED
+#define LTENGINE_API __declspec(dllexport)
+#else
+#define LTENGINE_API __declspec(dllimport)
+#endif
+#else
+#define LTENGINE_API __attribute__((visibility("default")))
+#endif
+
 #endif

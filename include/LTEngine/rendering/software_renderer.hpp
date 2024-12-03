@@ -8,9 +8,11 @@
 #include <LTEngine/rendering/cpu_shader.hpp>
 #include <LTEngine/rendering/renderer.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Rendering {
-	class SoftwareRenderer : public Renderer {
+	class LTENGINE_API SoftwareRenderer : public Renderer {
 	public:
 		SoftwareRenderer(u32 width, u32 height);
 		~SoftwareRenderer() override = default;

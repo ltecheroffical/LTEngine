@@ -3,9 +3,11 @@
 
 #include <LTEngine/math/vec2.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Shapes {
-	struct Shape {
+	struct LTENGINE_API Shape {
 		f32 x = 0.f, y = 0.f;
 		f32 rotation = 0.f;
 
@@ -14,7 +16,7 @@ namespace LTEngine::Shapes {
 		Shape(f32 x, f32 y, f32 rotation) : x(x), y(y), rotation(rotation) {}
 	};
 
-	struct Shapei {
+	struct LTENGINE_API Shapei {
 		i32 x = 0, y = 0;
 		i16 rotation = 0;
 

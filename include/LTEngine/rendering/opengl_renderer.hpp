@@ -10,9 +10,11 @@
 
 #include <LTEngine/rendering/renderer.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Rendering {
-	class OpenGLRenderer : public Renderer {
+	class LTENGINE_API OpenGLRenderer : public Renderer {
 	public:
 		OpenGLRenderer(u32 width, u32 height, std::function<void()> switchContextCallback);
 		~OpenGLRenderer() override;

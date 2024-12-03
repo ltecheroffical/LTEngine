@@ -9,7 +9,7 @@
 
 
 namespace LTEngine::AI {
-	class Pathfinding {
+	class LTENGINE_API Pathfinding {
 	public:
 		virtual ~Pathfinding() = default;
 

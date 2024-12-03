@@ -6,9 +6,11 @@
 #include <LTEngine/math/vec2.hpp>
 #include <LTEngine/rendering/color.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Rendering {
-	struct CPUShaderIO {
+	struct LTENGINE_API CPUShaderIO {
 		Math::Vec2i position;
 		ColorA color;
 
@@ -35,7 +37,7 @@ namespace LTEngine::Rendering {
 		}
 	};
 
-	class CPUShader {
+	class LTENGINE_API CPUShader {
 	public:
 		virtual ~CPUShader() = 0;
 

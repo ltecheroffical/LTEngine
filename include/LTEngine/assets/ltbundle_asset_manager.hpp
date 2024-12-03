@@ -5,9 +5,11 @@
 
 #include <LTEngine/assets/asset_manager.hpp>
 
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine {
-	class LTBundleAssetManager : public AssetManager {
+	class LTENGINE_API LTBundleAssetManager : public AssetManager {
 	public:
 		LTBundleAssetManager(LTEngine::OS::File *file);
 		~LTBundleAssetManager() = default;

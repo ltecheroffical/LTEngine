@@ -1,8 +1,6 @@
 #ifndef _LTENGINE_PHYSICS_ENGINE_HPP_
 #define _LTENGINE_PHYSICS_ENGINE_HPP_
 
-#include <LTEngine/common/types/inttypes.h>
-
 #include <LTEngine/math/vec2.hpp>
 
 #include <LTEngine/shapes/circle.hpp>
@@ -12,9 +10,13 @@
 
 #include <LTEngine/event.hpp>
 
+#include <LTEngine/common/types/inttypes.h>
+
+#include <LTEngine/common/compiler_utils.h>
+
 
 namespace LTEngine::Physics {
-	class PhysicsEngine {
+	class LTENGINE_API PhysicsEngine {
 		// It actually quite hard to create a base class for all physics engines
 	public:
 		virtual ~PhysicsEngine() = default;
