@@ -123,7 +123,7 @@ u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec2 positi
 }
 
 void ObjectStructure::removeObject(u32 id) {
-	auto it = std::find_if(m_objects.begin(), m_objects.end(), [id](const std::unique_ptr<Object> &x) {
+	auto it = std::find_if(m_objects.begin(), m_objects.end(), [id](const std::shared_ptr<Object> &x) {
 		if (x == nullptr) { return false; }
 		return x->getId() == id;
 	});
@@ -131,13 +131,28 @@ void ObjectStructure::removeObject(u32 id) {
 	if (it != m_objects.end()) { m_objects.erase(it); }
 }
 
-ObjectStructure::Object *ObjectStructure::getObject(u32 id) {
-	auto it = std::find_if(m_objects.begin(), m_objects.end(), [id](const std::unique_ptr<Object> &x) {
+std::shared_ptr<ObjectStructure::Object> ObjectStructure::getObject(u32 id) {
+	auto it = std::find_if(m_objects.begin(), m_objects.end(), [id](const std::shared_ptr<Object> &x) {
 		if (x == nullptr) { return false; }
 		return x->getId() == id;
 	});
 
-	if (it != m_objects.end()) { return it->get(); }
+	if (it != m_objects.end()) { return *it; }
 
 	return nullptr;
+}
+
+
+void ObjectStructure::addTag(u32 id, const std::string &tag) {
+	m_objectTags[tag].push_back(id);
+}
+
+void ObjectStructure::removeTag(u32 id, const std::string &tag) {
+	if (!m_objectTags.contains(tag)) { return; }
+	m_objectTags[tag].erase(std::remove(m_objectTags[tag].begin(), m_objectTags[tag].end(), id), m_objectTags[tag].end());
+}
+
+bool ObjectStructure::hasTag(u32 id, const std::string &tag) {
+	if (!m_objectTags.contains(tag)) { return false; }
+	return std::find(m_objectTags[tag].begin(), m_objectTags[tag].end(), id) != m_objectTags[tag].end();
 }

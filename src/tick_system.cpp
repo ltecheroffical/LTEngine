@@ -7,29 +7,19 @@ using namespace LTEngine;
 
 
 TickSystem::TickSystem() {
-	m_currentTickTime = m_tickDelay;
+	m_tickTimer.onEnd += std::bind(&TickSystem::onTimerEnd, this);
+	m_tickTimer.setRepeat(true);
 }
 
 
 void TickSystem::step(f32 step) {
-	if (m_currentTickTime - step > 0.f) {
-		m_currentTickTime -= step;
-		return;
-	}
-
-	m_currentTickTime = m_tickDelay;
-	m_currentTick++;
-
-	onTick(m_currentTick);
-
-	for (auto &clock : m_tickClocks) {
-		if (m_currentTick % clock.second == 0) { m_tickEvents[clock.first](m_currentTick); }
-	}
+	m_tickTimer.step(step);
 }
 
 
 void TickSystem::setTickDelay(f32 delaySeconds) {
-	m_tickDelay = delaySeconds;
+	m_tickTimer.stop();
+	m_tickTimer.start(delaySeconds);
 }
 
 
@@ -51,4 +41,14 @@ void TickSystem::unregisterTick(std::string name) {
 
 Event<u64> *TickSystem::getTickEvent(std::string name) {
 	return &m_tickEvents[name];
+}
+
+
+void TickSystem::onTimerEnd() {
+	m_currentTick++;
+	onTick(m_currentTick);
+
+	for (auto &clock : m_tickClocks) {
+		if (m_currentTick % clock.second == 0) { m_tickEvents[clock.first](m_currentTick); }
+	}
 }
