@@ -65,7 +65,7 @@ void AStarPathfinding::removeObstacle(u32 id) {
 }
 
 
-std::vector<Math::Vec2i> AStarPathfinding::getPath() {
+std::vector<Math::Vec2i> AStarPathfinding::calculatePath() {
 	if (!isValid(m_start) || !isValid(m_end)) { return {}; }
 	if (isBlocked(m_end)) { return {}; }
 

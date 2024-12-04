@@ -14,7 +14,7 @@ void test_astar_pathfinding() {
 	pathfinding.addObstacle(LTEngine::Math::Vec2i::Left);
 	pathfinding.addObstacle(LTEngine::Math::Vec2i::Right);
 
-	std::vector<LTEngine::Math::Vec2i> path = pathfinding.getPath();
+	std::vector<LTEngine::Math::Vec2i> path = pathfinding.calculatePath();
 	for (LTEngine::Math::Vec2i direction : path) { position += direction; }
 
 	TEST_CHECK(position == target);

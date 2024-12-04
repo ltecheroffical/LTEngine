@@ -14,6 +14,7 @@ namespace LTEngine::Animation {
 		virtual ~Animation() = default;
 
 		Event<> onAnimationEnd;
+		// The signature of the event is (T newState)
 		Event<T> onAnimationStateChange;
 
 		virtual void step(f32 step) = 0;
