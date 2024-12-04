@@ -70,6 +70,7 @@ namespace LTEngine::Animation {
 		}
 
 
+		// Sets what the frame at that tick should be, will stay at the current before triggering the next tick
 		void setFrame(u64 ticks, T frame) { m_frames[ticks] = frame; }
 		void removeFrame(u64 ticks) { m_frames.erase(ticks); }
 

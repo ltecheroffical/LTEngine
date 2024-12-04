@@ -31,18 +31,14 @@ namespace LTEngine {
 		virtual ~AssetManager() = default;
 
 		const std::vector<u8> loadAsset(std::string path);
-		/**
-		 * @brief Load asset without caching or processing.
-		 */
+		// Loads an asset without caching or processing.
 		virtual const std::vector<u8> loadAssetPure(std::string path) = 0;
 		void saveAsset(std::string path, const u8 *data, size_t size);
-		/**
-		 * @brief Save asset without caching or processing.
-		 */
+		// Saves an asset without caching or processing.
 		virtual void saveAssetPure(std::string path, const u8 *data, size_t size) = 0;
 
 		void clearCache() { m_cache.clear(); }
-
+		// Removes an asset from the cache
 		void removeCachedAsset(std::string path) { m_cache.erase(path); }
 
 		/**

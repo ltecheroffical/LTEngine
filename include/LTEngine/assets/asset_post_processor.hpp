@@ -20,8 +20,7 @@ namespace LTEngine {
 	 *  - Downloading from server
 	 *  - Pretending assets that don't exist, exist without modifying the assets
 	 *
-	 * This is very useful for large games, times when the dev doesn't want users to access the asset,
-	 * and live service games.
+	 * The last 2 are very useful for large and live service games.
 	 */
 	class LTENGINE_API AssetManagerPostProcessor {
 	public:
@@ -44,7 +43,8 @@ namespace LTEngine {
 		 * @brief Handle if loading an asset failed.
 		 *
 		 * @param data The data of the asset as a pointer.
-		 * @returns If the asset loading should continue with the current data. If this is false, an exception will be thrown.
+		 * @returns If the asset loading should continue with the current data. If this is false, an exception will be thrown at the
+		 * asset manager.
 		 */
 		virtual bool assetLoadFailed(std::string path, std::vector<u8> *data) { return false; }
 	};

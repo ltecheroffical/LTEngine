@@ -22,9 +22,9 @@ namespace LTEngine::AI {
 		u32 addObstacle(Math::Vec2i pos) override;
 		void removeObstacle(u32 id) override;
 
-		std::vector<Math::Vec2i> getPath() override;
+		std::vector<Math::Vec2i> calculatePath() override;
 
-		void setCalculateHeristic(std::function<f32(Math::Vec2i, Math::Vec2i)> func) { m_heristicFunc = func; }
+		void setCalculateHeristic(std::function<f32(Math::Vec2i a, Math::Vec2i b)> func) { m_heristicFunc = func; }
 		void resetCalculateHeristic();
 
 	private:

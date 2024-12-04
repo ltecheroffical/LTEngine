@@ -46,6 +46,9 @@ endif()
 # Thirdparty
 add_subdirectory(thirdparty)
 
+# Docs
+add_subdirectory(doc)
+
 # Tests
 if (LTENGINE_BUILD_TESTS)
     message(STATUS "LTEngine: Tests are enabled")

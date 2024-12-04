@@ -132,23 +132,12 @@ namespace LTEngine {
 		Event<> onWindowFocus;
 		Event<> onWindowUnfocus;
 
-		/**
-		 * @brief Triggered when the window is resized.
-		 *
-		 * The first argument is the new width.
-		 * The second argument is the new height.
-		 */
+		// The event signature is (u32 width, u32 height)
 		Event<u32, u32> onWindowResize;
 		Event<> onWindowMinimize;
 		Event<> onWindowRestore;
 
-		/**
-		 * @brief Triggered when the window is moved.
-		 *
-		 * @details
-		 * The first argument is the new x position.
-		 * The second argument is the new y position.
-		 */
+		// The event signature is (u32 x, u32 y)
 		Event<u32, u32> onWindowMove;
 
 		Event<WindowKey> onWindowKeyPress;
@@ -199,6 +188,8 @@ namespace LTEngine {
 		 * @details
 		 * The image must be in RGB24 format, no padding.
 		 * The image size is calculated automatiically by the width and height.
+		 *
+		 *  WARNING: THIS MAY THROW AN ERROR ON ALL WINDOW TYPES BECAUSE IT IS NOT NEEDED TO BE IMPLEMENTED
 		 */
 		virtual void display(Rendering::Color *screen, u32 width, u32 height) = 0;
 		/**
@@ -207,6 +198,9 @@ namespace LTEngine {
 		 * @param screen The image to display in RGBA32 format, no padding.
 		 * @param width The width of the image.
 		 * @param height The height of the image.
+		 *
+		 *  WARNING: THIS MAY THROW AN ERROR ON ALL WINDOW TYPES BECAUSE IT IS NOT NEEDED TO BE IMPLEMENTED
+
 		 */
 		virtual void display(Rendering::ColorA *screen, u32 width, u32 height) = 0;
 	};
