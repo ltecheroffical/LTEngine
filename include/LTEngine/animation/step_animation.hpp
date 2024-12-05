@@ -16,7 +16,14 @@ namespace LTEngine::Animation {
 			m_animTicker.onTick += [this](u64 ticks) {
 				if (!m_isPlaying) { return; }
 				if (!m_frames.contains(ticks)) { return; }
+				onAnimationStateChange(m_frames[ticks]);
 				m_currentFrame = m_frames[ticks];
+
+				if (std::find_if(m_frames.begin(), m_frames.end(),
+				                 [ticks](std::pair<u64, T> frame) { return frame.first > ticks; }) == m_frames.end()) {
+					onAnimationEnd();
+					stopAnimation();
+				}
 			};
 			m_animTicker.setTickDelay(m_stepsBetweenTicks);
 		}
@@ -34,20 +41,6 @@ namespace LTEngine::Animation {
 		void setFrameDelay(f32 delay) {
 			m_animTicker.setTickDelay(delay);
 			m_stepsBetweenTicks = delay;
-		}
-
-
-		void loadAnimation(std::string animation) override {
-			if (!m_animations.contains(animation)) { return; }
-
-			stopAnimation();
-			m_frames = m_animations[animation].frames;
-			m_stepsBetweenTicks = m_animations[animation].delay;
-		}
-
-		void saveAnimation(std::string animation) override {
-			m_animations[animation].frames = m_frames;
-			m_animations[animation].delay = m_stepsBetweenTicks;
 		}
 
 
