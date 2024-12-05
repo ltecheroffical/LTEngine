@@ -1,8 +1,6 @@
 #ifndef _LTENGINE_ANIMATION_HPP_
 #define _LTENGINE_ANIMATION_HPP_
 
-#include <string>
-
 #include <LTEngine/common/types/floattypes.h>
 
 #include <LTEngine/event.hpp>
@@ -18,9 +16,6 @@ namespace LTEngine::Animation {
 		Event<T> onAnimationStateChange;
 
 		virtual void step(f32 step) = 0;
-
-		virtual void loadAnimation(std::string animation) = 0;
-		virtual void saveAnimation(std::string animation) = 0;
 
 		virtual void playAnimation() = 0;
 		virtual void pauseAnimation() = 0;
