@@ -62,6 +62,7 @@ These features are planned for the first stable release:
 - [x] **Localization** (5/10 Diffculty): Support for multiple languages by mapping keys (e.g., "ui/buttons/save") to text (e.g., "Save").
 - [x] **Audio Engine Support** (7/10 Diffculty): Compatibility with audio engines (e.g., raudio, soloud).
 - [x] **Polishing** (8/10 Diffculty): Refactor and improve the engine's codebase and add tests.
+- [ ] **C API** (3/10 Diffculty): Support for C API for easier integration with C projects and bindings (Good luck creating bindings for a C++ library).
 - [ ] **Documentation** (4/10 Diffculty): Documentation comments through out the engine's headers.
 - [ ] **More examples** (6/10 Diffculty): Examples that show users how to use the engine.
 
