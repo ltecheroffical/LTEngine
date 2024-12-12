@@ -1,3 +1,4 @@
+#include <cmath>
 #include <vector>
 
 #include <LTEngine/hash.hpp>
@@ -31,7 +32,7 @@ void LTEngine::Hash::md5(const u8 *data, u32 size, u8 output[16]) {
 	static bool initialized = false;
 
 	if (!initialized) {
-		for (u32 i = 0; i < 64; i++) { k[i] = floor(pow(2, 32) * abs(sin(i + 1))); }
+		for (u32 i = 0; i < 64; i++) { k[i] = std::floor(std::pow(2, 32) * std::abs(std::sin(i + 1))); }
 		initialized = true;
 	}
 

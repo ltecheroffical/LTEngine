@@ -15,7 +15,7 @@ FStreamFile::~FStreamFile() {
 
 
 void FStreamFile::open(const char *path, u8 mode) {
-	std::ios::openmode openMode = 0;
+	std::ios::openmode openMode = std::ios::openmode{};
 	bool create = (mode & FILE_CREATE) != 0;
 
 	if (mode & FILE_READ) openMode |= std::ios::in;

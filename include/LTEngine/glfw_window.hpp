@@ -1,6 +1,8 @@
 #ifndef _LTENGINE_GLFW_WINDOW_HPP_
 #define _LTENGINE_GLFW_WINDOW_HPP_
 
+#ifndef LTENGINE_DISABLE_GLFW
+
 #include <unordered_map>
 
 #include <GLFW/glfw3.h>
@@ -69,4 +71,5 @@ namespace LTEngine {
 	};
 } // namespace LTEngine
 
+#endif
 #endif

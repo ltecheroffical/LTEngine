@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(LTEngine VERSION 0.1.0 LANGUAGES C CXX ASM)
+project(LTEngine VERSION 1.0.0 LANGUAGES C CXX ASM)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 20)
@@ -12,8 +12,10 @@ option(LTENGINE_BUILD_STATIC_CMAKE_IGNORE "Do not override if BUILD_SHARED_LIBS 
 
 option(LTENGINE_BUILD_EXAMPLES "Build LTEngine examples" ON)
 option(LTENGINE_BUILD_TESTS "Build LTEngine tests" ON)
+option(LTENGINE_BUILD_DOCS "Build LTEngine documentation" ON)
 
 option(LTENGINE_BUILD_WITH_SDL "Build SDL into LTEngine" OFF)
+option(LTENGINE_DISABLE_GLFW "Disable GLFW building and linking (useful for github actions due to the headless mode)" OFF)
 
 
 file(GLOB_RECURSE C_SOURCE_FILES CONFIGURE_DEPENDS 
@@ -38,6 +40,10 @@ if (NOT TARGET ${PROJECT_NAME})
         target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_SHARED)
     endif()
 
+    if (LTENGINE_DISABLE_GLFW)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_DISABLE_GLFW)
+    endif()
+
     if (LTENGINE_BUILD_WITH_SDL)
         target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_SDL_ENABLE)
     endif()
@@ -47,7 +53,13 @@ endif()
 add_subdirectory(thirdparty)
 
 # Docs
+<<<<<<< HEAD
 add_subdirectory(doc)
+=======
+if (LTENGINE_BUILD_DOCS)
+    add_subdirectory(doc)
+endif()
+>>>>>>> 58e0610 (LTEngine: Version 1.0.0)
 
 # Tests
 if (LTENGINE_BUILD_TESTS)

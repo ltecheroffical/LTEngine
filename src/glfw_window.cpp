@@ -5,6 +5,8 @@
 #include <LTEngine/glfw_window.hpp>
 
 
+#ifndef LTENGINE_DISABLE_GLFW
+
 using namespace LTEngine;
 
 
@@ -357,3 +359,5 @@ const int windowKeyToGLFWKeyLookup[] = {GLFW_KEY_UNKNOWN,
                                         GLFW_KEY_RIGHT};
 
 const int windowMouseButtonToGLFWMouseButtonLookup[] = {GLFW_MOUSE_BUTTON_LEFT, GLFW_MOUSE_BUTTON_RIGHT, GLFW_MOUSE_BUTTON_MIDDLE};
+
+#endif

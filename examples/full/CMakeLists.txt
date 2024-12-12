@@ -1,2 +1,0 @@
-add_subdirectory(flappy_bird)
-add_subdirectory(sorting_visualizer)

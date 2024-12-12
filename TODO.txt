@@ -1,0 +1,46 @@
+LTEngine TODO List:
+
+- [ ] v1.0.0
+    - [x] Polish Engine
+        - [x] Buffer OpenGL renderer to flush to GPU later
+        - [x] Add features that classes advertise. (For example renderer rotation and scaling)
+        - [x] Code coverage (With tests)
+        - [x] API Refactor and usability update
+            - [x] Add time (in seconds) param to software renderer CPU shaders
+            - [x] Add stuff to Vectors like normalization and distanceTo
+        - [x] Add frame allocator (use this every frame to store stuff that doesn't need to preist through frames, and call a function to free everything)
+        - [x] Modernize CMake files (Using CMAKE_SYSTEM_NAME instead of variables like WIN32 or APPLE)
+        - [x] Add abstractions for compiler specific things like packed structs
+        - [x] Add set and get transform methods instead of setting them directly in the default object structure
+        - [x] Switch from `#pragma once` to `#define` header guard
+        - [x] Switch to `size_t` for size
+        - [x] Add tick system
+        - [x] Implment update and render methods in Engine class
+        - [x] Add rotate(f32) method to object class on object structure
+        - [x] Refactor code to use the new `LTEngine::OS::File` class
+        - [x] Add directory asset manager
+    - [x] Animation
+        - [x] Add animator class and make that manage the animations
+        - [x] Add animator interfacer that implments a state machine
+    - [x] Tags in object structure
+    - [x] Support dynamic library builds
+    - [x] Add code comments for documentation
+        - [x] Add doxygen
+        - [x] Convert docs to note format
+    - [ ] CI Pipeline
+- [ ] v1.1.0
+    - [ ] Consisentency (e.g change capital enums to camel case)
+    - [ ] Remove unneeded includes from headers
+    - [ ] Add C API
+        - [ ] Document C API
+    - [ ] Add more examples
+        - [ ] Fix any bugs that I may catch during making examples
+        - [ ] Check usability issues while writing examples
+    - [ ] Custom exceptions and better exception use (like in the Pathfinding class)
+    - [ ] UI Library
+    - [ ] GLFW Window implment display() functions
+    - [ ] Const correctness and pointer use (e.g. geting a refrence to std::string include of copying it)
+    - [ ] Add crash handler functions like dumping things PC, state are more.
+    - [ ] Add HTTP and Socket Abstractions (The following SO post has an answer for cross-platform sockets https://stackoverflow.com/questions/28027937/cross-platform-sockets)
+    - [ ] Add a default binding to Python
+    - [ ] Begin cross compiling to Windows

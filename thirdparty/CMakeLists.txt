@@ -6,7 +6,13 @@ if (LTENGINE_BUILD_WITH_SDL)
     add_library(SDL2 ALIAS SDL2-static)
 endif()
 
-add_subdirectory(glfw)
+if (NOT LTENGINE_DISABLE_GLFW)
+    set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+    add_subdirectory(glfw)
+endif()
 
 # GPU Graphics
 add_subdirectory(glad)
@@ -33,10 +39,14 @@ if (LTENGINE_BUILD_WITH_SDL)
     )
 endif()
 
-target_link_libraries(${PROJECT_NAME} PUBLIC
-    # Windowing
-    glfw
+if (NOT LTENGINE_DISABLE_GLFW)
+    target_link_libraries(${PROJECT_NAME} PUBLIC
+        # Windowing
+        glfw
+    )
+endif()
 
+target_link_libraries(${PROJECT_NAME} PUBLIC
     # GPU Graphics
     glad
 

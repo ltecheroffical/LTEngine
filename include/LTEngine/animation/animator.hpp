@@ -34,6 +34,7 @@ namespace LTEngine::Animation {
 			m_loadedAnimation = name;
 		}
 
+		std::string getCurrentAnimation() { return m_loadedAnimation; }
 
 		void step(f32 step) {
 			if (m_animations.contains(m_loadedAnimation)) { m_animations[m_loadedAnimation]->step(step); }

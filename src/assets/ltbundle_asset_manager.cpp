@@ -37,7 +37,7 @@ const std::vector<u8> LTBundleAssetManager::loadAssetPure(std::string path) {
 	m_file->seekp(0, OS::File::Seek::Begin);
 	size_t fileSize = m_file->size();
 
-	if (fileSize < sizeof(LTBundleHeader)) { throw std::runtime_error("Bundle file is corrupt or not a LTBundle file!"); }
+	if (fileSize < sizeof(LTBundleHeader)) { throw std::runtime_error("Bundle file is corrupt or not a LTBundle file! (Header)"); }
 
 	LTBundleHeader header;
 	m_file->read(&header, sizeof(LTBundleHeader));
@@ -54,7 +54,7 @@ const std::vector<u8> LTBundleAssetManager::loadAssetPure(std::string path) {
 
 		u32 entrySize = (ntohl(((entry.size >> 32) & 0xFFFFFFFF)) | (ntohl(entry.size) & 0xFFFFFFFF));
 		if (ntohl(entry.pathSize) + entrySize > fileSize) {
-			throw std::runtime_error("Bundle file is corrupt or not a LTBundle file!");
+			throw std::runtime_error("Bundle file is corrupt or not a LTBundle file! (Entry)");
 		}
 
 		std::string entry_path;
@@ -66,7 +66,7 @@ const std::vector<u8> LTBundleAssetManager::loadAssetPure(std::string path) {
 			std::vector<u8> data(ntohl(((entry.size >> 32) & 0xFFFFFFFF)) | (ntohl(entry.size) & 0xFFFFFFFF));
 			m_file->read(data.data(), ntohl(((entry.size >> 32) & 0xFFFFFFFF)) | (entry.size & 0xFFFFFFFF));
 			if (entry.checksum != Hash::crc32(data.data(), ntohl((entry.size >> 32) & 0xFFFFFFFF))) {
-				throw std::runtime_error("Asset is corrupt!");
+				throw std::runtime_error("Asset " + path + " is corrupt!");
 			}
 			return data;
 		}
