@@ -70,13 +70,53 @@ These features are planned for the first stable release:
 
 ## In the Future
 
-- [ ] **3D Support**: Although ambitious, 3D rendering support may be added in future versions.
+- [ ] **3D Support** (1000/10 Diffculty): Although ambitious, 3D rendering support may be added in future versions.
+
+---
+
+## Behind the Scenes
+
+### C API   
+The C API is the API used for C projects and bindings.
+This API is second class to the C++ API. The magic behind the C API
+is just the C API headers and C++ implementation. It's not that special.
+However, the C API uses manual memory management due to the fact C doesn't have
+garbage collection and every object needs heap allocation since C is not directly
+compatible with C++.
 
 ---
 
 ## Getting Started
 
 Currently, the recommended approach is to clone the repository into a third-party directory and use CMake to add it as a subdirectory. Releases will be available after v1.0.0.
+
+---
+
+## Contributing
+
+The rules aren't fully defined yet but keep your code in touch with `clang-format` and the naming conventions are:
+
+### C++
+
+Classes: PascalCase
+Namespaces: PascalCase
+Functions and Variables: camelCase
+
+Any private variables start with `m_`
+
+### C API
+
+All names belonging to LTEngine begin with `LTEngine_`
+
+Any struct members not meant to be public are prefixed with `_`
+
+Classes: PascalCase
+Functions: PascalCase
+Variables: snake_case
+
+Examples of how things are done can be found in the headers.
+Any objects that cannot be natively repersented in C without `void*` (e.g C++ classes) should be 
+typedefed it's name should prefixed from after `LTEngine_` with `H` (H for Handle).
 
 ---
 

@@ -25,16 +25,6 @@ namespace LTEngine::Rendering {
 		Renderer() = default;
 		virtual ~Renderer() = default;
 
-		struct Camera {
-
-			Math::Vec2 position = Math::Vec2::Zero;
-			Math::Vec2 zoom = Math::Vec2::One;
-			f32 rotation = 0.f;
-
-			bool exclude : 1;
-
-			u32 id;
-		};
 
 		typedef u16 RendererFlags;
 
@@ -126,6 +116,17 @@ namespace LTEngine::Rendering {
 		Math::Vec2 getWorldScale() const;
 
 	protected:
+		struct Camera {
+
+			Math::Vec2 position = Math::Vec2::Zero;
+			Math::Vec2 zoom = Math::Vec2::One;
+			f32 rotation = 0.f;
+
+			bool exclude : 1;
+
+			u32 id;
+		};
+
 		virtual void cameraCreated(u32 id) {};
 		virtual void cameraDestroyed(u32 id) {};
 		virtual void cameraSelected(u32 id) {};

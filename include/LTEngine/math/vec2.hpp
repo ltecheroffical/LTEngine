@@ -113,7 +113,7 @@ namespace LTEngine::Math {
 			if (magnitude == 0.f) { return Zero; }
 			return Vec2i(x / magnitude, y / magnitude);
 		}
-		f32 distance(Vec2 other) {
+		f32 distance(Vec2i other) {
 			f32 dx = other.x - x;
 			f32 dy = other.y - y;
 			return std::sqrt(dx * dx + dy * dy);

@@ -10,6 +10,16 @@
 #warning "This compiler doesn't support packing, there may be compatibility issues."
 #endif
 
+#if defined(__GNU__) || defined(__clang__)
+#define LTENGINE_WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+
+#define LTENGINE_UNUSED __attribute__((unused))
+#else
+#define LTENGINE_WARN_UNUSED_RESULT
+
+#define LTENGINE_UNUSED
+#endif
+
 #ifdef _WIN32
 #ifdef LTENGINE_SHARED
 #define LTENGINE_API __declspec(dllexport)
