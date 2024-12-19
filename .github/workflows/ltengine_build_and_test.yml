@@ -33,12 +33,22 @@ jobs:
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
+        exclude:
+          - os: windows-latest
+            c_compiler: gcc
+          - os: windows-latest
+            cpp_compiler: g++
+          - os: ubuntu-latest
+            c_compiler: mingw
+          - os: ubuntu-latest
+            cpp_compiler: mingw
+
 
     steps:
     - uses: actions/checkout@v4
     - name: Set reusable strings
       id: strings
-      shell: bash}
+      shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
     
