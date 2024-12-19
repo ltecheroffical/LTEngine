@@ -116,6 +116,7 @@ void test_renderer_draw_circle() {
 			}
 		}
 	}
+	outputToImage("circle.png", screen.data(), RENDER_WIDTH, RENDER_HEIGHT);
 }
 
 void test_renderer_draw_line() {

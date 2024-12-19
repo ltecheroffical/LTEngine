@@ -511,6 +511,7 @@ void SoftwareRenderer::prepareBuffer(u32 width, u32 height) {
 	m_bufferWidth = width;
 	m_bufferHeight = height;
 	if (m_bufferData.size() < m_bufferWidth * m_bufferHeight) { m_bufferData.resize(m_bufferWidth * m_bufferHeight); }
+	std::fill(m_bufferData.begin(), m_bufferData.end(), ColorA::Clear);
 }
 
 void SoftwareRenderer::drawBufferPixel(u32 x, u32 y, ColorA color) {
