@@ -24,19 +24,27 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         build_type: [Release]
-        c_compiler: [gcc, cl]
+        c_compiler: [gcc]
+        cpp_compiler: [g++]
+        static_lib: [ON, OFF]
         include:
           - os: windows-latest
-            c_compiler: cl
-            cpp_compiler: cl
+            c_compiler: gcc
+            cpp_compiler: g++
+            static_lib: ON
+          - os: windows-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+            static_lib: OFF
+
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
-        exclude:
-          - os: windows-latest
-            c_compiler: gcc
+            static_lib: ON
           - os: ubuntu-latest
-            c_compiler: cl
+            c_compiler: gcc
+            cpp_compiler: g++
+            static_lib: OFF
 
     steps:
     - uses: actions/checkout@v4
@@ -54,6 +62,7 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DLTENGINE_BUILD_STATIC=${{ matrix.static_lib }}
         -DLTENGINE_BUILD_DOCS=OFF
         -DLTENGINE_DISABLE_GLFW=ON
         -S ${{ github.workspace }}
