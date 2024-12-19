@@ -47,6 +47,14 @@ jobs:
       with:
         version: latest
         platform: x64
+      if: ${{ (matrix.os == 'ubuntu-latest') }}
+
+    - name: Setup MinGW
+      uses: egor-tensin/setup-mingw@v1
+      with:
+        platform: x64
+      if: ${{ (matrix.os == 'windows-latest') }}
+
     
     - uses: actions/checkout@v4
     - name: Configure CMake
@@ -72,6 +80,6 @@ jobs:
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
       timeout-minutes: 60
-      if: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled) || failure() }}
+      if: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled) }}
       with:
         limit-access-to-actor: true # Security reasons
