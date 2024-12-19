@@ -54,7 +54,9 @@ const std::vector<u8> LTBundleAssetManager::loadAssetPure(std::string path) {
 
 		u32 entrySize = (ntohl(((entry.size >> 32) & 0xFFFFFFFF)) | (ntohl(entry.size) & 0xFFFFFFFF));
 		if (ntohl(entry.pathSize) + entrySize > fileSize) {
-			throw std::runtime_error("Bundle file is corrupt or not a LTBundle file! (Entry)");
+			throw std::runtime_error("Bundle file is corrupt or not a LTBundle file! (Entry path size too large! <" +
+			                         std::to_string(ntohl(entry.pathSize)) + " + " + std::to_string(entrySize) + " > " +
+			                         std::to_string(fileSize) + ")");
 		}
 
 		std::string entry_path;
