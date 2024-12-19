@@ -6,6 +6,13 @@ on:
     branches: [ "main", "dev" ]
   pull_request:
     branches: [ "dev" ]
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        type: boolean
+        description: "Run with tmate enabled"
+        required: false
+        default: false
 
 jobs:
   build:
@@ -60,3 +67,9 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: |
         ctest --output-on-failure .
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      timeout-minutes: 30
+      if: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled) || failure() }}
+      with:
+        limit-access-to-actor: true # Security reasons
