@@ -26,25 +26,13 @@ jobs:
         build_type: [Release]
         c_compiler: [gcc]
         cpp_compiler: [g++]
-        static_lib: [ON, OFF]
         include:
           - os: windows-latest
             c_compiler: gcc
             cpp_compiler: g++
-            static_lib: ON
-          - os: windows-latest
-            c_compiler: gcc
-            cpp_compiler: g++
-            static_lib: OFF
-
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
-            static_lib: ON
-          - os: ubuntu-latest
-            c_compiler: gcc
-            cpp_compiler: g++
-            static_lib: OFF
 
     steps:
     - uses: actions/checkout@v4
@@ -53,6 +41,12 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Setup GCC
+      uses: egor-tensin/setup-gcc@v1
+      with:
+        version: latest
+        platform: x64
     
     - uses: actions/checkout@v4
     - name: Configure CMake
@@ -62,7 +56,6 @@ jobs:
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-        -DLTENGINE_BUILD_STATIC=${{ matrix.static_lib }}
         -DLTENGINE_BUILD_DOCS=OFF
         -DLTENGINE_DISABLE_GLFW=ON
         -S ${{ github.workspace }}
