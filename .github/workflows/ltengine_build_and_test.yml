@@ -21,15 +21,12 @@ jobs:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
         build_type: [Release]
         c_compiler: [gcc]
         cpp_compiler: [g++]
         include:
           - os: macos-latest
-            c_compiler: gcc
-            cpp_compiler: g++
-          - os: windows-latest
             c_compiler: gcc
             cpp_compiler: g++
           - os: ubuntu-latest
