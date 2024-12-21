@@ -53,13 +53,9 @@ endif()
 add_subdirectory(thirdparty)
 
 # Docs
-<<<<<<< HEAD
-add_subdirectory(doc)
-=======
 if (LTENGINE_BUILD_DOCS)
     add_subdirectory(doc)
 endif()
->>>>>>> 58e0610 (LTEngine: Version 1.0.0)
 
 # Tests
 if (LTENGINE_BUILD_TESTS)
