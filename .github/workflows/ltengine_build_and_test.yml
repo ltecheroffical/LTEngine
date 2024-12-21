@@ -50,21 +50,17 @@ jobs:
             cpp_compiler: mingw
 
     steps:
-      - name: Checkout repo
-      - uses: actions/checkout@v4
-        with:
-          depth: 1
-
+    - uses: actions/checkout@v4
     - name: Set reusable strings
       id: strings
       shell: bash
       run: |
-        git submodule update --init
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
-    - name: Configure CMake
+    
     - uses: seanmiddleditch/gha-setup-ninja@master
-      run: |
+    - name: Configure CMake
+      run: >
+        git submodule update --init &&
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
@@ -76,7 +72,6 @@ jobs:
 
     - name: Build
       run: >
-        git submodule update --init &&
         cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
     - name: Test
