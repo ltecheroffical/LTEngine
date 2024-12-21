@@ -11,12 +11,12 @@
 namespace LTEngine::OS {
 	class File {
 	public:
-		enum class Seek { Begin, Current, End };
-
 		static const u8 FILE_READ;
 		static const u8 FILE_WRITE;
 		static const u8 FILE_APPEND;
 		static const u8 FILE_CREATE;
+
+		enum class Seek { Begin, Current, End };
 
 		File(u8 mode) : m_mode(mode) {}
 		virtual ~File() = default;
