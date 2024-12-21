@@ -1,4 +1,8 @@
+#ifdef _WIN32
+#include <Winsock2.h>
+#else
 #include <arpa/inet.h>
+#endif
 
 #include <LTEngine/common/compiler_utils.h>
 
