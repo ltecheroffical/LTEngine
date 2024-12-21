@@ -12,7 +12,7 @@ const f32 METERS_PER_PIXEL = 1.f / PIXELS_PER_METER;
 Box2D::Box2D() {
 	b2WorldDef worldDef = b2DefaultWorldDef();
 
-	worldDef.gravity = b2Vec2(0.0f, 0.0f);
+	worldDef.gravity = b2Vec2{0.f, 0.f};
 
 	b2WorldId worldId = b2CreateWorld(&worldDef);
 	m_world = worldId;
@@ -50,7 +50,7 @@ void Box2D::update(f32 timeStep) {
 
 
 void Box2D::setGravity(const Math::Vec2 &gravity) {
-	b2World_SetGravity(m_world, b2Vec2(gravity.x, gravity.y));
+	b2World_SetGravity(m_world, b2Vec2{gravity.x, gravity.y});
 }
 
 Math::Vec2 Box2D::getGravity() const {
@@ -74,7 +74,7 @@ u32 Box2D::addBody(Shapes::Rect rect, PhysicsEngine::BodyType bodyType) {
 			break;
 	}
 
-	bodyDef.position = b2Vec2((rect.x + rect.w) * METERS_PER_PIXEL, (rect.y + rect.h) * METERS_PER_PIXEL);
+	bodyDef.position = b2Vec2{(rect.x + rect.w) * METERS_PER_PIXEL, (rect.y + rect.h) * METERS_PER_PIXEL};
 	bodyDef.rotation = b2MakeRot(rect.rotation);
 
 
@@ -86,7 +86,7 @@ u32 Box2D::addBody(Shapes::Rect rect, PhysicsEngine::BodyType bodyType) {
 
 	u32 id = m_nextId++;
 	m_bodies[id] = bodyId;
-	m_bodySizes[id] = b2Vec2(rect.w, rect.h);
+	m_bodySizes[id] = b2Vec2{(f32)rect.w, (f32)rect.h};
 	return id;
 }
 
@@ -106,14 +106,14 @@ u32 Box2D::addBody(Shapes::Circle circle, PhysicsEngine::BodyType bodyType) {
 			break;
 	}
 
-	bodyDef.position = b2Vec2(circle.x * METERS_PER_PIXEL, circle.y * METERS_PER_PIXEL);
+	bodyDef.position = b2Vec2{circle.x * METERS_PER_PIXEL, circle.y * METERS_PER_PIXEL};
 	bodyDef.rotation = b2MakeRot(circle.rotation);
 
 	b2BodyId bodyId = b2CreateBody(m_world, &bodyDef);
 
 	b2Circle shape;
 	shape.radius = circle.radius * METERS_PER_PIXEL;
-	shape.center = b2Vec2(circle.x * METERS_PER_PIXEL, circle.y * METERS_PER_PIXEL);
+	shape.center = b2Vec2{circle.x * METERS_PER_PIXEL, circle.y * METERS_PER_PIXEL};
 
 	b2ShapeDef shapeDef = b2DefaultShapeDef();
 	b2CreateCircleShape(bodyId, &shapeDef, &shape);
@@ -139,13 +139,13 @@ u32 Box2D::addBody(Shapes::Polygon polygon, PhysicsEngine::BodyType bodyType) {
 			break;
 	}
 
-	bodyDef.position = b2Vec2(polygon.x * METERS_PER_PIXEL, polygon.y * METERS_PER_PIXEL);
+	bodyDef.position = b2Vec2{polygon.x * METERS_PER_PIXEL, polygon.y * METERS_PER_PIXEL};
 	bodyDef.rotation = b2MakeRot(polygon.rotation);
 
 	b2BodyId bodyId = b2CreateBody(m_world, &bodyDef);
 
 	std::vector<b2Vec2> points;
-	for (Math::Vec2 point : polygon.points) { points.push_back(b2Vec2(point.x * METERS_PER_PIXEL, point.y * METERS_PER_PIXEL)); }
+	for (Math::Vec2 point : polygon.points) { points.push_back(b2Vec2{point.x * METERS_PER_PIXEL, point.y * METERS_PER_PIXEL}); }
 	b2Hull hull = b2ComputeHull(points.data(), points.size());
 
 	const f32 radius = 0.1f; // Box2D, why is this a requirement?
@@ -175,14 +175,14 @@ u32 Box2D::addBody(Shapes::Triangle triangle, PhysicsEngine::BodyType bodyType) 
 			break;
 	}
 
-	bodyDef.position = b2Vec2(triangle.x * METERS_PER_PIXEL, triangle.y * METERS_PER_PIXEL);
+	bodyDef.position = b2Vec2{triangle.x * METERS_PER_PIXEL, triangle.y * METERS_PER_PIXEL};
 	bodyDef.rotation = b2MakeRot(triangle.rotation);
 
 	b2BodyId bodyId = b2CreateBody(m_world, &bodyDef);
 
-	b2Vec2 points[3] = {b2Vec2(triangle.p1.x * METERS_PER_PIXEL, triangle.p1.y * METERS_PER_PIXEL),
-	                    b2Vec2(triangle.p2.x * METERS_PER_PIXEL, triangle.p2.y * METERS_PER_PIXEL),
-	                    b2Vec2(triangle.p3.x * METERS_PER_PIXEL, triangle.p3.y * METERS_PER_PIXEL)};
+	b2Vec2 points[3] = {b2Vec2{triangle.p1.x * METERS_PER_PIXEL, triangle.p1.y * METERS_PER_PIXEL},
+	                    b2Vec2{triangle.p2.x * METERS_PER_PIXEL, triangle.p2.y * METERS_PER_PIXEL},
+	                    b2Vec2{triangle.p3.x * METERS_PER_PIXEL, triangle.p3.y * METERS_PER_PIXEL}};
 	b2Hull hull = b2ComputeHull(points, 3);
 
 	const f32 radius = 0.1f; // Box2D, why is this a requirement?
@@ -200,8 +200,8 @@ u32 Box2D::addJoint(u32 bodyIdA, u32 bodyIdB, const Math::Vec2 anchorA, const Ma
 	b2DistanceJointDef jointDef; // What is that type name?
 	jointDef.bodyIdA = m_bodies.at(bodyIdA);
 	jointDef.bodyIdB = m_bodies.at(bodyIdB);
-	jointDef.localAnchorA = b2Vec2(anchorA.x * METERS_PER_PIXEL, anchorA.y * METERS_PER_PIXEL);
-	jointDef.localAnchorB = b2Vec2(anchorB.x * METERS_PER_PIXEL, anchorB.y * METERS_PER_PIXEL);
+	jointDef.localAnchorA = b2Vec2{anchorA.x * METERS_PER_PIXEL, anchorA.y * METERS_PER_PIXEL};
+	jointDef.localAnchorB = b2Vec2{anchorB.x * METERS_PER_PIXEL, anchorB.y * METERS_PER_PIXEL};
 
 	b2JointId jointId = b2CreateDistanceJoint(m_world, &jointDef);
 	u32 id = m_nextId++;
@@ -212,7 +212,7 @@ u32 Box2D::addJoint(u32 bodyIdA, u32 bodyIdB, const Math::Vec2 anchorA, const Ma
 
 void Box2D::addForce(u32 id, Math::Vec2 force) {
 	const bool WAKE_BODY = true;
-	b2Body_ApplyForceToCenter(m_bodies.at(id), b2Vec2(force.x, force.y), WAKE_BODY);
+	b2Body_ApplyForceToCenter(m_bodies.at(id), b2Vec2{force.x, force.y}, WAKE_BODY);
 }
 
 
@@ -248,7 +248,7 @@ void Box2D::removeBody(u32 id) {
 
 
 void Box2D::setBodyPosition(u32 id, const Math::Vec2 position) {
-	b2Body_SetTransform(m_bodies[id], b2Vec2(position.x * METERS_PER_PIXEL, position.y * METERS_PER_PIXEL),
+	b2Body_SetTransform(m_bodies[id], b2Vec2{position.x * METERS_PER_PIXEL, position.y * METERS_PER_PIXEL},
 	                    b2Body_GetRotation(m_bodies[id]));
 }
 
