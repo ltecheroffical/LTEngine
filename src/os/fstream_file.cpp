@@ -16,11 +16,11 @@ FStreamFile::~FStreamFile() {
 
 void FStreamFile::open(const char *path, u8 mode) {
 	std::ios::openmode openMode = std::ios::openmode{};
-	bool create = (mode & FILE_CREATE) != 0;
+	bool create = (mode & FLAG_FILE_CREATE) != 0;
 
-	if (mode & FILE_READ) openMode |= std::ios::in;
-	if (mode & FILE_WRITE) openMode |= std::ios::out;
-	if (mode & FILE_APPEND) openMode |= std::ios::app;
+	if (mode & FLAG_FILE_READ) openMode |= std::ios::in;
+	if (mode & FLAG_FILE_WRITE) openMode |= std::ios::out;
+	if (mode & FLAG_FILE_APPEND) openMode |= std::ios::app;
 
 	if (m_stream.is_open()) { m_stream.close(); }
 

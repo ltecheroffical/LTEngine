@@ -36,7 +36,7 @@ LTBundleAssetManager::LTBundleAssetManager(LTEngine::OS::File *file) : m_file(fi
 
 
 const std::vector<u8> LTBundleAssetManager::loadAssetPure(std::string path) {
-	if (!(m_file->getMode() & OS::File::FILE_READ)) { throw std::runtime_error("Cannot load without read mode file!"); }
+	if (!(m_file->getMode() & OS::File::FLAG_FILE_READ)) { throw std::runtime_error("Cannot load without read mode file!"); }
 
 	m_file->seekp(0, OS::File::Seek::Begin);
 	size_t fileSize = m_file->size();
@@ -83,8 +83,8 @@ const std::vector<u8> LTBundleAssetManager::loadAssetPure(std::string path) {
 }
 
 void LTBundleAssetManager::saveAssetPure(std::string path, const u8 *data, size_t size) {
-	if (m_file->getMode() & OS::File::FILE_APPEND) { throw std::runtime_error("Cannot save with append mode file!"); }
-	if (!(m_file->getMode() & OS::File::FILE_READ) || !(m_file->getMode() & OS::File::FILE_WRITE)) {
+	if (m_file->getMode() & OS::File::FLAG_FILE_APPEND) { throw std::runtime_error("Cannot save with append mode file!"); }
+	if (!(m_file->getMode() & OS::File::FLAG_FILE_READ) || !(m_file->getMode() & OS::File::FLAG_FILE_WRITE)) {
 		throw std::runtime_error("Cannot save without read AND write mode file!");
 	}
 	m_file->seekp(0, OS::File::Seek::Begin);

@@ -11,10 +11,10 @@
 namespace LTEngine::OS {
 	class File {
 	public:
-		static const u8 FILE_READ;
-		static const u8 FILE_WRITE;
-		static const u8 FILE_APPEND;
-		static const u8 FILE_CREATE;
+		static const u8 FLAG_FILE_READ;
+		static const u8 FLAG_FILE_WRITE;
+		static const u8 FLAG_FILE_APPEND;
+		static const u8 FLAG_FILE_CREATE;
 
 		enum class Seek { Begin, Current, End };
 
@@ -43,10 +43,10 @@ namespace LTEngine::OS {
 		u8 m_mode;
 	};
 
-	inline const u8 File::FILE_READ = (u8)(1 << 0);
-	inline const u8 File::FILE_WRITE = (u8)(1 << 1);
-	inline const u8 File::FILE_APPEND = (u8)(1 << 2);
-	inline const u8 File::FILE_CREATE = (u8)(1 << 7);
+	inline const u8 File::FLAG_FILE_READ = (u8)(1 << 0);
+	inline const u8 File::FLAG_FILE_WRITE = (u8)(1 << 1);
+	inline const u8 File::FLAG_FILE_APPEND = (u8)(1 << 2);
+	inline const u8 File::FLAG_FILE_CREATE = (u8)(1 << 7);
 } // namespace LTEngine::OS
 
 #endif

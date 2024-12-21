@@ -32,7 +32,7 @@ const u8 testAssetData[] = {0x4c, 0x54, 0x42, 0x4e, 0x00, 0x01, 0x00, 0x00, 0x00
 
 
 void test_bundle_asset_manager_writing() {
-	LTEngine::OS::MemFile memFile(LTEngine::OS::File::FILE_READ | LTEngine::OS::File::FILE_WRITE);
+	LTEngine::OS::MemFile memFile(LTEngine::OS::File::FLAG_FILE_READ | LTEngine::OS::File::FILE_WRITE);
 	LTEngine::LTBundleAssetManager manager(&memFile);
 
 	const std::vector<u8> testData1 = {41,  40, 69,  124, 186, 7,  173, 185, 205, 195, 236, 8,  4,   210, 86,  29,
@@ -56,7 +56,7 @@ void test_bundle_asset_manager_reading() {
 	TEST_SKIP("Data compatibility issue");
 #endif
 
-	LTEngine::OS::MemFile file(testAssetData, sizeof(testAssetData), LTEngine::OS::File::FILE_READ);
+	LTEngine::OS::MemFile file(testAssetData, sizeof(testAssetData), LTEngine::OS::File::FLAG_FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
 
 	std::vector<u8> testData1 = {53,  13, 231, 75,  160, 241, 201, 69,  70, 143, 153, 235, 171, 45, 194, 225,
@@ -81,7 +81,7 @@ void test_bundle_asset_manager_save_already_exists() {
 #endif
 
 	LTEngine::OS::MemFile file(testAssetData, sizeof(testAssetData),
-	                           LTEngine::OS::File::FILE_WRITE | LTEngine::OS::File::FILE_READ);
+	                           LTEngine::OS::File::FILE_WRITE | LTEngine::OS::File::FLAG_FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
 	const u8 testData[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
 	TEST_EXCEPTION(manager.saveAsset("test_asset1", testData, sizeof(testData)), std::runtime_error);
@@ -94,7 +94,7 @@ void test_bundle_asset_manger_load_non_existent_asset() {
 	TEST_SKIP("Data compatibility issue");
 #endif
 
-	LTEngine::OS::MemFile file(&testAssetData, sizeof(testAssetData), LTEngine::OS::File::FILE_READ);
+	LTEngine::OS::MemFile file(&testAssetData, sizeof(testAssetData), LTEngine::OS::File::FLAG_FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
 	TEST_EXCEPTION(manager.loadAsset("non_existent_asset"), std::runtime_error);
 }

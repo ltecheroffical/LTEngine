@@ -9,7 +9,7 @@ DirectoryAssetManager::DirectoryAssetManager(std::string directory) : m_director
 
 const std::vector<u8> DirectoryAssetManager::loadAssetPure(std::string path) {
 	if (!m_files.contains(path)) {
-		m_files[path].open((m_directory + "/" + path).c_str(), OS::File::FILE_READ | OS::File::FILE_WRITE);
+		m_files[path].open((m_directory + "/" + path).c_str(), OS::File::FLAG_FILE_READ | OS::File::FLAG_FILE_WRITE);
 	}
 	m_files[path].seekp(0, OS::File::Seek::Begin);
 
@@ -20,7 +20,8 @@ const std::vector<u8> DirectoryAssetManager::loadAssetPure(std::string path) {
 
 void DirectoryAssetManager::saveAssetPure(std::string path, const u8 *data, size_t size) {
 	if (!m_files.contains(path)) {
-		m_files[path].open((m_directory + "/" + path).c_str(), OS::File::FILE_READ | OS::File::FILE_WRITE | OS::File::FILE_CREATE);
+		m_files[path].open((m_directory + "/" + path).c_str(),
+		                   OS::File::FLAG_FILE_READ | OS::File::FLAG_FILE_WRITE | OS::File::FLAG_FILE_CREATE);
 	}
 	m_files[path].seekp(0, OS::File::Seek::Begin);
 	m_files[path].write(data, size);

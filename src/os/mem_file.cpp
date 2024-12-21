@@ -69,10 +69,10 @@ size_t MemFile::read(void *buffer, size_t size) {
 }
 
 void MemFile::write(const void *buffer, size_t size) {
-	if (getMode() & FILE_APPEND) {
+	if (getMode() & FLAG_FILE_APPEND) {
 		m_buffer.insert(m_buffer.begin() + m_offset, reinterpret_cast<const u8 *>(buffer),
 		                reinterpret_cast<const u8 *>(buffer) + size);
-	} else if (getMode() & FILE_WRITE) {
+	} else if (getMode() & FLAG_FILE_WRITE) {
 		// Ensure we have enough space
 		if (m_offset + size > m_buffer.size()) { m_buffer.resize(m_buffer.size() + (size - (m_buffer.size() - m_offset))); }
 		memcpy(m_buffer.data() + m_offset, buffer, size);
