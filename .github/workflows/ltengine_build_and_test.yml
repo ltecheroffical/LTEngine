@@ -52,8 +52,6 @@ jobs:
     steps:
       - name: Checkout repo
       - uses: actions/checkout@v4
-        run: |
-          git submodule update --init
         with:
           depth: 1
 
@@ -61,8 +59,9 @@ jobs:
       id: strings
       shell: bash
       run: |
+        git submodule update --init
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-    
+
     - name: Configure CMake
     - uses: seanmiddleditch/gha-setup-ninja@master
       run: |
