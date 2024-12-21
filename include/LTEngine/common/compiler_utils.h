@@ -22,6 +22,7 @@
 #warning "This compiler doesn't support packing, there may be compatibility issues."
 #define LTENGINE_PACK_START()
 #define LTENGINE_PACK_END()
+#define LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
 #endif
 
 #ifdef _WIN32
@@ -32,6 +33,10 @@
 #endif
 #else
 #define LTENGINE_API __attribute__((visibility("default")))
+#endif
+
+#ifdef LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
+#warning "This compiler has some data compatibility issues, a few features will be disabled."
 #endif
 
 #endif

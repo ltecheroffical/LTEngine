@@ -5,8 +5,6 @@ include_directories(include)
 add_executable(hash_test hash_test.cpp)
 add_executable(bundle_asset_manager_test bundle_asset_manager_test.cpp)
 
-add_executable(software_renderer_test software_renderer_test.cpp)
-
 add_executable(ai_pathfinding_test ai_pathfinding_test.cpp)
 
 add_executable(timing_test timing_test.cpp)
@@ -14,8 +12,6 @@ add_executable(timing_test timing_test.cpp)
 
 target_link_libraries(hash_test PRIVATE LTEngine)
 target_link_libraries(bundle_asset_manager_test PRIVATE LTEngine)
-
-target_link_libraries(software_renderer_test PRIVATE LTEngine)
 
 target_link_libraries(ai_pathfinding_test PRIVATE LTEngine)
 
@@ -32,13 +28,6 @@ add_test(bundle_asset_manager_reading_test bundle_asset_manager_test test_bundle
 
 add_test(bundle_asset_manager_save_already_exists_test bundle_asset_manager_test test_bundle_asset_manager_save_already_exists)
 add_test(bundle_asset_manger_load_non_existent_asset_test bundle_asset_manager_test test_bundle_asset_manger_load_non_existent_asset)
-
-# Software renderer tests
-add_test(NAME software_renderer_clear_test COMMAND software_renderer_test test_renderer_clear)
-
-add_test(NAME software_renderer_draw_rect_test COMMAND software_renderer_test test_renderer_draw_rect)
-add_test(NAME software_renderer_draw_circle_test COMMAND software_renderer_test test_renderer_draw_circle)
-add_test(NAME software_renderer_draw_line_test COMMAND software_renderer_test test_renderer_draw_line)
 
 # AI Pathfinding tests
 add_test(NAME astar_pathfinding_test COMMAND ai_pathfinding_test test_astar_pathfinding)

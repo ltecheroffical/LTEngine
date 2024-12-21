@@ -50,6 +50,12 @@ void test_bundle_asset_manager_writing() {
 }
 
 void test_bundle_asset_manager_reading() {
+#ifdef LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
+	// For the test asset data, it's been saved where data compatibility is expected
+	// Without it, it's likely the test will fail
+	TEST_SKIP("Data compatibility issue");
+#endif
+
 	LTEngine::OS::MemFile file(testAssetData, sizeof(testAssetData), LTEngine::OS::File::FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
 
@@ -68,6 +74,12 @@ void test_bundle_asset_manager_reading() {
 }
 
 void test_bundle_asset_manager_save_already_exists() {
+#ifdef LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
+	// For the test asset data, it's been saved where data compatibility is expected
+	// Without it, it's likely the test will fail
+	TEST_SKIP("Data compatibility issue");
+#endif
+
 	LTEngine::OS::MemFile file(testAssetData, sizeof(testAssetData),
 	                           LTEngine::OS::File::FILE_WRITE | LTEngine::OS::File::FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
@@ -76,6 +88,12 @@ void test_bundle_asset_manager_save_already_exists() {
 }
 
 void test_bundle_asset_manger_load_non_existent_asset() {
+#ifdef LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
+	// For the test asset data, it's been saved where data compatibility is expected
+	// Without it, it's likely the test will fail
+	TEST_SKIP("Data compatibility issue");
+#endif
+
 	LTEngine::OS::MemFile file(&testAssetData, sizeof(testAssetData), LTEngine::OS::File::FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
 	TEST_EXCEPTION(manager.loadAsset("non_existent_asset"), std::runtime_error);
