@@ -7,6 +7,7 @@
 #ifdef __cplusplus
 // Fixing issues with some compilers that don't include these with other std headers
 // My (@ltecheroffical) compiler does include these with std headers
+#include <algorithm>
 #include <cstring>
 #include <memory>
 #include <stdexcept>
