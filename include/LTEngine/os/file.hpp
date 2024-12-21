@@ -9,14 +9,14 @@
 
 
 namespace LTEngine::OS {
-	class LTENGINE_API File {
+	class File {
 	public:
 		enum class Seek { Begin, Current, End };
 
-		static const u8 FILE_READ = (u8)(1 << 0);
-		static const u8 FILE_WRITE = (u8)(1 << 1);
-		static const u8 FILE_APPEND = (u8)(1 << 2);
-		static const u8 FILE_CREATE = (u8)(1 << 7);
+		static const u8 FILE_READ;
+		static const u8 FILE_WRITE;
+		static const u8 FILE_APPEND;
+		static const u8 FILE_CREATE;
 
 		File(u8 mode) : m_mode(mode) {}
 		virtual ~File() = default;
@@ -42,6 +42,11 @@ namespace LTEngine::OS {
 	private:
 		u8 m_mode;
 	};
+
+	inline const u8 File::FILE_READ = (u8)(1 << 0);
+	inline const u8 File::FILE_WRITE = (u8)(1 << 1);
+	inline const u8 File::FILE_APPEND = (u8)(1 << 2);
+	inline const u8 File::FILE_CREATE = (u8)(1 << 7);
 } // namespace LTEngine::OS
 
 #endif
