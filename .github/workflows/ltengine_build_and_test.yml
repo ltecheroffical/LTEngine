@@ -23,32 +23,18 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         build_type: [Release]
-        c_compiler: [gcc, mingw]
-        cpp_compiler: [g++, mingw]
+        c_compiler: [gcc]
+        cpp_compiler: [g++]
         include:
           - os: macos-latest
             c_compiler: gcc
             cpp_compiler: g++
           - os: windows-latest
-            c_compiler: mingw
-            cpp_compiler: mingw
+            c_compiler: gcc
+            cpp_compiler: g++
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
-        exclude:
-          - os: macos-latest
-            c_compiler: mingw
-          - os: macos-latest
-            cpp_compiler: mingw
-          - os: windows-latest
-            c_compiler: gcc
-          - os: windows-latest
-            cpp_compiler: g++
-          - os: ubuntu-latest
-            c_compiler: mingw
-          - os: ubuntu-latest
-            cpp_compiler: mingw
-
     steps:
     - uses: actions/checkout@v4
     - name: Set reusable strings
