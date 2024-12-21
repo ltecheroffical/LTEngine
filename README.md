@@ -1,5 +1,9 @@
 # LTEngine
 
+![Github Workflow Status](https://img.shields.io/github/actions/workflow/status/ltecheroffical/LTEngine/ltengine_build_and_test.yml?branch=dev)
+![GitHub License](https://img.shields.io/github/license/ltecheroffical/LTEngine)
+![GitHub Release](https://img.shields.io/github/v/release/ltecheroffical/LTEngine)
+
 **LTEngine** is an open-source game engine written in C/C++. The engine has no UI, so interaction is direct via the API. Most components are modular and can be detached and used independently. Currently, the engine supports 2D.
 
 ---
