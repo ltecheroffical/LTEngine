@@ -82,8 +82,7 @@ jobs:
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
-      needs: [Build]
-      if: ${{ always() && (needs.Build.result == 'success') }}
+      if: ${{ steps.Build.outcome == 'success' }}
       with:
         name: libLTEngine-${{ matrix.os }}-${{ matrix.static_lib && 'static' || 'shared' }}
         path: ${{ steps.strings.outputs.build-output-dir }}/libLTEngine.*
