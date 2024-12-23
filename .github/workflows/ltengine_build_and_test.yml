@@ -80,8 +80,8 @@ jobs:
       run: |
         ctest --output-on-failure -E "bundle_asset_manager_reading_test" .
 
+    - uses: actions/upload-artifact@v3
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
       needs: [Build]
       with:
         name: libLTEngine-${{ matrix.os }}-${{ matrix.static_lib && "static" || "shared" }}
