@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(LTEngine VERSION 1.0.0 LANGUAGES C CXX ASM)
+project(LTEngine VERSION 0.1.0 LANGUAGES C CXX ASM)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 20)

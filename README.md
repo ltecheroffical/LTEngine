@@ -53,7 +53,7 @@ LTEngine is designed to support both **game cores** and **normal games**, which 
 
 ---
 
-## Road to v1.0.0
+## Road to v0.1.0
 
 These features are planned for the first stable release:
 
