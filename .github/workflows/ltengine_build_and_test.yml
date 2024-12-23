@@ -15,6 +15,7 @@ on:
 
 jobs:
   build:
+    name: Build ${{ matrix.os }} (${{ matrix.static_lib && 'Static' || 'Shared' }})
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -22,24 +23,29 @@ jobs:
 
       matrix:
         os: [ubuntu-latest, macos-latest]
+        human_readable_os: [Linux, macOS]
         build_type: [Release]
         c_compiler: [gcc]
         cpp_compiler: [g++]
         static_lib: [YES, NO]
         include:
           - os: macos-latest
+            human_readable_os: macOS
             c_compiler: gcc
             cpp_compiler: g++
             static_lib: YES
           - os: macos-latest
+            human_readable_os: macOS
             c_compiler: gcc
             cpp_compiler: g++
             static_lib: NO
           - os: ubuntu-latest
+            human_readable_os: Linux
             c_compiler: gcc
             cpp_compiler: g++
             static_lib: YES
           - os: ubuntu-latest
+            human_readable_os: Linux
             c_compiler: gcc
             cpp_compiler: g++
             static_lib: NO
@@ -52,7 +58,7 @@ jobs:
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
     - name: Install Linux Dependencies
-      if: ${{ matrix.os == 'ubuntu-latest' }}
+      if: ${{ matrix.human_readable_os == 'Linux' }}
       run: |
         sudo apt update
         sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
@@ -72,6 +78,7 @@ jobs:
         -S ${{ github.workspace }}
 
     - name: Build
+      id: build
       run: >
         cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
@@ -82,7 +89,7 @@ jobs:
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
-      if: ${{ steps.Build.outcome == 'success' }}
+      if: ${{ steps.build.outcome == 'success' }}
       with:
         name: libLTEngine-${{ matrix.os }}-${{ matrix.static_lib && 'static' || 'shared' }}
         path: ${{ steps.strings.outputs.build-output-dir }}/libLTEngine.*
