@@ -16,7 +16,7 @@ namespace LTEngine::Audio {
 	class LTENGINE_API SoLoudAudio : public Audio {
 	public:
 		SoLoudAudio();
-		~SoLoudAudio();
+		~SoLoudAudio() override = default;
 
 		u32 loadAudio(const u8 *data, u32 size) override;
 		/**

@@ -8,9 +8,9 @@
 
 
 namespace LTEngine::Random {
-	class LTENGINE_API Random {
+	class Random {
 	public:
-		virtual ~Random() = 0;
+		virtual ~Random() = default;
 
 		virtual u8 next_u8();
 		virtual u16 next_u16();
