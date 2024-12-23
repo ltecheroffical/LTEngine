@@ -54,6 +54,10 @@ if (NOT TARGET soloud)
         target_compile_definitions(${PROJECT_NAME} PUBLIC MA_NO_RUNTIME_LINKING)
         target_link_libraries(${PROJECT_NAME} PUBLIC -framework CoreFoundation -framework CoreAudio -framework AudioUnit)
     endif()
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        stb_vorbis
+    )
 endif()
 
 if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
