@@ -24,6 +24,8 @@ list(APPEND CXX_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/soloud/src/backend/mini
 if (NOT TARGET soloud)
     add_library(soloud ${C_SOURCE_FILES} ${CXX_SOURCE_FILES})
 
+    add_subdirectory(stb_vorbis)
+
     if (LTENGINE_BUILD_WITH_SDL)
         target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_SDL2_STATIC)
         if (NOT BUILD_SHARED_LIBS)
