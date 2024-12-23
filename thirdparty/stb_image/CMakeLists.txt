@@ -5,7 +5,7 @@ if (NOT TARGET ${PROJECT_NAME})
     add_library(${PROJECT_NAME} src/stb_image.c)
 endif()
 
-if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
     target_compile_options(${PROJECT_NAME} PUBLIC -fPIC)
 endif()
 

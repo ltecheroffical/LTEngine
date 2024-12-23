@@ -56,4 +56,8 @@ if (NOT TARGET soloud)
     endif()
 endif()
 
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(${PROJECT_NAME} PUBLIC -fPIC)
+endif()
+
 target_include_directories(soloud PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/soloud/include)

@@ -53,6 +53,11 @@ if (NOT TARGET ${PROJECT_NAME})
     endif()
 endif()
 
+if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(${PROJECT_NAME} PUBLIC -fPIC)
+endif()
+
+
 # Thirdparty
 add_subdirectory(thirdparty)
 
