@@ -1,3 +1,5 @@
+#include <vector>
+
 #include <LTEngine/audio/soloud_audio.hpp>
 
 
