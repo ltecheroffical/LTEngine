@@ -86,7 +86,7 @@ jobs:
       uses: actions/upload-artifact@v3
       if: ${{ steps.build.outcome == 'success' }}
       with:
-        name: libLTEngine-${{ matrix.os }}-${{ matrix.static_lib && 'static' || 'shared' }}
+        name: LTEngine-${{ matrix.os }}-${{ matrix.static_lib == 'YES' && 'static' || 'shared' }}
         path: ${{ steps.strings.outputs.build-output-dir }}/libLTEngine.*
         retention-days: 3
 
