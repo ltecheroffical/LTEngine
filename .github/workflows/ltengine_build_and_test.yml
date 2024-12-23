@@ -39,6 +39,12 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Install Linux Dependencies
+      if: ${{ matrix.os == ubuntu-latest }}
+      run: |
+        sudo apt update
+        sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
     
     - uses: seanmiddleditch/gha-setup-ninja@master
     - name: Configure CMake
@@ -64,6 +70,6 @@ jobs:
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
       timeout-minutes: 60
-      if: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled) }}
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
       with:
         limit-access-to-actor: true # Security reasons
