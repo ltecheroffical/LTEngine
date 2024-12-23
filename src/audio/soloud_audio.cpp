@@ -10,9 +10,11 @@ SoLoudAudio::SoLoudAudio() {
 }
 
 
-u32 SoLoudAudio::loadAudio(const u8 *data, u32 size) {
+u32 SoLoudAudio::loadAudio(OS::File *file) {
 	u32 id = m_nextResourceId++;
-	m_resources[id].loadMem(data, size, true);
+	std::vector<u8> data(file->size());
+	file->readAll(data.data());
+	m_resources[id].loadMem(data.data(), data.size(), true);
 	return id;
 }
 

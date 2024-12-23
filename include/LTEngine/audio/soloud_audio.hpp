@@ -18,7 +18,7 @@ namespace LTEngine::Audio {
 		SoLoudAudio();
 		~SoLoudAudio() override = default;
 
-		u32 loadAudio(const u8 *data, u32 size) override;
+		u32 loadAudio(OS::File *file) override;
 		/**
 		 * @brief Loads audio streamed from disk.
 		 *

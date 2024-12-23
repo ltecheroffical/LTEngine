@@ -1,10 +1,10 @@
 #ifndef _LTENGINE_AUDIO_HPP_
 #define _LTENGINE_AUDIO_HPP_
 
-#include <string>
-
 #include <LTEngine/common/types/floattypes.h>
 #include <LTEngine/common/types/inttypes.h>
+
+#include <LTEngine/os/file.hpp>
 
 #include <LTEngine/math/vec2.hpp>
 
@@ -12,12 +12,11 @@
 
 
 namespace LTEngine::Audio {
-	class LTENGINE_API Audio {
+	class Audio {
 	public:
 		virtual ~Audio() = default;
 
-		virtual u32 loadAudio(std::string filename);
-		virtual u32 loadAudio(const u8 *data, u32 size) = 0;
+		virtual u32 loadAudio(OS::File *file) = 0;
 		virtual void unloadAudio(u32 id) = 0;
 
 		virtual void setAudioLoop(u32 id, bool loop) = 0;

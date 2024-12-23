@@ -32,6 +32,12 @@ namespace LTEngine::OS {
 		virtual bool eof() const = 0;
 
 		virtual size_t read(void *buffer, size_t size) = 0;
+		void readAll(void *buffer) {
+			size_t pos = tellg();
+			seekg(0, Seek::Begin);
+			read(buffer, size());
+			seekg(pos, Seek::Begin);
+		}
 		virtual void write(const void *buffer, size_t size) = 0;
 
 		virtual void flush() = 0;
