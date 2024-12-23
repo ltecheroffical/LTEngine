@@ -25,13 +25,24 @@ jobs:
         build_type: [Release]
         c_compiler: [gcc]
         cpp_compiler: [g++]
+        static_lib: [YES, NO]
         include:
           - os: macos-latest
             c_compiler: gcc
             cpp_compiler: g++
+            static_lib: YES
+          - os: macos-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+            static_lib: NO
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
+            static_lib: YES
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+            static_lib: NO
     steps:
     - uses: actions/checkout@v4
     - name: Set reusable strings
@@ -55,6 +66,7 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DBUILD_SHARED_LIBS=OFF
+        -DLTENGINE_BUILD_STATIC=${{ matrix.static_lib }}
         -DLTENGINE_BUILD_DOCS=OFF
         -G Ninja
         -S ${{ github.workspace }}
@@ -67,6 +79,15 @@ jobs:
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
       run: |
         ctest --output-on-failure -E "bundle_asset_manager_reading_test" .
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      needs: [Build]
+      with:
+        name: libLTEngine-${{ matrix.os }}-${{ matrix.static_lib && "static" || "shared" }}
+        path: ${{ steps.strings.outputs.build-output-dir }}/libLTEngine.*
+        retention-days: 3
+
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
       timeout-minutes: 60
