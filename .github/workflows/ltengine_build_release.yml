@@ -109,8 +109,8 @@ jobs:
         run: |
           gh release create "$tag" \
             --repo="$GITHUB_REPOSITORY" \
-            --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
-          gh release upload "$tag" \
+            --title="${GITHUB_REPOSITORY#*/} ${tag#v}"
+          gh release upload "$tag"
             --repo="$GITHUB_REPOSITORY" \
             --clobber \
             LTEngine_macos-shared.dylib \
