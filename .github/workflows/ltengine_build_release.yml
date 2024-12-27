@@ -83,7 +83,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          path: ${{ github.workspace }}/builds
+          path: ${{ github.workspace }}
       - name: Upload Release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -91,5 +91,5 @@ jobs:
           tag: ${{ github.ref_name }}
         run: |
           gh release create "$tag" \
-            $(ls ${GITHUB_WORKSPACE}/builds) \
+            $(find . -name "LTEngine-*") \
             --title="${GITHUB_REPOSITORY#*/} ${tag#v}"
