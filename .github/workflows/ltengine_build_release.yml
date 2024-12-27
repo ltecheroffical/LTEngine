@@ -91,5 +91,5 @@ jobs:
           tag: ${{ github.ref_name }}
         run: |
           gh release create "$tag" \
-            $(find . -name "LTEngine-*") \
+            $(find . -name "libLTEngine.*" -type f) \
             --title="${GITHUB_REPOSITORY#*/} ${tag#v}"
