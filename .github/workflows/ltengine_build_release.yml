@@ -78,14 +78,8 @@ jobs:
       with:
         name: LTEngine-${{ matrix.os }}-${{ matrix.static_lib == 'YES' && 'static' || 'shared' }}
         path: ${{ steps.strings.outputs.build-output-dir }}/libLTEngine.*
-        retention-days: 3
+      retention-days: 3
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      timeout-minutes: 60
-      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
-      with:
-        limit-access-to-actor: true # Security reasons
   create_release:
     runs-on: ubuntu-latest
 
