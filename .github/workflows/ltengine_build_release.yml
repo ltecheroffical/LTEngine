@@ -78,7 +78,7 @@ jobs:
       with:
         name: LTEngine-${{ matrix.os }}-${{ matrix.static_lib == 'YES' && 'static' || 'shared' }}
         path: ${{ steps.strings.outputs.build-output-dir }}/libLTEngine.*
-      retention-days: 3
+        retention-days: 3
 
   create_release:
     runs-on: ubuntu-latest
