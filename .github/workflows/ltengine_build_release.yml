@@ -1,0 +1,44 @@
+name: LTEngine Create Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: LTEngine-macos-latest-shared
+          path: LTEngine_macos-shared.dylib
+      - uses: actions/download-artifact@v4
+        with:
+          name: LTEngine-macos-latest-static
+          path: LTEngine_macos-static.a
+      - uses: actions/download-artifact@v4
+        with:
+          name: LTEngine-ubuntu-latest-shared
+          path: LTEngine_linux-shared.so
+      - uses: actions/download-artifact@v4
+        with:
+          name: LTEngine-ubuntu-latest-static
+          path: LTEngine_linux-static.a
+
+      - name: Upload Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "$tag" \
+            --repo="$GITHUB_REPOSITORY" \
+            --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
+          gh release upload "$tag" \
+            --repo="$GITHUB_REPOSITORY" \
+            --clobber \
+            LTEngine_macos-shared.dylib \
+            LTEngine_macos-static.a \
+            LTEngine_linux-shared.so \
+            LTEngine_linux-static.a
