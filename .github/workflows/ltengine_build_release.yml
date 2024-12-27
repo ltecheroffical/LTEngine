@@ -105,12 +105,8 @@ jobs:
           tag: ${{ github.ref_name }}
         run: |
           gh release create "$tag" \
-            --repo="$GITHUB_REPOSITORY" \
-            --title="${GITHUB_REPOSITORY#*/} ${tag#v}"
-          gh release upload "$tag"
-            --repo="$GITHUB_REPOSITORY" \
-            --clobber \
             LTEngine_macos-shared.dylib \
             LTEngine_macos-static.a \
             LTEngine_linux-shared.so \
             LTEngine_linux-static.a
+            --title="${GITHUB_REPOSITORY#*/} ${tag#v}"
