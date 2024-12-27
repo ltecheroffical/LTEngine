@@ -14,7 +14,7 @@
 #endif
 
 
-#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__) || defined(__GNU__) || defined(__clang__)
+#if defined(_MSC_VER) || defined(__MINGW32__) || defined(__MINGW64__) || defined(__GNU__) || defined(__GNUC__) || defined(__clang__)
 #define LTENGINE_PACK_START() _Pragma("pack(push, 1)")
 #define LTENGINE_PACK_END()                                                                                                        \
 	;                                                                                                                              \

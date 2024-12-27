@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-find_package(doxygen
+find_package(Doxygen
     REQUIRED dot)
 
 if (DOXYGEN_FOUND)
