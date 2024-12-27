@@ -10,7 +10,6 @@ permissions:
 
 jobs:
   build:
-    id: build
     name: Build ${{ matrix.os }} (${{ matrix.static_lib == 'YES' && 'Static' || 'Shared' }})
     runs-on: ${{ matrix.os }}
 
@@ -82,6 +81,7 @@ jobs:
         retention-days: 1
 
   create_release:
+    needs: [build]
     runs-on: ubuntu-latest
 
     steps:
@@ -103,7 +103,6 @@ jobs:
           path: LTEngine_linux-static.a
 
       - name: Upload Release
-        needs: [build]
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref_name }}
