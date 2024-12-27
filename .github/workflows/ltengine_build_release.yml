@@ -88,25 +88,26 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: LTEngine-macos-latest-shared
-          path: LTEngine_macos-shared.dylib
+          path: ${{ github.workspace }}/LTEngine_macos-shared.dylib
       - uses: actions/download-artifact@v4
         with:
           name: LTEngine-macos-latest-static
-          path: LTEngine_macos-static.a
+          path: ${{ github.workspace }}/LTEngine_macos-static.a
       - uses: actions/download-artifact@v4
         with:
           name: LTEngine-ubuntu-latest-shared
-          path: LTEngine_linux-shared.so
+          path: ${{ github.workspace }}/LTEngine_linux-shared.so
       - uses: actions/download-artifact@v4
         with:
           name: LTEngine-ubuntu-latest-static
-          path: LTEngine_linux-static.a
+          path: ${{ github.workspace }}/LTEngine_linux-static.a
 
       - name: Upload Release
         uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
         with:
           files: |
-            LTEngine_macos-shared.dylib
-            LTEngine_macos-static.a
-            LTEngine_linux-shared.so
-            LTEngine_linux-static.a
+            ${{ github.workspace }}/LTEngine_macos-shared.dylib
+            ${{ github.workspace }}/LTEngine_macos-static.a
+            ${{ github.workspace }}/LTEngine_linux-shared.so
+            ${{ github.workspace }}/LTEngine_linux-static.a
