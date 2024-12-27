@@ -102,7 +102,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ${{ github.workspace }}/LTEngine_macos-shared.dylib
-            ${{ github.workspace }}/LTEngine_macos-static.a
-            ${{ github.workspace }}/LTEngine_linux-shared.so
-            ${{ github.workspace }}/LTEngine_linux-static.a
+            LTEngine_macos-shared.dylib
+            LTEngine_macos-static.a
+            LTEngine_linux-shared.so
+            LTEngine_linux-static.a
