@@ -84,6 +84,13 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           path: ${{ github.workspace }}
+      - name: Rename Artifacts
+        run: |
+          mkdir builds
+          mv ${{ github.workspace }}/LTEngine-ubuntu-latest-shared/libLTEngine.so ${{ github.workspace }}/builds/libLTEngine-linux.so
+          mv ${{ github.workspace }}/LTEngine-ubuntu-latest-static/libLTEngine.a ${{ github.workspace }}/builds/libLTEngine-linux.a
+          mv ${{ github.workspace }}/LTEngine-macos-latest-shared/libLTEngine.dylib ${{ github.workspace }}/builds/libLTEngine-macos.dylib
+          mv ${{ github.workspace }}/LTEngine-macos-latest-static/libLTEngine.a ${{ github.workspace }}/builds/libLTEngine-macos.a
       - name: Upload Release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -91,5 +98,5 @@ jobs:
           tag: ${{ github.ref_name }}
         run: |
           gh release create "$tag" \
-            $(find . -name "libLTEngine.*" -type f) \
+            $(ls ${{ github.workspace }}/builds) \
             --title="${GITHUB_REPOSITORY#*/} ${tag#v}"
