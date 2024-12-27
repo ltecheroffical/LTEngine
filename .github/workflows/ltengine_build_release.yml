@@ -9,6 +9,83 @@ permissions:
   contents: write
 
 jobs:
+  build:
+    name: Build ${{ matrix.os }} (${{ matrix.static_lib == 'YES' && 'Static' || 'Shared' }})
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        build_type: [Release]
+        c_compiler: [gcc]
+        cpp_compiler: [g++]
+        static_lib: [YES, NO]
+        include:
+          - os: macos-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+            static_lib: YES
+          - os: macos-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+            static_lib: NO
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+            static_lib: YES
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+            static_lib: NO
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Install Linux Dependencies
+      if: ${{ matrix.os == 'ubuntu-latest' }}
+      run: |
+        sudo apt update
+        sudo apt install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libwayland-dev libxkbcommon-dev
+    
+    - uses: seanmiddleditch/gha-setup-ninja@master
+    - name: Configure CMake
+      run: >
+        git submodule update --init &&
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_SHARED_LIBS=OFF
+        -DLTENGINE_BUILD_STATIC=${{ matrix.static_lib }}
+        -DLTENGINE_BUILD_DOCS=OFF
+        -G Ninja
+        -S ${{ github.workspace }}
+
+    - name: Build
+      id: build
+      run: >
+        cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      if: ${{ steps.build.outcome == 'success' }}
+      with:
+        name: LTEngine-${{ matrix.os }}-${{ matrix.static_lib == 'YES' && 'static' || 'shared' }}
+        path: ${{ steps.strings.outputs.build-output-dir }}/libLTEngine.*
+        retention-days: 3
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      timeout-minutes: 60
+      if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.debug_enabled }}
+      with:
+        limit-access-to-actor: true # Security reasons
   create_release:
     runs-on: ubuntu-latest
 
