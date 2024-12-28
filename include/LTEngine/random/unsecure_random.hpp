@@ -28,7 +28,7 @@ namespace LTEngine::Random {
 		void seed(u64 seed);
 
 	private:
-		u16 m_index = 0;
+		u64 m_seed;
 	};
 } // namespace LTEngine::Random
 
