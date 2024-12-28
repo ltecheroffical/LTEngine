@@ -14,13 +14,19 @@ extern const int windowMouseButtonToSDLMouseButtonLookup[];
 
 
 SDLWindow::SDLWindow(const char *title, u32 width, u32 height) {
-	if (!SDL_WasInit(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) { SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS); }
+	if (!SDL_WasInit(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
+		SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+	}
 
 	m_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
-	if (m_window == nullptr) { throw std::runtime_error("Failed to create SDL window"); }
+	if (m_window == nullptr) {
+		throw std::runtime_error("Failed to create SDL window");
+	}
 
 	m_renderer = SDL_CreateRenderer(m_window, -1, 0);
-	if (m_renderer == nullptr) { throw std::runtime_error("Failed to create SDL renderer"); }
+	if (m_renderer == nullptr) {
+		throw std::runtime_error("Failed to create SDL renderer");
+	}
 
 	m_rgbTexture = nullptr;
 	m_rgbaTexture = nullptr;
@@ -153,7 +159,7 @@ void SDLWindow::pollEvents() {
 
 			case SDL_KEYDOWN:
 				// Find the correct index
-				for (u32 i = 0; i < (u32)WindowKey::KEY_COUNT; i++) {
+				for (u32 i = 0; i < (u32)WindowKey::Count; i++) {
 					if (windowKeyToSDLKeyLookup[i] == event.key.keysym.sym) {
 						onWindowKeyPress((WindowKey)i);
 						break;
@@ -161,7 +167,7 @@ void SDLWindow::pollEvents() {
 				}
 				break;
 			case SDL_KEYUP:
-				for (u32 i = 0; i < (u32)WindowKey::KEY_COUNT; i++) {
+				for (u32 i = 0; i < (u32)WindowKey::Count; i++) {
 					if (windowKeyToSDLKeyLookup[i] == event.key.keysym.sym) {
 						onWindowKeyRelease((WindowKey)i);
 						break;
@@ -170,20 +176,20 @@ void SDLWindow::pollEvents() {
 				break;
 			case SDL_MOUSEBUTTONDOWN:
 				if (event.button.button == SDL_BUTTON_LEFT) {
-					onWindowMousePress(WindowMouseButton::MOUSE_LEFT);
+					onWindowMousePress(WindowMouseButton::MouseLeft);
 				} else if (event.button.button == SDL_BUTTON_RIGHT) {
-					onWindowMousePress(WindowMouseButton::MOUSE_RIGHT);
+					onWindowMousePress(WindowMouseButton::MouseRight);
 				} else {
-					onWindowMousePress(WindowMouseButton::MOUSE_MIDDLE);
+					onWindowMousePress(WindowMouseButton::MouseMiddle);
 				}
 				break;
 			case SDL_MOUSEBUTTONUP:
 				if (event.button.button == SDL_BUTTON_LEFT) {
-					onWindowMousePress(WindowMouseButton::MOUSE_LEFT);
+					onWindowMousePress(WindowMouseButton::MouseLeft);
 				} else if (event.button.button == SDL_BUTTON_RIGHT) {
-					onWindowMousePress(WindowMouseButton::MOUSE_RIGHT);
+					onWindowMousePress(WindowMouseButton::MouseRight);
 				} else {
-					onWindowMousePress(WindowMouseButton::MOUSE_MIDDLE);
+					onWindowMousePress(WindowMouseButton::MouseMiddle);
 				}
 				break;
 		}

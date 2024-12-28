@@ -10,7 +10,7 @@
 using namespace LTEngine;
 
 
-extern const int windowKeyToGLFWKeyLookup[(u32)WindowKey::KEY_COUNT];
+extern const int windowKeyToGLFWKeyLookup[(u32)WindowKey::Count];
 extern const int windowMouseButtonToGLFWMouseButtonLookup[3];
 
 
@@ -18,7 +18,9 @@ GLFWWindow::GLFWWindow(const char *title, u32 width, u32 height) {
 	glfwInit();
 
 	m_glfwWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
-	if (m_glfwWindow == nullptr) { throw std::runtime_error("Failed to create GLFW window"); }
+	if (m_glfwWindow == nullptr) {
+		throw std::runtime_error("Failed to create GLFW window");
+	}
 
 	glfwSetWindowUserPointer(m_glfwWindow, this);
 	registerCallbacks();
@@ -28,10 +30,14 @@ GLFWWindow::GLFWWindow(const char *title, u32 width, u32 height) {
 GLFWWindow::GLFWWindow(const char *title, u32 width, u32 height, const std::unordered_map<int, int> &hints) {
 	glfwInit();
 
-	std::for_each(hints.begin(), hints.end(), [](const std::pair<int, int> &hint) { glfwWindowHint(hint.first, hint.second); });
+	std::for_each(hints.begin(), hints.end(), [](const std::pair<int, int> &hint) {
+		glfwWindowHint(hint.first, hint.second);
+	});
 
 	m_glfwWindow = glfwCreateWindow(width, height, "LTEngine", nullptr, nullptr);
-	if (m_glfwWindow == nullptr) { throw std::runtime_error("Failed to create GLFW window"); }
+	if (m_glfwWindow == nullptr) {
+		throw std::runtime_error("Failed to create GLFW window");
+	}
 
 	glfwSetWindowUserPointer(m_glfwWindow, this);
 	registerCallbacks();
@@ -42,12 +48,16 @@ GLFWWindow::GLFWWindow(const char *title, u32 width, u32 height, const std::unor
 GLFWWindow::~GLFWWindow() {
 	glfwDestroyWindow(m_glfwWindow);
 
-	if (m_cleanupGLFW) { glfwTerminate(); }
+	if (m_cleanupGLFW) {
+		glfwTerminate();
+	}
 }
 
 
 void GLFWWindow::loadGL() {
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) { throw std::runtime_error("Failed to load OpenGL functions"); }
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+		throw std::runtime_error("Failed to load OpenGL functions");
+	}
 }
 
 
@@ -146,7 +156,7 @@ void GLFWWindow::pollEvents() {
 	glfwPollEvents();
 
 	// Check keys
-	for (int i = 0; i < (u32)WindowKey::KEY_COUNT; i++) {
+	for (int i = 0; i < (u32)WindowKey::Count; i++) {
 		if (glfwGetKey(m_glfwWindow, i) == GLFW_PRESS) {
 			onWindowKeyPress((WindowKey)i);
 		} else if (glfwGetKey(m_glfwWindow, i) == GLFW_RELEASE) {
