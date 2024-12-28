@@ -25,11 +25,17 @@ namespace LTEngine {
 		AssetManager() = default;
 		virtual ~AssetManager() = default;
 
+		// May throw InvalidDataException, NotFoundException, or std::runtime_error
 		const std::vector<u8> loadAsset(std::string path);
-		// Loads an asset without caching or processing.
+		/* Loads an asset without caching or processing.
+		 * May throw InvalidDataException, NotFoundException, or std::runtime_error
+		 */
 		virtual const std::vector<u8> loadAssetPure(std::string path) = 0;
+		// May throw InvalidDataException, ConflictException, or std::runtime_error
 		void saveAsset(std::string path, const u8 *data, size_t size);
-		// Saves an asset without caching or processing.
+		/* Saves an asset without caching or processing.
+		 * May throw InvalidDataException, ConflictException, or std::runtime_error
+		 */
 		virtual void saveAssetPure(std::string path, const u8 *data, size_t size) = 0;
 
 		void clearCache() {

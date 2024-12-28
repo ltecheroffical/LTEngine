@@ -7,6 +7,9 @@
 
 #include <LTEngine/assets/ltbundle_asset_manager.hpp>
 
+#include <LTEngine/exceptions/exc_already_exists.hpp>
+#include <LTEngine/exceptions/exc_not_found.hpp>
+
 
 // Thanks XXD! (The command line utility for dumping binary files)
 // Data stored:
@@ -84,7 +87,7 @@ void test_bundle_asset_manager_save_already_exists() {
 	                           LTEngine::OS::File::FLAG_FILE_WRITE | LTEngine::OS::File::FLAG_FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
 	const u8 testData[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-	TEST_EXCEPTION(manager.saveAsset("test_asset1", testData, sizeof(testData)), std::runtime_error);
+	TEST_EXCEPTION(manager.saveAsset("test_asset1", testData, sizeof(testData)), LTEngine::AlreadyExistsException);
 }
 
 void test_bundle_asset_manger_load_non_existent_asset() {
@@ -96,7 +99,7 @@ void test_bundle_asset_manger_load_non_existent_asset() {
 
 	LTEngine::OS::MemFile file(&testAssetData, sizeof(testAssetData), LTEngine::OS::File::FLAG_FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
-	TEST_EXCEPTION(manager.loadAsset("non_existent_asset"), std::runtime_error);
+	TEST_EXCEPTION(manager.loadAsset("non_existent_asset"), LTEngine::NotFoundException);
 }
 
 

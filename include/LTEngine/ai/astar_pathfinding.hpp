@@ -13,7 +13,7 @@ namespace LTEngine::AI {
 		~AStarPathfinding() override = default;
 
 		void setPath(Math::Vec2i start, Math::Vec2i end) override;
-		bool isPossibleToReach() override;
+		bool isPossibleToReachInTheory() override;
 
 		void setWalkablePath(std::vector<Math::Vec2i> path) override;
 

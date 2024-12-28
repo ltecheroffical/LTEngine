@@ -1,5 +1,7 @@
 #include <set>
 
+#include <LTEngine/exceptions/exc_not_possible.hpp>
+
 #include <LTEngine/ai/astar_pathfinding.hpp>
 
 
@@ -42,9 +44,13 @@ void AStarPathfinding::setPath(Math::Vec2i start, Math::Vec2i end) {
 	}
 }
 
-bool AStarPathfinding::isPossibleToReach() {
-	if (!isValid(m_start) || !isValid(m_end)) { return false; }
-	if (isBlocked(m_end)) { return false; }
+bool AStarPathfinding::isPossibleToReachInTheory() {
+	if (!isValid(m_start) || !isValid(m_end)) {
+		return false;
+	}
+	if (isBlocked(m_end)) {
+		return false;
+	}
 	return true;
 }
 
@@ -66,8 +72,12 @@ void AStarPathfinding::removeObstacle(u32 id) {
 
 
 std::vector<Math::Vec2i> AStarPathfinding::calculatePath() {
-	if (!isValid(m_start) || !isValid(m_end)) { return {}; }
-	if (isBlocked(m_end)) { return {}; }
+	if (!isValid(m_start) || !isValid(m_end)) {
+		return {};
+	}
+	if (isBlocked(m_end)) {
+		return {};
+	}
 
 	std::vector<std::vector<bool>> closedList(m_gridHeight, std::vector<bool>(m_gridWidth, false));
 	std::vector<std::vector<Cell>> cellDetails(m_gridHeight, std::vector<Cell>(m_gridWidth));
@@ -193,7 +203,7 @@ std::vector<Math::Vec2i> AStarPathfinding::calculatePath() {
 		}
 	}
 
-	return std::vector<Math::Vec2i>();
+	throw NotPossibleException("No Path Found");
 }
 
 

@@ -4,7 +4,8 @@
 using namespace LTEngine;
 
 
-DirectoryAssetManager::DirectoryAssetManager(std::string directory) : m_directory(directory) {}
+DirectoryAssetManager::DirectoryAssetManager(std::string directory) : m_directory(directory) {
+}
 
 
 const std::vector<u8> DirectoryAssetManager::loadAssetPure(std::string path) {
