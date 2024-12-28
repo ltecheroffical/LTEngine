@@ -1,12 +1,12 @@
 #define LTENGINE_GLOBAL_BASIC_TYPES
 
-#include <acutest.h>
+#include <catch2/catch_test_macros.hpp>
 
 #include <LTEngine/tick_system.hpp>
 #include <LTEngine/timer.hpp>
 
 
-void test_tick_system() {
+TEST_CASE("The tick system should correctly call the callbacks", "[tick_system]") {
 	LTEngine::TickSystem tickSystem;
 	tickSystem.setTickDelay(0.1f);
 
@@ -24,17 +24,20 @@ void test_tick_system() {
 	};
 
 	tickSystem.step(0.1f);
-	TEST_CHECK(!tick1 && !tick2);
+	REQUIRE_FALSE(tick1);
+	REQUIRE_FALSE(tick2);
 
 	tickSystem.step(0.1f);
-	TEST_CHECK(tick1);
+	REQUIRE(tick1);
+	REQUIRE_FALSE(tick2);
 
 	tickSystem.step(0.1f);
 	tickSystem.step(0.1f);
-	TEST_CHECK(tick1 && tick2);
+	REQUIRE(tick1);
+	REQUIRE(tick2);
 }
 
-void test_timer() {
+TEST_CASE("The timer should correctly call the callback", "[timer]") {
 	LTEngine::Timer timer;
 
 	const f32 time = 2.f;
@@ -47,13 +50,7 @@ void test_timer() {
 	timer.start(time);
 
 	timer.step(time / 2.f);
-	TEST_CHECK(!callbackCalled);
+	REQUIRE(!callbackCalled);
 	timer.step(time / 2.f);
-	TEST_CHECK(callbackCalled);
+	REQUIRE(callbackCalled);
 }
-
-
-TEST_LIST = {{"test_tick_system", test_tick_system},
-             {"test_timer", test_timer},
-
-             {NULL, NULL}};

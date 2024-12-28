@@ -1,6 +1,6 @@
 #define LTENGINE_GLOBAL_BASIC_TYPES
 
-#include <acutest.h>
+#include <catch2/catch_test_macros.hpp>
 
 #include <LTEngine/os/fstream_file.hpp>
 #include <LTEngine/os/mem_file.hpp>
@@ -34,7 +34,7 @@ const u8 testAssetData[] = {0x4c, 0x54, 0x42, 0x4e, 0x00, 0x01, 0x00, 0x00, 0x00
                             0x5d, 0xa0, 0x21, 0x0f, 0x3b, 0x18, 0xc7, 0xb9, 0x1a, 0xa7, 0xd1, 0x3c, 0x34, 0x73, 0xcc, 0x0e};
 
 
-void test_bundle_asset_manager_writing() {
+TEST_CASE("The bundle asset manager should correcrly save asset and read them back", "[bundle_asset_manager_write]") {
 	LTEngine::OS::MemFile memFile(LTEngine::OS::File::FLAG_FILE_READ | LTEngine::OS::File::FLAG_FILE_WRITE);
 	LTEngine::LTBundleAssetManager manager(&memFile);
 
@@ -48,70 +48,56 @@ void test_bundle_asset_manager_writing() {
 
 	manager.clearCache();
 
-	TEST_CHECK(manager.loadAsset("test_asset1") == testData1);
-	TEST_CHECK(manager.loadAsset("test_asset2") == testData2);
+	REQUIRE(manager.loadAsset("test_asset1") == testData1);
+	REQUIRE(manager.loadAsset("test_asset2") == testData2);
 }
 
-void test_bundle_asset_manager_reading() {
+TEST_CASE("The bundle asset manager should correctly read a file saved on another computer", "[bundle_asset_manager_read]") {
 #ifdef LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
 	// For the test asset data, it's been saved where data compatibility is expected
 	// Without it, it's likely the test will fail
-	TEST_SKIP("Data compatibility issue");
+	SKIP("Data compatibility issue");
 #endif
 
 	LTEngine::OS::MemFile file(testAssetData, sizeof(testAssetData), LTEngine::OS::File::FLAG_FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
 
-	std::vector<u8> testData1 = {53,  13, 231, 75,  160, 241, 201, 69,  70, 143, 153, 235, 171, 45, 194, 225,
-	                             114, 64, 18,  247, 130, 154, 120, 205, 93, 101, 51,  234, 103, 80, 195, 196};
-	std::vector<u8> testData2 = {189, 62,  99, 154, 179, 232, 180, 175, 70, 252, 214, 2,  235, 114, 159, 120,
-	                             93,  160, 33, 15,  59,  24,  199, 185, 26, 167, 209, 60, 52,  115, 204, 14};
+	const std::vector<u8> testData1 = {53,  13, 231, 75,  160, 241, 201, 69,  70, 143, 153, 235, 171, 45, 194, 225,
+	                                   114, 64, 18,  247, 130, 154, 120, 205, 93, 101, 51,  234, 103, 80, 195, 196};
+	const std::vector<u8> testData2 = {189, 62,  99, 154, 179, 232, 180, 175, 70, 252, 214, 2,  235, 114, 159, 120,
+	                                   93,  160, 33, 15,  59,  24,  199, 185, 26, 167, 209, 60, 52,  115, 204, 14};
 
 	/* Code used to generate the test file
 	manager.saveAssetPure("test_asset1", testData1.data(), testData1.size());
 	manager.saveAssetPure("test_asset2", testData2.data(), testData2.size());
 	*/
 
-	TEST_CHECK(manager.loadAsset("test_asset1") == testData1);
-	TEST_CHECK(manager.loadAsset("test_asset2") == testData2);
+	REQUIRE(manager.loadAsset("test_asset1") == testData1);
+	REQUIRE(manager.loadAsset("test_asset2") == testData2);
 }
 
-void test_bundle_asset_manager_save_already_exists() {
+TEST_CASE("The bundle asset manager should correctly handle asset name collisions", "[bundle_asset_manager_name_collision]") {
 #ifdef LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
 	// For the test asset data, it's been saved where data compatibility is expected
 	// Without it, it's likely the test will fail
-	TEST_SKIP("Data compatibility issue");
+	SKIP("Data compatibility issue");
 #endif
 
 	LTEngine::OS::MemFile file(testAssetData, sizeof(testAssetData),
 	                           LTEngine::OS::File::FLAG_FILE_WRITE | LTEngine::OS::File::FLAG_FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
 	const u8 testData[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-	TEST_EXCEPTION(manager.saveAsset("test_asset1", testData, sizeof(testData)), LTEngine::AlreadyExistsException);
+	REQUIRE_THROWS_AS(manager.saveAsset("test_asset1", testData, sizeof(testData)), LTEngine::AlreadyExistsException);
 }
 
-void test_bundle_asset_manger_load_non_existent_asset() {
+TEST_CASE("The bundle asset manager should correctly handle non-existent assets", "[bundle_asset_manager_non_existent]") {
 #ifdef LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
 	// For the test asset data, it's been saved where data compatibility is expected
 	// Without it, it's likely the test will fail
-	TEST_SKIP("Data compatibility issue");
+	SKIP("Data compatibility issue");
 #endif
 
 	LTEngine::OS::MemFile file(&testAssetData, sizeof(testAssetData), LTEngine::OS::File::FLAG_FILE_READ);
 	LTEngine::LTBundleAssetManager manager(&file);
-	TEST_EXCEPTION(manager.loadAsset("non_existent_asset"), LTEngine::NotFoundException);
+	REQUIRE_THROWS_AS(manager.loadAsset("non_existent_asset"), LTEngine::NotFoundException);
 }
-
-
-TEST_LIST = {
-    // Should be able to write without error
-    {"test_bundle_asset_manager_writing", test_bundle_asset_manager_writing},
-    // Should be able to read without error with matching data
-    {"test_bundle_asset_manager_reading", test_bundle_asset_manager_reading},
-
-    // Should throw an exception when trying to save an asset that already exists
-    {"test_bundle_asset_manager_save_already_exists", test_bundle_asset_manager_save_already_exists},
-    // Should throw an error when trying to load a non-existent asset
-    {"test_bundle_asset_manger_load_non_existent_asset", test_bundle_asset_manger_load_non_existent_asset},
-
-    {NULL, NULL}};

@@ -103,7 +103,6 @@ void LTBundleAssetManager::saveAssetPure(std::string path, const u8 *data, size_
 	size_t fileSize = m_file->size();
 
 	// Check if an existing header exists
-
 	LTBundleHeader header;
 	if (fileSize < sizeof(LTBundleHeader)) {
 		header = {};

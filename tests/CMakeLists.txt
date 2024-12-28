@@ -1,5 +1,5 @@
-include_directories(include)
-
+# Catch2
+add_subdirectory(thirdparty/Catch2)
 
 # Building tests
 add_executable(hash_test hash_test.cpp)
@@ -10,28 +10,28 @@ add_executable(ai_pathfinding_test ai_pathfinding_test.cpp)
 add_executable(timing_test timing_test.cpp)
 
 
-target_link_libraries(hash_test PRIVATE LTEngine)
-target_link_libraries(bundle_asset_manager_test PRIVATE LTEngine)
+target_link_libraries(hash_test PRIVATE LTEngine Catch2WithMain)
+target_link_libraries(bundle_asset_manager_test PRIVATE LTEngine Catch2WithMain)
 
-target_link_libraries(ai_pathfinding_test PRIVATE LTEngine)
+target_link_libraries(ai_pathfinding_test PRIVATE LTEngine Catch2WithMain)
 
-target_link_libraries(timing_test PRIVATE LTEngine)
+target_link_libraries(timing_test PRIVATE LTEngine Catch2WithMain)
 
 
 # Hash tests
-add_test(crc32_test hash_test test_crc32)
-add_test(md5_test hash_test test_md5)
+add_test(crc32_test hash_test [crc32])
+add_test(md5_test hash_test [md5])
 
 # Asset manager tests
-add_test(bundle_asset_manager_writing_test bundle_asset_manager_test test_bundle_asset_manager_writing)
-add_test(bundle_asset_manager_reading_test bundle_asset_manager_test test_bundle_asset_manager_reading)
+add_test(bundle_asset_manager_writing_test bundle_asset_manager_test [bundle_asset_manager_write])
+add_test(bundle_asset_manager_reading_test bundle_asset_manager_test [bundle_asset_manager_read])
 
-add_test(bundle_asset_manager_save_already_exists_test bundle_asset_manager_test test_bundle_asset_manager_save_already_exists)
-add_test(bundle_asset_manger_load_non_existent_asset_test bundle_asset_manager_test test_bundle_asset_manger_load_non_existent_asset)
+add_test(bundle_asset_manager_save_already_exists_test bundle_asset_manager_test [bundle_asset_manager_name_collision])
+add_test(bundle_asset_manger_load_non_existent_asset_test bundle_asset_manager_test [bundle_asset_manager_non_existent])
 
 # AI Pathfinding tests
-add_test(NAME astar_pathfinding_test COMMAND ai_pathfinding_test test_astar_pathfinding)
+add_test(NAME astar_pathfinding_test COMMAND ai_pathfinding_test [astar])
 
 # Timing Tests
-add_test(NAME tick_system_test COMMAND timing_test test_tick_system)
-add_test(NAME timer_test COMMAND timing_test test_timer)
+add_test(NAME tick_system_test COMMAND timing_test [tick_system])
+add_test(NAME timer_test COMMAND timing_test [timer])

@@ -1,9 +1,9 @@
-#include <acutest.h>
+#include <catch2/catch_test_macros.hpp>
 
 #include <LTEngine/ai/astar_pathfinding.hpp>
 
 
-void test_astar_pathfinding() {
+TEST_CASE("The A* pathfinding should correctly find a path", "[astar]") {
 	LTEngine::AI::AStarPathfinding pathfinding;
 
 	LTEngine::Math::Vec2i position = LTEngine::Math::Vec2i::Zero;
@@ -15,12 +15,9 @@ void test_astar_pathfinding() {
 	pathfinding.addObstacle(LTEngine::Math::Vec2i::Right);
 
 	std::vector<LTEngine::Math::Vec2i> path = pathfinding.calculatePath();
-	for (LTEngine::Math::Vec2i direction : path) { position += direction; }
+	for (LTEngine::Math::Vec2i direction : path) {
+		position += direction;
+	}
 
-	TEST_CHECK(position == target);
-	TEST_MSG("Expected: (%d, %d), Got: (%d, %d)", target.x, target.y, position.x, position.y);
+	REQUIRE(position == target);
 }
-
-TEST_LIST = {{"test_astar_pathfinding", test_astar_pathfinding},
-
-             {NULL, NULL}};
