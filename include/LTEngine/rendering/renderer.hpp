@@ -3,9 +3,6 @@
 
 #include <vector>
 
-#include <LTEngine/common/types/floattypes.h>
-#include <LTEngine/common/types/inttypes.h>
-
 #include <LTEngine/math/vec2.hpp>
 
 #include <LTEngine/shapes/circle.hpp>
@@ -15,8 +12,6 @@
 
 #include <LTEngine/rendering/color.hpp>
 #include <LTEngine/rendering/image.hpp>
-
-#include <LTEngine/common/compiler_utils.h>
 
 
 namespace LTEngine::Rendering {
@@ -106,8 +101,12 @@ namespace LTEngine::Rendering {
 			drawImage(image, Math::Vec2i{(i32)position.x, (i32)position.y}, rotation, region, color, flags);
 		}
 
-		void setOffsetsApplied() { m_offsetsApplied = true; }
-		void clearOffsetsApplied() { m_offsetsApplied = false; }
+		void setOffsetsApplied() {
+			m_offsetsApplied = true;
+		}
+		void clearOffsetsApplied() {
+			m_offsetsApplied = false;
+		}
 
 		Math::Vec2 worldToScreenPosition(Math::Vec2 position) const;
 		Math::Vec2i worldToScreenPosition(Math::Vec2i position) const;
@@ -131,12 +130,20 @@ namespace LTEngine::Rendering {
 		virtual void cameraSelected(u32 id) {};
 		virtual void cameraDeselected() {};
 
-		u16 getZOrder() { return m_zOrder; }
-		bool isIsIrisMode() { return m_irisMode; }
+		u16 getZOrder() {
+			return m_zOrder;
+		}
+		bool isIsIrisMode() {
+			return m_irisMode;
+		}
 
 		Camera *getCameraById(u32 id);
-		u32 getCurrentCamera() { return m_currentCamera; }
-		bool isCameraActive() { return m_currentCameraActive; }
+		u32 getCurrentCamera() {
+			return m_currentCamera;
+		}
+		bool isCameraActive() {
+			return m_currentCameraActive;
+		}
 
 	private:
 		u16 m_zOrder = 0;

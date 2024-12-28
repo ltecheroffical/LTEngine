@@ -3,13 +3,9 @@
 
 #include <vector>
 
-#include <LTEngine/common/types/inttypes.h>
-
 #include <LTEngine/math/vec2.hpp>
 
 #include <LTEngine/rendering/color.hpp>
-
-#include <LTEngine/common/compiler_utils.h>
 
 
 namespace LTEngine::Rendering {
@@ -31,8 +27,12 @@ namespace LTEngine::Rendering {
 		void load(const char *filename);
 		void load(u8 *buffer, u32 size);
 
-		const ColorA *getMemBuffer() const { return m_data.data(); }
-		ColorA *getMemBuffer() { return m_data.data(); }
+		const ColorA *getMemBuffer() const {
+			return m_data.data();
+		}
+		ColorA *getMemBuffer() {
+			return m_data.data();
+		}
 
 		void savePNG(const char *filename) const;
 		void saveBMP(const char *filename) const;

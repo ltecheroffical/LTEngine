@@ -6,11 +6,7 @@
 
 #include <glad/glad.h>
 
-#include <LTEngine/common/compiler_utils.h>
-
 #include <LTEngine/rendering/renderer.hpp>
-
-#include <LTEngine/common/compiler_utils.h>
 
 
 namespace LTEngine::Rendering {
@@ -31,8 +27,12 @@ namespace LTEngine::Rendering {
 			std::string msg;
 		};
 
-		void setNearestFilter() { m_nearestFilter = true; }
-		void clearNearestFilter() { m_nearestFilter = false; }
+		void setNearestFilter() {
+			m_nearestFilter = true;
+		}
+		void clearNearestFilter() {
+			m_nearestFilter = false;
+		}
 
 		void resize(u32 width, u32 height);
 
@@ -118,10 +118,18 @@ namespace LTEngine::Rendering {
 
 		void switchContext();
 
-		f32 posToOpenGLX(f32 x) { return 2.f * (x / (f32)m_width) - 1.f; }
-		f32 posToOpenGLY(f32 y) { return 1.f - 2.f * (y / (f32)m_height); }
-		f32 openGLToPosX(f32 x) { return (x + 1.f) * (f32)m_width / 2.f; }
-		f32 openGLToPosY(f32 y) { return (1.f - (y + 1.f)) * (f32)m_height / 2.f; }
+		f32 posToOpenGLX(f32 x) {
+			return 2.f * (x / (f32)m_width) - 1.f;
+		}
+		f32 posToOpenGLY(f32 y) {
+			return 1.f - 2.f * (y / (f32)m_height);
+		}
+		f32 openGLToPosX(f32 x) {
+			return (x + 1.f) * (f32)m_width / 2.f;
+		}
+		f32 openGLToPosY(f32 y) {
+			return (1.f - (y + 1.f)) * (f32)m_height / 2.f;
+		}
 
 		Math::Vec2 rotatePosition(Math::Vec2 position, Math::Vec2 center, f32 angle) {
 			Math::Vec2 result;

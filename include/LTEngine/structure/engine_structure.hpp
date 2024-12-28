@@ -3,8 +3,6 @@
 
 #include <LTEngine/rendering/renderer.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::Object {
 	class LTENGINE_API EngineStructure {

@@ -9,8 +9,6 @@
 
 #include <LTEngine/rendering/image.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::Rendering {
 	class LTENGINE_API Font {
@@ -27,7 +25,9 @@ namespace LTEngine::Rendering {
 		void loadFont(std::string fontPath);
 		void loadFont(const u8 *fontData, u32 fontDataSize);
 
-		u32 getFontCount() { return m_fontCount; }
+		u32 getFontCount() {
+			return m_fontCount;
+		}
 
 		FontAtlas getAtlas(f32 fontSize, char codePointBegin = ' ', char codePoints = 95);
 

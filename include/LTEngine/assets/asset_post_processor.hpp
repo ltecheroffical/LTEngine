@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include <LTEngine/common/types/inttypes.h>
-
 #include <LTEngine/common/compiler_utils.h>
 
 
@@ -46,7 +44,9 @@ namespace LTEngine {
 		 * @returns If the asset loading should continue with the current data. If this is false, an exception will be thrown at the
 		 * asset manager.
 		 */
-		virtual bool assetLoadFailed(std::string path, std::vector<u8> *data) { return false; }
+		virtual bool assetLoadFailed(std::string path, std::vector<u8> *data) {
+			return false;
+		}
 	};
 } // namespace LTEngine
 

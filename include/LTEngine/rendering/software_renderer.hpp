@@ -8,8 +8,6 @@
 #include <LTEngine/rendering/cpu_shader.hpp>
 #include <LTEngine/rendering/renderer.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::Rendering {
 	class LTENGINE_API SoftwareRenderer : public Renderer {

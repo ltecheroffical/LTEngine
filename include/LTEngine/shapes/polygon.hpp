@@ -7,8 +7,6 @@
 
 #include <LTEngine/shapes/shape.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::Shapes {
 	struct LTENGINE_API Polygon : public Shape {

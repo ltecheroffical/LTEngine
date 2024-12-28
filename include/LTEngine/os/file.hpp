@@ -3,8 +3,6 @@
 
 #include <cstddef>
 
-#include <LTEngine/common/types/inttypes.h>
-
 #include <LTEngine/common/compiler_utils.h>
 
 
@@ -18,10 +16,13 @@ namespace LTEngine::OS {
 
 		enum class Seek { Begin, Current, End };
 
-		File(u8 mode) : m_mode(mode) {}
+		File(u8 mode) : m_mode(mode) {
+		}
 		virtual ~File() = default;
 
-		u8 getMode() const { return m_mode; }
+		u8 getMode() const {
+			return m_mode;
+		}
 
 		virtual void seekp(size_t offset, Seek origin) = 0;
 		virtual size_t tellp() = 0;
@@ -43,7 +44,9 @@ namespace LTEngine::OS {
 		virtual void flush() = 0;
 
 	protected:
-		void setMode(u8 mode) { m_mode = mode; }
+		void setMode(u8 mode) {
+			m_mode = mode;
+		}
 
 	private:
 		u8 m_mode;

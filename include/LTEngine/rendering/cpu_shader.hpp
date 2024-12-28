@@ -1,12 +1,8 @@
 #ifndef _LTENGINE_RENDERING_CPU_SHADER_HPP_
 #define _LTENGINE_RENDERING_CPU_SHADER_HPP_
 
-#include <LTEngine/common/types/inttypes.h>
-
 #include <LTEngine/math/vec2.hpp>
 #include <LTEngine/rendering/color.hpp>
-
-#include <LTEngine/common/compiler_utils.h>
 
 
 namespace LTEngine::Rendering {
@@ -27,12 +23,16 @@ namespace LTEngine::Rendering {
 
 
 		Color getScreenColor(u32 x, u32 y) const {
-			if (x < 0 || x >= screenSize.x || y < 0 || y >= screenSize.y) { return Color::Black; }
+			if (x < 0 || x >= screenSize.x || y < 0 || y >= screenSize.y) {
+				return Color::Black;
+			}
 			return screen[y * screenSize.x + x];
 		}
 
 		ColorA getTextureColor(u32 x, u32 y) const {
-			if (x < 0 || x >= textureWidth || y < 0 || y >= textureHeight) { return ColorA::Clear; }
+			if (x < 0 || x >= textureWidth || y < 0 || y >= textureHeight) {
+				return ColorA::Clear;
+			}
 			return texture[y * textureWidth + x];
 		}
 	};

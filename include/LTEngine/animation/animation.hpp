@@ -1,8 +1,6 @@
 #ifndef _LTENGINE_ANIMATION_HPP_
 #define _LTENGINE_ANIMATION_HPP_
 
-#include <LTEngine/common/types/floattypes.h>
-
 #include <LTEngine/event.hpp>
 
 

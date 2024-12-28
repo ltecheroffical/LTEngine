@@ -9,8 +9,6 @@
 
 #include <LTEngine/window.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine {
 	class LTENGINE_API GLFWWindow : public Window {

@@ -5,8 +5,6 @@
 
 #include <LTEngine/os/file.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::OS {
 	class LTENGINE_API MemFile : public File {
@@ -28,7 +26,9 @@ namespace LTEngine::OS {
 
 		void flush() override;
 
-		void getBuffer(void *buffer) { memcpy(buffer, m_buffer.data(), m_buffer.size()); }
+		void getBuffer(void *buffer) {
+			memcpy(buffer, m_buffer.data(), m_buffer.size());
+		}
 
 	private:
 		std::vector<u8> m_buffer;

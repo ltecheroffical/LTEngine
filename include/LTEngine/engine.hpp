@@ -7,8 +7,6 @@
 
 #include <LTEngine/rendering/renderer.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine {
 	class LTENGINE_API Engine {
@@ -28,10 +26,16 @@ namespace LTEngine {
 		 * `render()` function will return immediately. The renderer passed in will be used until the Engine is destroyed.
 		 */
 		void initDisplay(Rendering::Renderer *renderer);
-		Rendering::Renderer *getRenderer() { return m_renderer; }
+		Rendering::Renderer *getRenderer() {
+			return m_renderer;
+		}
 
-		void setObjectStructure(std::unique_ptr<Object::EngineStructure> structure) { m_objectStructure = std::move(structure); }
-		Object::EngineStructure *getObjectStructure() { return m_objectStructure.get(); }
+		void setObjectStructure(std::unique_ptr<Object::EngineStructure> structure) {
+			m_objectStructure = std::move(structure);
+		}
+		Object::EngineStructure *getObjectStructure() {
+			return m_objectStructure.get();
+		}
 		void clearObjects();
 
 		/**

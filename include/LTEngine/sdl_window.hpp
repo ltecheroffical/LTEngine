@@ -6,8 +6,6 @@
 
 #include <LTEngine/window.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine {
 	class LTENGINE_API SDLWindow : public Window {
@@ -51,8 +49,12 @@ namespace LTEngine {
 		void display(Rendering::Color *screen, u32 width, u32 height) override;
 		void display(Rendering::ColorA *screen, u32 width, u32 height) override;
 
-		SDL_Window *getWindow() { return m_window; }
-		SDL_Renderer *getRenderer() { return m_renderer; }
+		SDL_Window *getWindow() {
+			return m_window;
+		}
+		SDL_Renderer *getRenderer() {
+			return m_renderer;
+		}
 
 		void showMessageBox(SDL_MessageBoxFlags flags, const char *title, const char *message);
 

@@ -14,15 +14,20 @@ namespace LTEngine::Animation {
 	public:
 		StepAnimation() {
 			m_animTicker.onTick += [this](u64 ticks) {
-				if (!m_isPlaying) { return; }
-				if (!m_frames.contains(ticks)) { return; }
-				onAnimationStateChange(m_frames[ticks]);
+				if (!m_isPlaying) {
+					return;
+				}
+				if (!m_frames.contains(ticks)) {
+					return;
+				}
+				Animation<T>::onAnimationStateChange(m_frames[ticks]);
 				m_currentFrame = m_frames[ticks];
 
-				if (std::find_if(m_frames.begin(), m_frames.end(),
-				                 [ticks](std::pair<u64, T> frame) { return frame.first > ticks; }) == m_frames.end()) {
-					onAnimationEnd();
+				if (std::find_if(m_frames.begin(), m_frames.end(), [ticks](std::pair<u64, T> frame) {
+					    return frame.first > ticks;
+				    }) == m_frames.end()) {
 					stopAnimation();
+					Animation<T>::onAnimationEnd();
 				}
 			};
 			m_animTicker.setTickDelay(m_stepsBetweenTicks);
@@ -32,7 +37,9 @@ namespace LTEngine::Animation {
 
 
 		void step(f32 step) override {
-			if (!m_isPlaying) { return; }
+			if (!m_isPlaying) {
+				return;
+			}
 
 			m_animTicker.step(step);
 		}
@@ -45,7 +52,9 @@ namespace LTEngine::Animation {
 
 
 		void playAnimation() override {
-			if (!m_isPaused) { m_animTicker.resetTicks(); }
+			if (!m_isPaused) {
+				m_animTicker.resetTicks();
+			}
 
 			m_animTicker.setTickDelay(m_stepsBetweenTicks);
 			m_isPlaying = true;
@@ -64,11 +73,17 @@ namespace LTEngine::Animation {
 
 
 		// Sets what the frame at that tick should be, will stay at the current before triggering the next tick
-		void setFrame(u64 ticks, T frame) { m_frames[ticks] = frame; }
-		void removeFrame(u64 ticks) { m_frames.erase(ticks); }
+		void setFrame(u64 ticks, T frame) {
+			m_frames[ticks] = frame;
+		}
+		void removeFrame(u64 ticks) {
+			m_frames.erase(ticks);
+		}
 
 
-		T getState() override { return m_currentFrame; }
+		T getState() override {
+			return m_currentFrame;
+		}
 
 	private:
 		struct CapturedAnimation {

@@ -5,8 +5,6 @@
 
 #include <LTEngine/shapes/shape.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::Shapes {
 	struct LTENGINE_API Triangle : public Shape {

@@ -4,8 +4,6 @@
 #include <cstddef>
 #include <vector>
 
-#include <LTEngine/common/types/inttypes.h>
-
 #include <LTEngine/common/compiler_utils.h>
 
 

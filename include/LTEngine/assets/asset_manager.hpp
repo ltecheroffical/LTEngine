@@ -7,11 +7,6 @@
 
 #include <LTEngine/assets/asset_post_processor.hpp>
 
-#include <LTEngine/common/types/inttypes.h>
-
-#include <LTEngine/common/compiler_utils.h>
-
-
 namespace LTEngine {
 	/**
 	 * @brief A simple asset manager.
@@ -37,9 +32,13 @@ namespace LTEngine {
 		// Saves an asset without caching or processing.
 		virtual void saveAssetPure(std::string path, const u8 *data, size_t size) = 0;
 
-		void clearCache() { m_cache.clear(); }
+		void clearCache() {
+			m_cache.clear();
+		}
 		// Removes an asset from the cache
-		void removeCachedAsset(std::string path) { m_cache.erase(path); }
+		void removeCachedAsset(std::string path) {
+			m_cache.erase(path);
+		}
 
 		/**
 		 * @brief Set the asset manager post processor.
@@ -47,7 +46,9 @@ namespace LTEngine {
 		 * @details
 		 * The asset manager post processor is used to process assets before saved. See `AssetManagerPostProcessor` for uses.
 		 */
-		void setPostProcessor(AssetManagerPostProcessor *postProcessor) { m_postProcessor = postProcessor; }
+		void setPostProcessor(AssetManagerPostProcessor *postProcessor) {
+			m_postProcessor = postProcessor;
+		}
 
 	private:
 		AssetManagerPostProcessor *m_postProcessor = nullptr;

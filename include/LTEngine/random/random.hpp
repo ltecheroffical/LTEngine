@@ -1,9 +1,6 @@
 #ifndef _LTENGINE_RANDOM_HPP_
 #define _LTENGINE_RANDOM_HPP_
 
-#include <LTEngine/common/types/floattypes.h>
-#include <LTEngine/common/types/inttypes.h>
-
 #include <LTEngine/common/compiler_utils.h>
 
 

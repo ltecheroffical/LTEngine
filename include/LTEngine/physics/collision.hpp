@@ -6,8 +6,6 @@
 #include <LTEngine/shapes/rect.hpp>
 #include <LTEngine/shapes/triangle.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::Physics {
 	bool LTENGINE_API testCollision(Shapes::Rect a, Shapes::Rect b);

@@ -10,10 +10,6 @@
 
 #include <LTEngine/event.hpp>
 
-#include <LTEngine/common/types/inttypes.h>
-
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::Physics {
 	class LTENGINE_API PhysicsEngine {

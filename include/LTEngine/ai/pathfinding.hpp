@@ -3,8 +3,6 @@
 
 #include <vector>
 
-#include <LTEngine/common/types/inttypes.h>
-
 #include <LTEngine/math/vec2.hpp>
 
 

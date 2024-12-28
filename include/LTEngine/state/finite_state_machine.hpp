@@ -4,10 +4,6 @@
 #include <string>
 #include <unordered_map>
 
-#include <LTEngine/common/types/floattypes.h>
-
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::State {
 	class FSMState;

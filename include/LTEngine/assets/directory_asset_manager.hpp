@@ -8,8 +8,6 @@
 
 #include <LTEngine/assets/asset_manager.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine {
 	class LTENGINE_API DirectoryAssetManager : public AssetManager {

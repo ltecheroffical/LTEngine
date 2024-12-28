@@ -4,14 +4,8 @@
 #include <string>
 #include <unordered_map>
 
-#include <LTEngine/common/types/floattypes.h>
-#include <LTEngine/common/types/inttypes.h>
-
-#include <LTEngine/timer.hpp>
-
 #include <LTEngine/event.hpp>
-
-#include <LTEngine/common/compiler_utils.h>
+#include <LTEngine/timer.hpp>
 
 
 namespace LTEngine {
@@ -38,7 +32,9 @@ namespace LTEngine {
 
 		u64 getTicks();
 
-		void resetTicks() { m_currentTick = 0; }
+		void resetTicks() {
+			m_currentTick = 0;
+		}
 
 		void registerTick(std::string name, u64 everyTicks);
 		void unregisterTick(std::string name);

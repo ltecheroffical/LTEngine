@@ -5,13 +5,12 @@
 
 #include <LTEngine/os/file.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::OS {
 	class LTENGINE_API FStreamFile : public File {
 	public:
-		FStreamFile() : File(0) {}
+		FStreamFile() : File(0) {
+		}
 		FStreamFile(const char *path, u8 mode);
 		~FStreamFile() override;
 
@@ -30,7 +29,9 @@ namespace LTEngine::OS {
 
 		void flush() override;
 
-		std::fstream *getStream() { return &m_stream; }
+		std::fstream *getStream() {
+			return &m_stream;
+		}
 
 	private:
 		std::fstream m_stream;

@@ -4,8 +4,6 @@
 #include <string>
 #include <unordered_map>
 
-#include <LTEngine/common/types/inttypes.h>
-
 #include <LTEngine/common/compiler_utils.h>
 
 

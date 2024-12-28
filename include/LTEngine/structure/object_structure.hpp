@@ -5,8 +5,6 @@
 
 #include <LTEngine/structure/engine_structure.hpp>
 
-#include <LTEngine/common/compiler_utils.h>
-
 
 namespace LTEngine::Object {
 	class LTENGINE_API ObjectStructure : public EngineStructure {
@@ -25,13 +23,27 @@ namespace LTEngine::Object {
 			virtual std::unique_ptr<Object> clone() const = 0;
 			std::unique_ptr<Object> clone(u32 id) const;
 
-			virtual Math::Vec2 getPosition() const { return position; }
-			virtual Math::Vec2 getScale() const { return scale; }
-			virtual f32 getRotation() const { return rotation; }
-			virtual void setPosition(Math::Vec2 position) { this->position = position; }
-			virtual void setScale(Math::Vec2 scale) { this->scale = scale; }
-			virtual void setRotation(f32 rotation) { this->rotation = rotation; }
-			void translate(Math::Vec2 translation) { setPosition(position + translation); }
+			virtual Math::Vec2 getPosition() const {
+				return position;
+			}
+			virtual Math::Vec2 getScale() const {
+				return scale;
+			}
+			virtual f32 getRotation() const {
+				return rotation;
+			}
+			virtual void setPosition(Math::Vec2 position) {
+				this->position = position;
+			}
+			virtual void setScale(Math::Vec2 scale) {
+				this->scale = scale;
+			}
+			virtual void setRotation(f32 rotation) {
+				this->rotation = rotation;
+			}
+			void translate(Math::Vec2 translation) {
+				setPosition(position + translation);
+			}
 
 			bool isActive() const;
 			bool isVisible() const;
@@ -39,7 +51,9 @@ namespace LTEngine::Object {
 			void setActive(bool active);
 			void setVisible(bool visible);
 
-			ObjectStructure *getObjectStructure() { return m_structure; }
+			ObjectStructure *getObjectStructure() {
+				return m_structure;
+			}
 			void setObjectStructure(ObjectStructure *structure);
 
 			u32 getId() const;
@@ -67,26 +81,39 @@ namespace LTEngine::Object {
 			using pointer = Object *;
 			using reference = Object &;
 
-			ObjectIterator(std::vector<std::shared_ptr<Object>>::iterator it) : m_it(it) {}
+			ObjectIterator(std::vector<std::shared_ptr<Object>>::iterator it) : m_it(it) {
+			}
 
-			Object *operator*() { return m_it->get(); }
-			Object *operator->() { return m_it->get(); }
+			Object *operator*() {
+				return m_it->get();
+			}
+			Object *operator->() {
+				return m_it->get();
+			}
 
 			ObjectIterator &operator++() {
 				++m_it;
 				return *this;
 			}
 
-			friend bool operator==(const ObjectIterator &a, const ObjectIterator &b) { return a.m_it == b.m_it; }
-			friend bool operator!=(const ObjectIterator &a, const ObjectIterator &b) { return a.m_it != b.m_it; }
+			friend bool operator==(const ObjectIterator &a, const ObjectIterator &b) {
+				return a.m_it == b.m_it;
+			}
+			friend bool operator!=(const ObjectIterator &a, const ObjectIterator &b) {
+				return a.m_it != b.m_it;
+			}
 
 		private:
 			std::vector<std::shared_ptr<Object>>::iterator m_it;
 		};
 
 
-		ObjectIterator begin() { return ObjectIterator(m_objects.begin()); }
-		ObjectIterator end() { return ObjectIterator(m_objects.end()); }
+		ObjectIterator begin() {
+			return ObjectIterator(m_objects.begin());
+		}
+		ObjectIterator end() {
+			return ObjectIterator(m_objects.end());
+		}
 
 		void update(f32 delta) override;
 		void render(LTEngine::Rendering::Renderer *renderer) override;

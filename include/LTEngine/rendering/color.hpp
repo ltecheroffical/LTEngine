@@ -4,8 +4,6 @@
 
 #include <LTEngine/common/compiler_utils.h>
 
-#include <LTEngine/common/types/inttypes.h>
-
 
 namespace LTEngine::Rendering {
 	LTENGINE_PACK_START() struct Color {
@@ -19,32 +17,56 @@ namespace LTEngine::Rendering {
 		static const Color Yellow;
 		static const Color Cyan;
 
-		Color() : r(0), g(0), b(0) {}
-		Color(u8 r, u8 g, u8 b) : r(r), g(g), b(b) {}
+		Color() : r(0), g(0), b(0) {
+		}
+		Color(u8 r, u8 g, u8 b) : r(r), g(g), b(b) {
+		}
 
-		Color operator+(Color other) const { return Color(this->r + other.r, this->g + other.g, this->b + other.b); }
-		Color operator+(u8 other) const { return Color(this->r + other, this->g + other, this->b + other); }
-		Color operator-(Color other) const { return Color(this->r - other.r, this->g - other.g, this->b - other.b); }
-		Color operator-(u8 other) const { return Color(this->r - other, this->g - other, this->b - other); }
-		Color operator*(Color other) const { return Color(this->r * other.r, this->g * other.g, this->b * other.b); }
-		Color operator*(u8 other) const { return Color(this->r * other, this->g * other, this->b * other); }
-		Color operator/(Color other) const { return Color(this->r / other.r, this->g / other.g, this->b / other.b); }
+		Color operator+(Color other) const {
+			return Color(this->r + other.r, this->g + other.g, this->b + other.b);
+		}
+		Color operator+(u8 other) const {
+			return Color(this->r + other, this->g + other, this->b + other);
+		}
+		Color operator-(Color other) const {
+			return Color(this->r - other.r, this->g - other.g, this->b - other.b);
+		}
+		Color operator-(u8 other) const {
+			return Color(this->r - other, this->g - other, this->b - other);
+		}
+		Color operator*(Color other) const {
+			return Color(this->r * other.r, this->g * other.g, this->b * other.b);
+		}
+		Color operator*(u8 other) const {
+			return Color(this->r * other, this->g * other, this->b * other);
+		}
+		Color operator/(Color other) const {
+			return Color(this->r / other.r, this->g / other.g, this->b / other.b);
+		}
 
 
 		bool operator<(const Color &other) const {
-			if (r != other.r) return r < other.r;
-			if (g != other.g) return g < other.g;
+			if (r != other.r)
+				return r < other.r;
+			if (g != other.g)
+				return g < other.g;
 			return b < other.b;
 		}
 
 		bool operator>(const Color &other) const {
-			if (r != other.r) return r > other.r;
-			if (g != other.g) return g > other.g;
+			if (r != other.r)
+				return r > other.r;
+			if (g != other.g)
+				return g > other.g;
 			return b < other.b;
 		}
 
-		bool operator==(const Color &other) const { return r == other.r && g == other.g && b == other.b; }
-		bool operator!=(const Color &other) const { return r != other.r && g != other.g && b != other.b; }
+		bool operator==(const Color &other) const {
+			return r == other.r && g == other.g && b == other.b;
+		}
+		bool operator!=(const Color &other) const {
+			return r != other.r && g != other.g && b != other.b;
+		}
 
 
 		void operator+=(Color other) {
@@ -108,28 +130,38 @@ namespace LTEngine::Rendering {
 		static const ColorA Cyan;
 		static const ColorA Clear;
 
-		ColorA() : r(0), g(0), b(0), a(0) {}
-		ColorA(u8 r, u8 g, u8 b, u8 a) : r(r), g(g), b(b), a(a) {}
+		ColorA() : r(0), g(0), b(0), a(0) {
+		}
+		ColorA(u8 r, u8 g, u8 b, u8 a) : r(r), g(g), b(b), a(a) {
+		}
 
-		operator Color() const { return Color(this->r, this->g, this->b); }
+		operator Color() const {
+			return Color(this->r, this->g, this->b);
+		}
 
 		ColorA operator+(ColorA other) const {
 			return ColorA(this->r + other.r, this->g + other.g, this->b + other.b, this->a + other.a);
 		}
 
-		ColorA operator+(u8 other) const { return ColorA(this->r + other, this->g + other, this->b + other, this->a); }
+		ColorA operator+(u8 other) const {
+			return ColorA(this->r + other, this->g + other, this->b + other, this->a);
+		}
 
 		ColorA operator-(ColorA other) const {
 			return ColorA(this->r - other.r, this->g - other.g, this->b - other.b, this->a - other.a);
 		}
 
-		ColorA operator-(u8 other) const { return ColorA(this->r - other, this->g - other, this->b - other, this->a); }
+		ColorA operator-(u8 other) const {
+			return ColorA(this->r - other, this->g - other, this->b - other, this->a);
+		}
 
 		ColorA operator*(ColorA other) const {
 			return ColorA(this->r * other.r, this->g * other.g, this->b * other.b, this->a * other.a);
 		}
 
-		ColorA operator*(u8 other) const { return ColorA(this->r * other, this->g * other, this->b * other, this->a); }
+		ColorA operator*(u8 other) const {
+			return ColorA(this->r * other, this->g * other, this->b * other, this->a);
+		}
 
 		ColorA operator/(ColorA other) const {
 			return ColorA(this->r / other.r, this->g / other.g, this->b / other.b, this->a / other.a);
@@ -137,21 +169,31 @@ namespace LTEngine::Rendering {
 
 
 		bool operator<(const ColorA &other) const {
-			if (r != other.r) return r < other.r;
-			if (g != other.g) return g < other.g;
-			if (b != other.b) return b < other.b;
+			if (r != other.r)
+				return r < other.r;
+			if (g != other.g)
+				return g < other.g;
+			if (b != other.b)
+				return b < other.b;
 			return a < other.a;
 		}
 
 		bool operator>(const ColorA &other) const {
-			if (r != other.r) return r > other.r;
-			if (g != other.g) return g > other.g;
-			if (b != other.b) return b > other.b;
+			if (r != other.r)
+				return r > other.r;
+			if (g != other.g)
+				return g > other.g;
+			if (b != other.b)
+				return b > other.b;
 			return a > other.a;
 		}
 
-		bool operator==(const ColorA &other) const { return r == other.r && g == other.g && b == other.b && a == other.a; }
-		bool operator!=(const ColorA &other) const { return r != other.r && g != other.g && b != other.b && a == other.a; }
+		bool operator==(const ColorA &other) const {
+			return r == other.r && g == other.g && b == other.b && a == other.a;
+		}
+		bool operator!=(const ColorA &other) const {
+			return r != other.r && g != other.g && b != other.b && a == other.a;
+		}
 
 
 		void operator+=(ColorA other) {
