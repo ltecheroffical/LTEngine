@@ -53,23 +53,6 @@ LTEngine is designed to support both **game cores** and **normal games**, which 
 
 ---
 
-## Road to v0.1.0
-
-These features are planned for the first stable release:
-
-- [x] **Asset Manager** (7/10 Diffculty): Centralized management for assets (images, text, sounds) from bundles or directories.
-- [x] **Finite State Machine** (5/10 Diffculty): Enables states for entities (e.g., Idle, Alerted, Attacking).
-- [x] **GPU Renderer** (9/10 Diffculty): Built-in support for GPU rendering (e.g., Vulkan, OpenGL).
-- [x] **Font Loading/Rendering** (6/10 Diffculty): Loading custom fonts and rendering text.
-- [x] **Physics Engine Support** (8/10 Diffculty): Compatibility with physics engines (e.g., Box2D).
-- [x] **AI Pathfinding** (8/10 Diffculty): Integration with pathfinding algorithms (e.g., A*).
-- [x] **Localization** (5/10 Diffculty): Support for multiple languages by mapping keys (e.g., "ui/buttons/save") to text (e.g., "Save").
-- [x] **Audio Engine Support** (7/10 Diffculty): Compatibility with audio engines (e.g., raudio, soloud).
-- [x] **Polishing** (8/10 Diffculty): Refactor and improve the engine's codebase and add tests.
-- [x] **Documentation** (4/10 Diffculty): Documentation comments through out the engine's headers.
-
----
-
 ## In the Future
 
 - [ ] **3D Support**: Although ambitious, 3D rendering support may be added in future versions.
