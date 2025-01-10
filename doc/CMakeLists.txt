@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-find_package(Doxygen
-    REQUIRED dot)
+find_package(Doxygen)
 
 if (DOXYGEN_FOUND)
     # Check version
