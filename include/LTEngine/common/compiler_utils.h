@@ -11,6 +11,8 @@
 #include <cstring>
 #include <memory>
 #include <stdexcept>
+#else
+#include <stdbool.h>
 #endif
 
 

@@ -146,7 +146,7 @@ namespace LTEngine::Math {
 			}
 			return Vec2i(x / magnitude, y / magnitude);
 		}
-		f32 distance(Vec2 other) {
+		f32 distance(Vec2i other) {
 			f32 dx = other.x - x;
 			f32 dy = other.y - y;
 			return std::sqrt(dx * dx + dy * dy);
