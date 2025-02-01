@@ -8,11 +8,11 @@
 
 namespace LTEngine::Shapes {
 	struct LTENGINE_API Rect : public Shape {
-		u32 w, h;
+		f32 w, h;
 
-		Rect(f32 x, f32 y, u32 w, u32 h) : Shape(x, y), w(w), h(h) {
+		Rect(f32 x, f32 y, f32 w, f32 h) : Shape(x, y), w(w), h(h) {
 		}
-		Rect(Math::Vec2 pos, Math::Vec2u size) : Shape(pos.x, pos.y), w(size.x), h(size.y) {
+		Rect(Math::Vec2 pos, Math::Vec2 size) : Shape(pos.x, pos.y), w(size.x), h(size.y) {
 		}
 	};
 
