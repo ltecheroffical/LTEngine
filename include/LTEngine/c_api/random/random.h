@@ -5,7 +5,7 @@
 #include <LTEngine/common/compiler_utils.h>
 
 
-#ifndef __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -45,8 +45,11 @@ LTEngine_i16 LTENGINE_API LTEngine_Random_next_i16(LTEngine_HRandom handle);
 LTEngine_i32 LTENGINE_API LTEngine_Random_next_i32(LTEngine_HRandom handle);
 LTEngine_i64 LTENGINE_API LTEngine_Random_next_i64(LTEngine_HRandom handle);
 
+LTEngine_f32 LTENGINE_API LTEngine_Random_next_f32(LTEngine_HRandom handle);
+LTEngine_f64 LTENGINE_API LTEngine_Random_next_f64(LTEngine_HRandom handle);
 
-#ifndef __cplusplus
+
+#ifdef __cplusplus
 }
 #endif
 #endif

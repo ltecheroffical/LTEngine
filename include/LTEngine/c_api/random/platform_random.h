@@ -4,7 +4,7 @@
 #include <LTEngine/c_api/random/random.h>
 
 
-#ifndef __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -21,7 +21,7 @@ LTEngine_PlatformRandom_RandomSettings LTENGINE_API LTEngine_PlatformRandom_Rand
 
 LTEngine_HPlatformRandom LTENGINE_API LTEngine_PlatformRandom_init(LTEngine_PlatformRandom_RandomSettings settings);
 
-#ifndef __cplusplus
+#ifdef __cplusplus
 }
 #endif
 #endif
