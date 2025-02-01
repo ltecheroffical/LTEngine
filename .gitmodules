@@ -17,3 +17,6 @@
 [submodule "tests/thirdparty/Catch2"]
 	path = tests/thirdparty/Catch2
 	url = https://github.com/catchorg/Catch2
+[submodule "tests/thirdparty/cmocka"]
+	path = tests/c_api/thirdparty/cmocka
+	url = https://git.cryptomilk.org/projects/cmocka.git

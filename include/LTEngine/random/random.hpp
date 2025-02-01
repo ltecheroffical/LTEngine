@@ -19,7 +19,9 @@ namespace LTEngine::Random {
 		virtual i32 next_i32() = 0;
 		virtual i64 next_i64() = 0;
 
+		// The value returned is from 0 to 1
 		virtual f32 next_f32() = 0;
+		// The value returned is from 0 to 1
 		virtual f64 next_f64() = 0;
 
 		virtual void nextBytes(void *data, size_t size) = 0;
