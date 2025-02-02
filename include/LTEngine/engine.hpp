@@ -17,6 +17,7 @@ namespace LTEngine {
 		Event<f32> onUpdate;
 		Event<Rendering::Renderer *> onRender;
 
+		f32 timeScale = 1.f;
 
 		/**
 		 * @brief Initializes the display with the specified renderer.
