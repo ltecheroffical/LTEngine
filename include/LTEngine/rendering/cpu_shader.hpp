@@ -39,7 +39,7 @@ namespace LTEngine::Rendering {
 
 	class LTENGINE_API CPUShader {
 	public:
-		virtual ~CPUShader() = 0;
+		virtual ~CPUShader() = default;
 
 		virtual void fragment(CPUShaderIO *io) = 0;
 	};
