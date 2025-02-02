@@ -58,3 +58,8 @@ f32 PlatformRandom::next_f32() {
 f64 PlatformRandom::next_f64() {
 	return m_random->next_f64();
 }
+
+
+void PlatformRandom::nextBytes(void *data, size_t size) {
+	m_random->nextBytes(data, size);
+}
