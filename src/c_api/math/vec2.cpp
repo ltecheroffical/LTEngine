@@ -17,15 +17,15 @@ LTEngine_f32 LTEngine_Vec2_x(const LTEngine_HVec2 handle) {
 }
 
 LTEngine_f32 LTEngine_Vec2_y(const LTEngine_HVec2 handle) {
-	return ((LTEngine::Math::Vec2 *)handle)->x;
+	return ((LTEngine::Math::Vec2 *)handle)->y;
 }
 
 
-void LTEngine_Vec2_set_x(LTEngine_HVec2 handle, LTEngine_f32 x) {
+void LTEngine_Vec2_setX(LTEngine_HVec2 handle, LTEngine_f32 x) {
 	((LTEngine::Math::Vec2 *)handle)->x = x;
 }
 
-void LTEngine_Vec2_set_y(LTEngine_HVec2 handle, LTEngine_f32 y) {
+void LTEngine_Vec2_setY(LTEngine_HVec2 handle, LTEngine_f32 y) {
 	((LTEngine::Math::Vec2 *)handle)->y = y;
 }
 
@@ -59,11 +59,11 @@ LTEngine_i32 LTEngine_Vec2i_y(const LTEngine_HVec2i handle) {
 }
 
 
-void LTEngine_Vec2i_set_x(LTEngine_HVec2i handle, LTEngine_i32 x) {
+void LTEngine_Vec2i_setX(LTEngine_HVec2i handle, LTEngine_i32 x) {
 	((LTEngine::Math::Vec2i *)handle)->x = x;
 }
 
-void LTEngine_Vec2i_set_y(LTEngine_HVec2i handle, LTEngine_i32 y) {
+void LTEngine_Vec2i_setY(LTEngine_HVec2i handle, LTEngine_i32 y) {
 	((LTEngine::Math::Vec2i *)handle)->y = y;
 }
 
@@ -97,10 +97,10 @@ LTEngine_u32 LTEngine_Vec2u_y(const LTEngine_HVec2u handle) {
 }
 
 
-void LTEngine_Vec2u_set_x(LTEngine_HVec2u handle, LTEngine_u32 x) {
+void LTEngine_Vec2u_setX(LTEngine_HVec2u handle, LTEngine_u32 x) {
 	((LTEngine::Math::Vec2u *)handle)->x = x;
 }
 
-void LTEngine_Vec2u_set_y(LTEngine_HVec2u handle, LTEngine_u32 y) {
+void LTEngine_Vec2u_setY(LTEngine_HVec2u handle, LTEngine_u32 y) {
 	((LTEngine::Math::Vec2u *)handle)->y = y;
 }

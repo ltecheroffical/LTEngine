@@ -29,19 +29,19 @@ LTEngine_f32 LTEngine_Rect_h(const LTEngine_HRect handle) {
 }
 
 
-void LTEngine_Rect_set_x(LTEngine_HRect handle, LTEngine_f32 x) {
+void LTEngine_Rect_setX(LTEngine_HRect handle, LTEngine_f32 x) {
 	((LTEngine::Shapes::Rect *)handle)->x = x;
 }
 
-void LTEngine_Rect_set_y(LTEngine_HRect handle, LTEngine_f32 y) {
+void LTEngine_Rect_setY(LTEngine_HRect handle, LTEngine_f32 y) {
 	((LTEngine::Shapes::Rect *)handle)->y = y;
 }
 
-void LTEngine_Rect_set_w(LTEngine_HRect handle, LTEngine_f32 w) {
+void LTEngine_Rect_setW(LTEngine_HRect handle, LTEngine_f32 w) {
 	((LTEngine::Shapes::Rect *)handle)->w = w;
 }
 
-void LTEngine_Rect_set_h(LTEngine_HRect handle, LTEngine_f32 h) {
+void LTEngine_Rect_setH(LTEngine_HRect handle, LTEngine_f32 h) {
 	((LTEngine::Shapes::Rect *)handle)->h = h;
 }
 
@@ -72,18 +72,18 @@ LTEngine_i32 LTEngine_Recti_h(const LTEngine_HRecti handle) {
 }
 
 
-void LTEngine_Recti_set_x(LTEngine_HRecti handle, LTEngine_i32 x) {
+void LTEngine_Recti_setX(LTEngine_HRecti handle, LTEngine_i32 x) {
 	((LTEngine::Shapes::Recti *)handle)->x = x;
 }
 
-void LTEngine_Recti_set_y(LTEngine_HRecti handle, LTEngine_i32 y) {
+void LTEngine_Recti_setY(LTEngine_HRecti handle, LTEngine_i32 y) {
 	((LTEngine::Shapes::Recti *)handle)->y = y;
 }
 
-void LTEngine_Recti_set_w(LTEngine_HRecti handle, LTEngine_i32 w) {
+void LTEngine_Recti_setW(LTEngine_HRecti handle, LTEngine_i32 w) {
 	((LTEngine::Shapes::Recti *)handle)->w = w;
 }
 
-void LTEngine_Recti_set_h(LTEngine_HRecti handle, LTEngine_i32 h) {
+void LTEngine_Recti_setH(LTEngine_HRecti handle, LTEngine_i32 h) {
 	((LTEngine::Shapes::Recti *)handle)->h = h;
 }

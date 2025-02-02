@@ -1,6 +1,9 @@
 # Catch2
 add_subdirectory(thirdparty/Catch2)
 
+# C Tests
+add_subdirectory(c_api)
+
 # Building tests
 add_executable(hash_test hash_test.cpp)
 add_executable(bundle_asset_manager_test bundle_asset_manager_test.cpp)
