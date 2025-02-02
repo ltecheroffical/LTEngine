@@ -70,7 +70,7 @@ void test_recti_storage(void **state) {
 	LTEngine_Recti_setW(rect, rect_size[0]);
 	LTEngine_Recti_setH(rect, rect_size[1]);
 
-	assert_true(LTEngine_Rect_x(rect) == rect_position[0]);
+	assert_true(LTEngine_Recti_x(rect) == rect_position[0]);
 	assert_true(LTEngine_Recti_y(rect) == rect_position[1]);
 	assert_true(LTEngine_Recti_w(rect) == rect_size[0]);
 	assert_true(LTEngine_Recti_h(rect) == rect_size[1]);
