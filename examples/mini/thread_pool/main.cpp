@@ -110,7 +110,7 @@ int main() {
 		renderer.clear(Rendering::Color::Cyan);
 
 		renderer.drawRect(Shapes::Rect(100, 100, 500, 500), Rendering::ColorA::Red);
-		renderer.drawCircle(Shapes::Circle({465 + 250, 318 + 250}, 250), Rendering::ColorA::Blue, Rendering::Renderer::FLAG_FILL);
+		renderer.drawCircle(Shapes::Circle{{465 + 250, 318 + 250}, 250}, Rendering::ColorA::Blue, Rendering::Renderer::FLAG_FILL);
 
 		renderer.setShader(&shader);
 		renderer.drawRect(Shapes::Rect(1224, 147, 585, 375), Rendering::ColorA::Green);
