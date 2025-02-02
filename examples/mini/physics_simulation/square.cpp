@@ -6,7 +6,8 @@ using namespace PhysicsSimulation;
 
 Square::Square(LTEngine::Physics::PhysicsEngine *physics, LTEngine::Rendering::ColorA color, f32 x, f32 y)
     : m_physicsEngine(physics), m_color(color) {
-	m_physicsBody = physics->addBody({x, y, BOX_WIDTH, BOX_HEIGHT}, LTEngine::Physics::PhysicsEngine::BodyType::BODY_TYPE_DYNAMIC);
+	m_physicsBody =
+	    physics->addBody({x, y, (f32)BOX_WIDTH, (f32)BOX_HEIGHT}, LTEngine::Physics::PhysicsEngine::BodyType::BODY_TYPE_DYNAMIC);
 }
 
 Square::~Square() {
@@ -21,7 +22,7 @@ void Square::update(f32 delta) {
 }
 
 void Square::render(LTEngine::Rendering::Renderer *renderer) {
-	renderer->drawRect({0, 0, BOX_WIDTH, BOX_HEIGHT}, m_color);
+	renderer->drawRect({0, 0, (f32)BOX_WIDTH, (f32)BOX_HEIGHT}, m_color);
 }
 
 
