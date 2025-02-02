@@ -36,12 +36,16 @@ void Engine::deleteScene(u32 id) {
 
 
 void Engine::update(f32 delta) {
-	onUpdate(delta);
-	if (m_objectStructure != nullptr) { m_objectStructure->update(delta); }
+	onUpdate(delta * timeScale);
+	if (m_objectStructure != nullptr) {
+		m_objectStructure->update(delta * timeScale);
+	}
 }
 
 void Engine::render() {
-	if (!m_displayInitialized) { return; }
+	if (!m_displayInitialized) {
+		return;
+	}
 
 
 	m_renderer->resetTransform();
