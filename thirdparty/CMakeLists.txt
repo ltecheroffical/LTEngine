@@ -30,6 +30,11 @@ add_subdirectory(soloud)
 add_subdirectory(stb_image)
 add_subdirectory(stb_truetype)
 
+# OpenSSL
+find_package(OpenSSL REQUIRED)
+if (NOT OPENSSL_FOUND)
+    message(FATAL_ERROR "OpenSSL not found")
+endif()
 
 # Linking
 if (LTENGINE_BUILD_WITH_SDL)
@@ -62,4 +67,8 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     # STB Utilities
     stb_image
     stb_truetype
+
+    # OpenSSL
+    OpenSSL::SSL
+    OpenSSL::Crypto
 )

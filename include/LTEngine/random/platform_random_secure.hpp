@@ -1,20 +1,20 @@
-#ifndef _LTENGINE_PLATFORM_RANDOM_HPP_
-#define _LTENGINE_PLATFORM_RANDOM_HPP_
+#ifndef _LTENGINE_PLATFORM_RANDOM_SECURE_HPP_
+#define _LTENGINE_PLATFORM_RANDOM_SECURE_HPP_
 
-#include <LTEngine/random/mt19937.hpp>
-#include <LTEngine/random/unix_random.hpp>
+#include <LTEngine/random/openssl_random.hpp>
+#include <LTEngine/random/unix_random_secure.hpp>
 
 
 namespace LTEngine::Random {
-	// This class has the purpose of choosing the best for platform randomness
-	class LTENGINE_API PlatformRandom : public Random {
+	// This class has the purpose of choosing the best for platform randomness that is still secure
+	class LTENGINE_API PlatformRandomSecure : public Random {
 	public:
 		struct RandomSettings {
 			size_t unixRandomBufferSize = 512;
 		};
 
-		PlatformRandom(RandomSettings settings);
-		~PlatformRandom() override = default;
+		PlatformRandomSecure(RandomSettings settings);
+		~PlatformRandomSecure() override = default;
 
 		u8 next_u8() override;
 		u16 next_u16() override;
@@ -33,9 +33,9 @@ namespace LTEngine::Random {
 
 	private:
 #if defined(__linux__) || defined(__APPLE__)
-		UnixRandom m_random;
+		UnixRandomSecure m_random;
 #else
-		MT19937 m_random;
+		OpenOpenSSLRandom m_random;
 #endif
 	};
 } // namespace LTEngine::Random
