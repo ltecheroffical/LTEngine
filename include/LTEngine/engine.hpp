@@ -15,7 +15,9 @@ namespace LTEngine {
 		~Engine() = default;
 
 		Event<f32> onUpdate;
+		Event<f32> onUpdatePost;
 		Event<Rendering::Renderer *> onRender;
+		Event<Rendering::Renderer *> onRenderPost;
 
 		f32 timeScale = 1.f;
 

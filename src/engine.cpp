@@ -40,6 +40,7 @@ void Engine::update(f32 delta) {
 	if (m_objectStructure != nullptr) {
 		m_objectStructure->update(delta * timeScale);
 	}
+	onUpdatePost(delta * timeScale);
 }
 
 void Engine::render() {
@@ -58,4 +59,5 @@ void Engine::render() {
 		m_renderer->clear(m_objectStructure->getClearColor());
 		m_objectStructure->render(m_renderer);
 	}
+	onRenderPost(m_renderer);
 }
