@@ -39,7 +39,7 @@ void Box2D::update(f32 timeStep) {
 
 			auto otherBody = std::find_if(m_bodies.begin(), m_bodies.end(), [bodyB](std::pair<u32, b2BodyId> bodyPair) {
 				// We have to compare everything since Box2D doesn't provide an id comparison function
-				return bodyB.revision == bodyPair.second.revision && bodyB.index1 == bodyPair.second.index1 &&
+				return bodyB.generation == bodyPair.second.generation && bodyB.index1 == bodyPair.second.index1 &&
 				       bodyB.world0 == bodyPair.second.world0;
 			});
 
@@ -145,7 +145,9 @@ u32 Box2D::addBody(Shapes::Polygon polygon, PhysicsEngine::BodyType bodyType) {
 	b2BodyId bodyId = b2CreateBody(m_world, &bodyDef);
 
 	std::vector<b2Vec2> points;
-	for (Math::Vec2 point : polygon.points) { points.push_back(b2Vec2{point.x * METERS_PER_PIXEL, point.y * METERS_PER_PIXEL}); }
+	for (Math::Vec2 point : polygon.points) {
+		points.push_back(b2Vec2{point.x * METERS_PER_PIXEL, point.y * METERS_PER_PIXEL});
+	}
 	b2Hull hull = b2ComputeHull(points.data(), points.size());
 
 	const f32 radius = 0.1f; // Box2D, why is this a requirement?
@@ -240,7 +242,9 @@ void Box2D::removeJoint(u32 id) {
 }
 
 void Box2D::removeBody(u32 id) {
-	if (!m_bodies.contains(id)) { return; }
+	if (!m_bodies.contains(id)) {
+		return;
+	}
 	b2DestroyBody(m_bodies.at(id));
 	m_bodies.erase(id);
 	m_bodySizes.erase(id);
