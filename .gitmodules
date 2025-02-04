@@ -8,7 +8,7 @@
 [submodule "thirdparty/box2d"]
 	path = thirdparty/box2d
 	url = https://github.com/erincatto/box2d
-[submodule "thirdparty/soloud"]
+[submodule "thirdparty/soloud/soloud"]
 	path = thirdparty/soloud/soloud
 	url = https://github.com/jarikomppa/soloud
 [submodule "thirdparty/glm"]
