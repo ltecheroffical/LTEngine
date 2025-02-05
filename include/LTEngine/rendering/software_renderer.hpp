@@ -94,9 +94,11 @@ namespace LTEngine::Rendering {
 			u32 dataCamId = 0;
 		};
 
-		u32 prepareBuffer(u32 width, u32 height);
-		void drawBufferPixel(u32 id, u32 x, u32 y, ColorA color);
-		void displayBuffer(u32 id, i32 x, i32 y, const RendererQueueOp *op, f32 rotation);
+		u64 prepareBuffer(u32 width, u32 height);
+		void drawBufferPixel(u64 id, u32 x, u32 y, ColorA color);
+		ColorA getBufferPixel(u64 id, u32 x, u32 y);
+		void displayBuffer(u64 id, i32 x, i32 y, const RendererQueueOp *op, f32 rotation);
+		void deleteBuffer(u64 id);
 
 		void cameraCreated(u32 id) override;
 		void cameraDestroyed(u32 id) override;
@@ -119,14 +121,11 @@ namespace LTEngine::Rendering {
 			u32 w, h;
 			size_t index;
 		};
-		std::unordered_map<u32, Buffer> m_buffers;
+		std::unordered_map<u64, Buffer> m_buffers;
 		std::vector<ColorA> m_bufferData;
 		std::unordered_map<size_t, size_t> m_bufferUsed;
-		u32 m_nextBufferId = 0;
+		u64 m_nextBufferId = 0;
 		std::mutex m_bufferMutex;
-
-		std::vector<ColorA> m_bufferWorkspace1;
-		std::vector<ColorA> m_bufferWorkspace2;
 
 		bool m_screenOnly : 1 = false;
 		bool m_cameraSelected : 1 = false;

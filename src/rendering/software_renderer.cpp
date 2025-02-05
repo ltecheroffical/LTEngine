@@ -320,7 +320,7 @@ bool SoftwareRenderer::process() {
 
 		case RendererQueueOp::RenderOpType::Rect:
 			{
-				u32 id = prepareBuffer(op.dataRect.w, op.dataRect.h);
+				u64 id = prepareBuffer(op.dataRect.w, op.dataRect.h);
 				for (u32 y = 0; y < op.dataRect.h; y++) {
 					for (u32 x = 0; x < op.dataRect.w; x++) { // Why this order? It's about CPU caching!
 						drawBufferPixel(id, x, y, op.color);
@@ -333,7 +333,7 @@ bool SoftwareRenderer::process() {
 			{
 				u32 radius = op.dataCircle.radius;
 
-				u32 id = prepareBuffer(2 * radius + 1, 2 * radius + 1);
+				u64 id = prepareBuffer(2 * radius + 1, 2 * radius + 1);
 
 				u32 centerX = radius;
 				u32 centerY = radius;
@@ -384,7 +384,7 @@ bool SoftwareRenderer::process() {
 				u32 width = abs(op.dataPointB.x - op.dataPointA.x) + 1;
 				u32 height = abs(op.dataPointB.y - op.dataPointA.y) + 1;
 
-				u32 id = prepareBuffer(width, height);
+				u64 id = prepareBuffer(width, height);
 
 				i32 positionX = (op.dataPointA.x < op.dataPointB.x) ? op.dataPointA.x : op.dataPointB.x;
 				i32 positionY = (op.dataPointA.y < op.dataPointB.y) ? op.dataPointA.y : op.dataPointB.y;
@@ -460,7 +460,7 @@ bool SoftwareRenderer::process() {
 					u32 bufferWidth = max_x - min_x + 1;
 					u32 bufferHeight = max_y - min_y + 1;
 
-					u32 id = prepareBuffer(bufferWidth, bufferHeight);
+					u64 id = prepareBuffer(bufferWidth, bufferHeight);
 
 					for (i32 y = min_y; y <= max_y; y++) {
 						i32 intersections[count];
@@ -498,7 +498,7 @@ bool SoftwareRenderer::process() {
 				u32 imageWidth = op.dataRect.w;
 				u32 imageHeight = op.dataRect.h;
 
-				u32 id = prepareBuffer(imageWidth, imageHeight);
+				u64 id = prepareBuffer(imageWidth, imageHeight);
 
 				for (u32 y = 0; y < imageHeight; y++) {
 					for (u32 x = 0; x < imageWidth; x++) {
@@ -511,7 +511,7 @@ bool SoftwareRenderer::process() {
 			}
 		case RendererQueueOp::RenderOpType::Camera:
 			{
-				u32 id = prepareBuffer(op.dataRect.w, op.dataRect.h);
+				u64 id = prepareBuffer(op.dataRect.w, op.dataRect.h);
 
 				for (u32 y = 0; y < op.dataRect.h; y++) {
 					for (u32 x = 0; x < op.dataRect.w; x++) {
@@ -553,55 +553,49 @@ void SoftwareRenderer::clearShader() {
 }
 
 
-u32 SoftwareRenderer::prepareBuffer(u32 width, u32 height) {
+u64 SoftwareRenderer::prepareBuffer(u32 width, u32 height) {
 	size_t bufferSize = width * height;
 	size_t freeIndex = 0;
 
 	m_bufferMutex.lock();
 
+
 	bool found = false;
-	while (!found) {
-		while (m_bufferData.size() < bufferSize) {
-			m_bufferData.resize(m_bufferData.size() * 2, UNALLOCATED_COLOR);
-		}
+	size_t currentSize = m_bufferData.size();
 
-		for (size_t i = 0; i < m_bufferData.size(); i++) {
-			if (m_bufferUsed.contains(i)) {
-				i += m_bufferUsed[i];
-				continue;
-			}
+	if (currentSize < bufferSize) {
+		m_bufferData.resize(bufferSize, UNALLOCATED_COLOR);
+		currentSize = bufferSize;
+	}
 
-			if (i + bufferSize > m_bufferData.size()) {
-				break;
-			}
-
-			for (size_t j = 0; j < bufferSize; j++) {
-				if (m_bufferUsed.contains(i + j)) {
-					found = false;
-					break;
-				}
-
-				found = true;
-			}
-
-			if (found) {
-				freeIndex = i;
+	size_t i = 0;
+	while (true) {
+		found = true;
+		for (size_t j = 0; j < bufferSize; j++) {
+			if (m_bufferUsed.contains(i + j)) {
+				i = (i + j + m_bufferUsed[i + j]);
+				found = false;
 				break;
 			}
 		}
 
 		if (found) {
+			freeIndex = i;
 			break;
 		}
 
-		m_bufferData.resize(m_bufferData.size() * 2, UNALLOCATED_COLOR);
+		if (i + bufferSize > currentSize) {
+			m_bufferData.resize(currentSize * 2, UNALLOCATED_COLOR);
+			currentSize = m_bufferData.size();
+		}
 	}
+
 
 	m_bufferUsed[freeIndex] = bufferSize;
 
 	std::fill(m_bufferData.begin() + freeIndex, m_bufferData.begin() + freeIndex + bufferSize, ColorA::Clear);
 
-	u32 id = m_nextBufferId++;
+	u64 id = m_nextBufferId++;
 
 	m_buffers[id].w = width;
 	m_buffers[id].h = height;
@@ -611,13 +605,19 @@ u32 SoftwareRenderer::prepareBuffer(u32 width, u32 height) {
 	return id;
 }
 
-void SoftwareRenderer::drawBufferPixel(u32 id, u32 x, u32 y, ColorA color) {
+void SoftwareRenderer::drawBufferPixel(u64 id, u32 x, u32 y, ColorA color) {
 	Buffer *buffer = &m_buffers.at(id);
 	size_t index = buffer->index + (y * buffer->w + x);
 	m_bufferData[index] = color;
 }
 
-void SoftwareRenderer::displayBuffer(u32 id, i32 posX, i32 posY, const RendererQueueOp *op, f32 rotation) {
+ColorA SoftwareRenderer::getBufferPixel(u64 id, u32 x, u32 y) {
+	Buffer *buffer = &m_buffers.at(id);
+	size_t index = buffer->index + (y * buffer->w + x);
+	return m_bufferData[index];
+}
+
+void SoftwareRenderer::displayBuffer(u64 id, i32 posX, i32 posY, const RendererQueueOp *op, f32 rotation) {
 	if (m_screenOnly && m_cameraSelected) {
 		return;
 	}
@@ -636,14 +636,11 @@ void SoftwareRenderer::displayBuffer(u32 id, i32 posX, i32 posY, const RendererQ
 	u32 bufferWidth = m_buffers.at(id).w;
 	u32 bufferHeight = m_buffers.at(id).h;
 
-	if (m_bufferWorkspace1.size() < bufferWidth * bufferHeight) {
-		m_bufferWorkspace1.resize(bufferWidth * bufferHeight);
-	}
+	u64 shaderBuffer = prepareBuffer(bufferWidth, bufferHeight);
 
 	for (u32 y = 0; y < bufferHeight; y++) {
 		for (u32 x = 0; x < bufferWidth; x++) {
-			size_t index = y * bufferWidth + x;
-			ColorA color = m_bufferData[m_buffers.at(id).index + index];
+			ColorA color = m_bufferData[m_buffers.at(id).index + (y * bufferWidth + x)];
 			if (op->shader != nullptr) {
 				CPUShaderIO io = {.position = Math::Vec2i(posX, posY),
 				                  .color = op->color,
@@ -666,20 +663,17 @@ void SoftwareRenderer::displayBuffer(u32 id, i32 posX, i32 posY, const RendererQ
 				posX = io.position.x;
 				posY = io.position.y;
 			}
-			m_bufferWorkspace1[index] = color;
+			drawBufferPixel(shaderBuffer, x, y, color);
 		}
 	}
 
-	if (m_bufferWorkspace2.size() < (bufferWidth * op->dataScale.x) * (bufferHeight * op->dataScale.y)) {
-		m_bufferWorkspace2.resize((bufferWidth * op->dataScale.x) * (bufferHeight * op->dataScale.y));
-	}
+	u64 scaleBuffer = prepareBuffer(bufferWidth * op->dataScale.x, bufferHeight * op->dataScale.y);
 
 	switch (m_scalingMode) {
 		case ScalingMode::Nearest:
 			for (u32 y = 0; y < bufferHeight * op->dataScale.y; y++) {
 				for (u32 x = 0; x < bufferWidth * op->dataScale.x; x++) {
-					m_bufferWorkspace2[y * (bufferWidth * getWorldScale().x) + x] =
-					    m_bufferWorkspace1[y / op->dataScale.y * bufferWidth + x / op->dataScale.x];
+					drawBufferPixel(scaleBuffer, x, y, getBufferPixel(shaderBuffer, x / op->dataScale.x, y / op->dataScale.y));
 				}
 			}
 			break;
@@ -698,10 +692,10 @@ void SoftwareRenderer::displayBuffer(u32 id, i32 posX, i32 posY, const RendererQ
 					f32 xLerp = origX - x1;
 					f32 yLerp = origY - y1;
 
-					ColorA topLeft = m_bufferWorkspace1[y1 * bufferWidth + x1];
-					ColorA topRight = m_bufferWorkspace1[y1 * bufferWidth + x2];
-					ColorA bottomLeft = m_bufferWorkspace1[y2 * bufferWidth + x1];
-					ColorA bottomRight = m_bufferWorkspace1[y2 * bufferWidth + x2];
+					ColorA topLeft = getBufferPixel(shaderBuffer, x1, y1);
+					ColorA topRight = getBufferPixel(shaderBuffer, x2, y1);
+					ColorA bottomLeft = getBufferPixel(shaderBuffer, x1, y2);
+					ColorA bottomRight = getBufferPixel(shaderBuffer, x2, y2);
 
 					ColorA topRow = {static_cast<u8>(topLeft.r + xLerp * (topRight.r - topLeft.r)),
 					                 static_cast<u8>(topLeft.g + xLerp * (topRight.g - topLeft.g)),
@@ -713,23 +707,19 @@ void SoftwareRenderer::displayBuffer(u32 id, i32 posX, i32 posY, const RendererQ
 					                    static_cast<u8>(bottomLeft.b + xLerp * (bottomRight.b - bottomLeft.b)),
 					                    static_cast<u8>(bottomLeft.a + xLerp * (bottomRight.a - bottomLeft.a))};
 
-					m_bufferWorkspace2[y * (bufferWidth * op->dataScale.x) + x] = {
-					    static_cast<u8>(topRow.r + yLerp * (bottomRow.r - topRow.r)),
-					    static_cast<u8>(topRow.g + yLerp * (bottomRow.g - topRow.g)),
-					    static_cast<u8>(topRow.b + yLerp * (bottomRow.b - topRow.b)),
-					    static_cast<u8>(topRow.a + yLerp * (bottomRow.a - topRow.a))};
+					drawBufferPixel(scaleBuffer, x, y,
+					                {static_cast<u8>(topRow.r + yLerp * (bottomRow.r - topRow.r)),
+					                 static_cast<u8>(topRow.g + yLerp * (bottomRow.g - topRow.g)),
+					                 static_cast<u8>(topRow.b + yLerp * (bottomRow.b - topRow.b)),
+					                 static_cast<u8>(topRow.a + yLerp * (bottomRow.a - topRow.a))});
 				}
 			}
 			break;
 	}
+	deleteBuffer(shaderBuffer);
 
 	u32 biggestSide = std::max(bufferWidth * op->dataScale.x, bufferHeight * op->dataScale.y);
-
-	if (m_bufferWorkspace1.size() < biggestSide * biggestSide) {
-		m_bufferWorkspace1.resize(biggestSide * biggestSide);
-	}
-
-	std::fill(m_bufferWorkspace1.begin(), m_bufferWorkspace1.end(), ColorA::Clear);
+	u64 rotationBuffer = prepareBuffer(biggestSide, biggestSide);
 
 	for (u32 y = 0; y < bufferHeight * op->dataScale.y; y++) {
 		for (u32 x = 0; x < bufferWidth * op->dataScale.x; x++) {
@@ -743,9 +733,10 @@ void SoftwareRenderer::displayBuffer(u32 id, i32 posX, i32 posY, const RendererQ
 				continue;
 			}
 
-			m_bufferWorkspace1[rotatedY * biggestSide + rotatedX] = m_bufferWorkspace2[y * (bufferWidth * op->dataScale.x) + x];
+			drawBufferPixel(rotationBuffer, rotatedX, rotatedY, getBufferPixel(scaleBuffer, x, y));
 		}
 	}
+	deleteBuffer(scaleBuffer);
 
 	for (u32 y = 0; y < bufferHeight * op->dataScale.y; y++) {
 		for (u32 x = 0; x < bufferWidth * op->dataScale.x; x++) {
@@ -759,7 +750,7 @@ void SoftwareRenderer::displayBuffer(u32 id, i32 posX, i32 posY, const RendererQ
 				}
 
 				m_screenMutex.lock();
-				m_screen[((y + posY) * m_screenWidth + (x + posX))] = blendPixel(m_bufferWorkspace1[y * biggestSide + x], {x, y});
+				m_screen[((y + posY) * m_screenWidth + (x + posX))] = blendPixel(getBufferPixel(rotationBuffer, x, y), {x, y});
 				m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] = op->zOrder;
 				m_screenMutex.unlock();
 				continue;
@@ -779,15 +770,21 @@ void SoftwareRenderer::displayBuffer(u32 id, i32 posX, i32 posY, const RendererQ
 
 				m_cameraMutexes[output.first].lock();
 				m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] = getZOrder();
-				output.second[(y + posY) * m_screenWidth + (x + posX)] =
-				    blendPixel(m_bufferWorkspace1[y * biggestSide + x], {x, y});
+				output.second[(y + posY) * m_screenWidth + (x + posX)] = blendPixel(getBufferPixel(rotationBuffer, x, y), {x, y});
 				m_cameraMutexes[output.first].unlock();
 			});
 		}
 	}
 
+	deleteBuffer(rotationBuffer);
+	deleteBuffer(id);
+}
+
+void SoftwareRenderer::deleteBuffer(u64 id) {
+	m_bufferMutex.lock();
 	m_bufferUsed.erase(m_buffers.at(id).index);
 	m_buffers.erase(id);
+	m_bufferMutex.unlock();
 }
 
 
