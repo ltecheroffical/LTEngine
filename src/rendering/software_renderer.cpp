@@ -7,10 +7,15 @@ using namespace LTEngine;
 using namespace LTEngine::Rendering;
 
 
+#define UNALLOCATED_COLOR ColorA(0x3A, 0x6B, 0x2F, 0xFF)
+
+
 SoftwareRenderer::SoftwareRenderer(u32 width, u32 height) : m_screenWidth(width), m_screenHeight(height) {
 	m_screen.resize(m_screenWidth * m_screenHeight, Color::Black);
 	m_screenDepth.resize(m_screenWidth * m_screenHeight, 0);
 	m_screenOnly = false;
+
+	m_bufferData.resize(64, UNALLOCATED_COLOR);
 }
 
 
@@ -314,19 +319,21 @@ bool SoftwareRenderer::process() {
 			break;
 
 		case RendererQueueOp::RenderOpType::Rect:
-			prepareBuffer(op.dataRect.w, op.dataRect.h);
-			for (u32 y = 0; y < op.dataRect.h; y++) {
-				for (u32 x = 0; x < op.dataRect.w; x++) { // Why this order? It's about CPU caching!
-					drawBufferPixel(x, y, op.color);
+			{
+				u32 id = prepareBuffer(op.dataRect.w, op.dataRect.h);
+				for (u32 y = 0; y < op.dataRect.h; y++) {
+					for (u32 x = 0; x < op.dataRect.w; x++) { // Why this order? It's about CPU caching!
+						drawBufferPixel(id, x, y, op.color);
+					}
 				}
+				displayBuffer(id, op.dataRect.x, op.dataRect.y, &op, op.dataRect.rotation);
+				break;
 			}
-			displayBuffer(op.dataRect.x, op.dataRect.y, &op, op.dataRect.rotation);
-			break;
 		case RendererQueueOp::RenderOpType::Circle:
 			{
 				u32 radius = op.dataCircle.radius;
 
-				prepareBuffer(2 * radius + 1, 2 * radius + 1);
+				u32 id = prepareBuffer(2 * radius + 1, 2 * radius + 1);
 
 				u32 centerX = radius;
 				u32 centerY = radius;
@@ -336,14 +343,14 @@ bool SoftwareRenderer::process() {
 				i32 p = 1 - radius;
 
 				while (x >= y) {
-					drawBufferPixel(centerX + x, centerY + y, op.color);
-					drawBufferPixel(centerX + x, centerY - y, op.color);
-					drawBufferPixel(centerX - x, centerY + y, op.color);
-					drawBufferPixel(centerX - x, centerY - y, op.color);
-					drawBufferPixel(centerX + y, centerY + x, op.color);
-					drawBufferPixel(centerX + y, centerY - x, op.color);
-					drawBufferPixel(centerX - y, centerY + x, op.color);
-					drawBufferPixel(centerX - y, centerY - x, op.color);
+					drawBufferPixel(id, centerX + x, centerY + y, op.color);
+					drawBufferPixel(id, centerX + x, centerY - y, op.color);
+					drawBufferPixel(id, centerX - x, centerY + y, op.color);
+					drawBufferPixel(id, centerX - x, centerY - y, op.color);
+					drawBufferPixel(id, centerX + y, centerY + x, op.color);
+					drawBufferPixel(id, centerX + y, centerY - x, op.color);
+					drawBufferPixel(id, centerX - y, centerY + x, op.color);
+					drawBufferPixel(id, centerX - y, centerY - x, op.color);
 
 					if (p <= 0) {
 						p += 2 * ++y + 1;
@@ -363,13 +370,13 @@ bool SoftwareRenderer::process() {
 							if (dx * dx + dy * dy > radius * radius) {
 								continue;
 							}
-							drawBufferPixel(x, y, op.color);
+							drawBufferPixel(id, x, y, op.color);
 						}
 					}
 				}
 
 
-				displayBuffer(op.dataCircle.x - radius - 1, op.dataCircle.y - radius - 1, &op, op.dataCircle.rotation);
+				displayBuffer(id, op.dataCircle.x - radius - 1, op.dataCircle.y - radius - 1, &op, op.dataCircle.rotation);
 				break;
 			}
 		case RendererQueueOp::RenderOpType::Line:
@@ -377,7 +384,7 @@ bool SoftwareRenderer::process() {
 				u32 width = abs(op.dataPointB.x - op.dataPointA.x) + 1;
 				u32 height = abs(op.dataPointB.y - op.dataPointA.y) + 1;
 
-				prepareBuffer(width, height);
+				u32 id = prepareBuffer(width, height);
 
 				i32 positionX = (op.dataPointA.x < op.dataPointB.x) ? op.dataPointA.x : op.dataPointB.x;
 				i32 positionY = (op.dataPointA.y < op.dataPointB.y) ? op.dataPointA.y : op.dataPointB.y;
@@ -400,7 +407,7 @@ bool SoftwareRenderer::process() {
 							    op.dataPointA.y + dy >= height) {
 								continue;
 							}
-							drawBufferPixel(op.dataPointA.x + dx, op.dataPointA.y + dy, op.color);
+							drawBufferPixel(id, op.dataPointA.x + dx, op.dataPointA.y + dy, op.color);
 						}
 					}
 
@@ -419,7 +426,7 @@ bool SoftwareRenderer::process() {
 					}
 				}
 
-				displayBuffer(positionX, positionY, &op, 0.f);
+				displayBuffer(id, positionX, positionY, &op, 0.f);
 				break;
 			}
 
@@ -453,7 +460,7 @@ bool SoftwareRenderer::process() {
 					u32 bufferWidth = max_x - min_x + 1;
 					u32 bufferHeight = max_y - min_y + 1;
 
-					prepareBuffer(bufferWidth, bufferHeight);
+					u32 id = prepareBuffer(bufferWidth, bufferHeight);
 
 					for (i32 y = min_y; y <= max_y; y++) {
 						i32 intersections[count];
@@ -474,7 +481,7 @@ bool SoftwareRenderer::process() {
 						for (u32 i = 0; i < num_intersections; i += 2) {
 							if (i + 1 < num_intersections) {
 								for (i32 x = intersections[i]; x <= intersections[i + 1]; x++) {
-									drawBufferPixel(x, y, op.color);
+									drawBufferPixel(id, x, y, op.color);
 								}
 							}
 						}
@@ -482,7 +489,7 @@ bool SoftwareRenderer::process() {
 
 					u32 posX = min_x;
 					u32 posY = min_y;
-					displayBuffer(posX, posY, &op, op.dataPolygon.rotation);
+					displayBuffer(id, posX, posY, &op, op.dataPolygon.rotation);
 				}
 				break;
 			}
@@ -491,32 +498,33 @@ bool SoftwareRenderer::process() {
 				u32 imageWidth = op.dataRect.w;
 				u32 imageHeight = op.dataRect.h;
 
-				prepareBuffer(imageWidth, imageHeight);
+				u32 id = prepareBuffer(imageWidth, imageHeight);
 
 				for (u32 y = 0; y < imageHeight; y++) {
 					for (u32 x = 0; x < imageWidth; x++) {
-						drawBufferPixel(x, y, op.dataImage->getPixel(op.dataRect.x + x, op.dataRect.y + y));
+						drawBufferPixel(id, x, y, op.dataImage->getPixel(op.dataRect.x + x, op.dataRect.y + y));
 					}
 				}
 
-				displayBuffer(op.dataPosition.x, op.dataPosition.y, &op, op.dataRotation);
+				displayBuffer(id, op.dataPosition.x, op.dataPosition.y, &op, op.dataRotation);
 				break;
 			}
 		case RendererQueueOp::RenderOpType::Camera:
-			prepareBuffer(op.dataRect.w, op.dataRect.h);
+			{
+				u32 id = prepareBuffer(op.dataRect.w, op.dataRect.h);
 
-			for (u32 y = 0; y < op.dataRect.h; y++) {
-				for (u32 x = 0; x < op.dataRect.w; x++) {
-					drawBufferPixel(x, y,
-					                ColorA(m_cameraOutputs.at(op.dataCamId).at(y * m_screenWidth + x).r,
-					                       m_cameraOutputs.at(op.dataCamId).at(y * m_screenWidth + x).g,
-					                       m_cameraOutputs.at(op.dataCamId).at(y * m_screenWidth + x).b, 255));
+				for (u32 y = 0; y < op.dataRect.h; y++) {
+					for (u32 x = 0; x < op.dataRect.w; x++) {
+						drawBufferPixel(id, x, y,
+						                ColorA(m_cameraOutputs.at(op.dataCamId).at(y * m_screenWidth + x).r,
+						                       m_cameraOutputs.at(op.dataCamId).at(y * m_screenWidth + x).g,
+						                       m_cameraOutputs.at(op.dataCamId).at(y * m_screenWidth + x).b, 255));
+					}
 				}
+
+				displayBuffer(id, op.dataRect.x, op.dataRect.y, &op, op.dataRect.rotation);
+				break;
 			}
-
-			displayBuffer(op.dataRect.x, op.dataRect.y, &op, op.dataRect.rotation);
-			break;
-
 		default:
 			break;
 	}
@@ -545,20 +553,61 @@ void SoftwareRenderer::clearShader() {
 }
 
 
-void SoftwareRenderer::prepareBuffer(u32 width, u32 height) {
-	m_bufferWidth = width;
-	m_bufferHeight = height;
-	if (m_bufferData.size() < m_bufferWidth * m_bufferHeight) {
-		m_bufferData.resize(m_bufferWidth * m_bufferHeight);
+u32 SoftwareRenderer::prepareBuffer(u32 width, u32 height) {
+	size_t bufferSize = width * height;
+	size_t freeIndex = 0;
+
+	m_bufferMutex.lock();
+
+	bool found = false;
+	while (!found) {
+		do {
+			m_bufferData.resize(m_bufferData.size() * 2, UNALLOCATED_COLOR);
+		} while (m_bufferData.size() < bufferSize);
+
+		for (size_t i = 0; i < m_bufferData.size(); i++) {
+			if (m_bufferUsed.contains(i)) {
+				i += m_bufferUsed[i];
+				continue;
+			}
+
+			for (size_t j = 0; j < bufferSize; j++) {
+				if (m_bufferUsed.contains(i + j)) {
+					found = false;
+					break;
+				}
+
+				found = true;
+			}
+
+			if (found) {
+				freeIndex = i;
+				break;
+			}
+		}
 	}
-	std::fill(m_bufferData.begin(), m_bufferData.end(), ColorA::Clear);
+
+	m_bufferUsed[freeIndex] = bufferSize;
+
+	std::fill(m_bufferData.begin() + freeIndex, m_bufferData.begin() + freeIndex + bufferSize, ColorA::Clear);
+
+	u32 id = m_nextBufferId++;
+
+	m_buffers[id].w = width;
+	m_buffers[id].h = height;
+	m_buffers[id].index = freeIndex;
+
+	m_bufferMutex.unlock();
+	return id;
 }
 
-void SoftwareRenderer::drawBufferPixel(u32 x, u32 y, ColorA color) {
-	m_bufferData[y * m_bufferWidth + x] = color;
+void SoftwareRenderer::drawBufferPixel(u32 id, u32 x, u32 y, ColorA color) {
+	Buffer *buffer = &m_buffers.at(id);
+	size_t index = buffer->index + (y * buffer->w + x);
+	m_bufferData[index] = color;
 }
 
-void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *op, f32 rotation) {
+void SoftwareRenderer::displayBuffer(u32 id, i32 posX, i32 posY, const RendererQueueOp *op, f32 rotation) {
 	if (m_screenOnly && m_cameraSelected) {
 		return;
 	}
@@ -574,13 +623,17 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 		return Color(out_r, out_g, out_b);
 	};
 
-	if (m_bufferWorkspace1.size() < m_bufferWidth * m_bufferHeight) {
-		m_bufferWorkspace1.resize(m_bufferWidth * m_bufferHeight);
+	u32 bufferWidth = m_buffers.at(id).w;
+	u32 bufferHeight = m_buffers.at(id).h;
+
+	if (m_bufferWorkspace1.size() < bufferWidth * bufferHeight) {
+		m_bufferWorkspace1.resize(bufferWidth * bufferHeight);
 	}
 
-	for (u32 y = 0; y < m_bufferHeight; y++) {
-		for (u32 x = 0; x < m_bufferWidth; x++) {
-			ColorA color = m_bufferData[y * m_bufferWidth + x];
+	for (u32 y = 0; y < bufferHeight; y++) {
+		for (u32 x = 0; x < bufferWidth; x++) {
+			size_t index = y * bufferWidth + x;
+			ColorA color = m_bufferData[m_buffers.at(id).index + index];
 			if (op->shader != nullptr) {
 				CPUShaderIO io = {.position = Math::Vec2i(posX, posY),
 				                  .color = op->color,
@@ -588,9 +641,9 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 				                  .screen = m_screen.data(),
 				                  .screenSize = {m_screenWidth, m_screenHeight},
 
-				                  .texture = m_bufferData.data(),
-				                  .textureWidth = m_bufferWidth,
-				                  .textureHeight = m_bufferHeight,
+				                  .texture = &m_bufferData[m_buffers.at(id).index],
+				                  .textureWidth = bufferWidth,
+				                  .textureHeight = bufferHeight,
 				                  .textureX = x,
 				                  .textureY = y,
 
@@ -603,42 +656,42 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 				posX = io.position.x;
 				posY = io.position.y;
 			}
-			m_bufferWorkspace1[y * m_bufferWidth + x] = color;
+			m_bufferWorkspace1[index] = color;
 		}
 	}
 
-	if (m_bufferWorkspace2.size() < (m_bufferWidth * op->dataScale.x) * (m_bufferHeight * op->dataScale.y)) {
-		m_bufferWorkspace2.resize((m_bufferWidth * op->dataScale.x) * (m_bufferHeight * op->dataScale.y));
+	if (m_bufferWorkspace2.size() < (bufferWidth * op->dataScale.x) * (bufferHeight * op->dataScale.y)) {
+		m_bufferWorkspace2.resize((bufferWidth * op->dataScale.x) * (bufferHeight * op->dataScale.y));
 	}
 
 	switch (m_scalingMode) {
 		case ScalingMode::Nearest:
-			for (u32 y = 0; y < m_bufferHeight * op->dataScale.y; y++) {
-				for (u32 x = 0; x < m_bufferWidth * op->dataScale.x; x++) {
-					m_bufferWorkspace2[y * (m_bufferWidth * getWorldScale().x) + x] =
-					    m_bufferWorkspace1[y / op->dataScale.y * m_bufferWidth + x / op->dataScale.x];
+			for (u32 y = 0; y < bufferHeight * op->dataScale.y; y++) {
+				for (u32 x = 0; x < bufferWidth * op->dataScale.x; x++) {
+					m_bufferWorkspace2[y * (bufferWidth * getWorldScale().x) + x] =
+					    m_bufferWorkspace1[y / op->dataScale.y * bufferWidth + x / op->dataScale.x];
 				}
 			}
 			break;
 		case ScalingMode::Linear:
 			// Uh oh... (This requires lots of math)
-			for (u32 y = 0; y < m_bufferHeight * op->dataScale.y; y++) {
-				for (u32 x = 0; x < m_bufferWidth * op->dataScale.x; x++) {
+			for (u32 y = 0; y < bufferHeight * op->dataScale.y; y++) {
+				for (u32 x = 0; x < bufferWidth * op->dataScale.x; x++) {
 					f32 origX = x / op->dataScale.x;
 					f32 origY = y / op->dataScale.y;
 
 					u32 x1 = static_cast<u32>(std::floor(origX));
 					u32 y1 = static_cast<u32>(std::floor(origY));
-					u32 x2 = std::min(x1 + 1, m_bufferWidth - 1);
-					u32 y2 = std::min(y1 + 1, m_bufferHeight - 1);
+					u32 x2 = std::min(x1 + 1, bufferWidth - 1);
+					u32 y2 = std::min(y1 + 1, bufferHeight - 1);
 
 					f32 xLerp = origX - x1;
 					f32 yLerp = origY - y1;
 
-					ColorA topLeft = m_bufferWorkspace1[y1 * m_bufferWidth + x1];
-					ColorA topRight = m_bufferWorkspace1[y1 * m_bufferWidth + x2];
-					ColorA bottomLeft = m_bufferWorkspace1[y2 * m_bufferWidth + x1];
-					ColorA bottomRight = m_bufferWorkspace1[y2 * m_bufferWidth + x2];
+					ColorA topLeft = m_bufferWorkspace1[y1 * bufferWidth + x1];
+					ColorA topRight = m_bufferWorkspace1[y1 * bufferWidth + x2];
+					ColorA bottomLeft = m_bufferWorkspace1[y2 * bufferWidth + x1];
+					ColorA bottomRight = m_bufferWorkspace1[y2 * bufferWidth + x2];
 
 					ColorA topRow = {static_cast<u8>(topLeft.r + xLerp * (topRight.r - topLeft.r)),
 					                 static_cast<u8>(topLeft.g + xLerp * (topRight.g - topLeft.g)),
@@ -650,7 +703,7 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 					                    static_cast<u8>(bottomLeft.b + xLerp * (bottomRight.b - bottomLeft.b)),
 					                    static_cast<u8>(bottomLeft.a + xLerp * (bottomRight.a - bottomLeft.a))};
 
-					m_bufferWorkspace2[y * (m_bufferWidth * op->dataScale.x) + x] = {
+					m_bufferWorkspace2[y * (bufferWidth * op->dataScale.x) + x] = {
 					    static_cast<u8>(topRow.r + yLerp * (bottomRow.r - topRow.r)),
 					    static_cast<u8>(topRow.g + yLerp * (bottomRow.g - topRow.g)),
 					    static_cast<u8>(topRow.b + yLerp * (bottomRow.b - topRow.b)),
@@ -660,32 +713,32 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 			break;
 	}
 
-	if (m_bufferWorkspace1.size() < (m_bufferWidth * op->dataScale.x) * (m_bufferHeight * op->dataScale.y)) {
-		m_bufferWorkspace1.resize((m_bufferWidth * op->dataScale.x) * (m_bufferHeight * op->dataScale.y));
+	u32 biggestSide = std::max(bufferWidth * op->dataScale.x, bufferHeight * op->dataScale.y);
+
+	if (m_bufferWorkspace1.size() < biggestSide * biggestSide) {
+		m_bufferWorkspace1.resize(biggestSide * biggestSide);
 	}
 
 	std::fill(m_bufferWorkspace1.begin(), m_bufferWorkspace1.end(), ColorA::Clear);
 
-	for (u32 x = 0; x < m_bufferWidth * op->dataScale.x; x++) {
-		for (u32 y = 0; y < m_bufferHeight * op->dataScale.y; y++) {
+	for (u32 y = 0; y < bufferHeight * op->dataScale.y; y++) {
+		for (u32 x = 0; x < bufferWidth * op->dataScale.x; x++) {
 			/* According to some SO guy (https://stackoverflow.com/a/13476713/22126820), we can get
 			 x_rotated from x * cos(angle) - y * sin(angle)
 			 and y_rotated from x * sin(angle) + y * cos(angle) */
 			i32 rotatedX = x * cos(rotation) - y * sin(rotation);
 			i32 rotatedY = x * sin(rotation) + y * cos(rotation);
 
-			if (rotatedX < 0 || rotatedX >= m_bufferWidth * op->dataScale.x || rotatedY < 0 ||
-			    rotatedY >= m_bufferHeight * op->dataScale.y) {
+			if (rotatedX < 0 || rotatedX >= biggestSide || rotatedY < 0 || rotatedY >= biggestSide) {
 				continue;
 			}
 
-			m_bufferWorkspace1[rotatedY * (m_bufferWidth * op->dataScale.x) + rotatedX] =
-			    m_bufferWorkspace2[y * (m_bufferWidth * op->dataScale.x) + x];
+			m_bufferWorkspace1[rotatedY * biggestSide + rotatedX] = m_bufferWorkspace2[y * (bufferWidth * op->dataScale.x) + x];
 		}
 	}
 
-	for (u32 y = 0; y < m_bufferHeight * op->dataScale.y; y++) {
-		for (u32 x = 0; x < m_bufferWidth * op->dataScale.x; x++) {
+	for (u32 y = 0; y < bufferHeight * op->dataScale.y; y++) {
+		for (u32 x = 0; x < bufferWidth * op->dataScale.x; x++) {
 			if (op->screenOnly) {
 				if (x + posX < 0 || x + posX >= m_screenWidth || y + posY < 0 || y + posY >= m_screenHeight) {
 					continue;
@@ -696,7 +749,7 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 				}
 
 				m_screenMutex.lock();
-				m_screen[((y + posY) * m_screenWidth + (x + posX))] = blendPixel(m_bufferWorkspace1[y * m_bufferWidth + x], {x, y});
+				m_screen[((y + posY) * m_screenWidth + (x + posX))] = blendPixel(m_bufferWorkspace1[y * biggestSide + x], {x, y});
 				m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] = op->zOrder;
 				m_screenMutex.unlock();
 				continue;
@@ -717,40 +770,14 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 				m_cameraMutexes[output.first].lock();
 				m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] = getZOrder();
 				output.second[(y + posY) * m_screenWidth + (x + posX)] =
-				    blendPixel(m_bufferWorkspace1[y * m_bufferWidth + x], {x, y});
+				    blendPixel(m_bufferWorkspace1[y * biggestSide + x], {x, y});
 				m_cameraMutexes[output.first].unlock();
 			});
 		}
 	}
 
-	/*
-	for (u32 y = 0; y < m_bufferHeight; y++) {
-	    for (u32 x = 0; x < m_bufferWidth; x++) {
-	        if (op->screenOnly) {
-	            if (x + posX < 0 || x + posX >= m_screenWidth || y + posY < 0 || y + posY >= m_screenHeight) { continue; }
-
-	            if (m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] > op->zOrder) { continue; }
-
-	            m_screenMutex.lock();
-	            m_screen[((y + posY) * m_screenWidth + (x + posX))] = processPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
-	            m_screenDepth[(y + posY) * m_screenWidth + (x + posX)] = op->zOrder;
-	            m_screenMutex.unlock();
-	            continue;
-	        }
-	        std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(), [&](std::pair<u32, std::vector<Color>> output) {
-	            Camera *camera = getCameraById(output.first);
-	            if (camera == nullptr) { return; }
-	            if (camera->exclude) { return; }
-
-	            if (m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] > getZOrder()) { return; }
-
-	            m_cameraMutexes[output.first].lock();
-	            m_cameraDepth[output.first][(y + posY) * m_screenWidth + (x + posX)] = getZOrder();
-	            output.second[(y + posY) * m_screenWidth + (x + posX)] = processPixel(m_bufferData[y * m_bufferWidth + x], {x, y});
-	            m_cameraMutexes[output.first].unlock();
-	        });
-	    }
-	}*/
+	m_bufferUsed.erase(m_buffers.at(id).index);
+	m_buffers.erase(id);
 }
 
 
