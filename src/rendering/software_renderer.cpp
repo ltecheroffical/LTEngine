@@ -561,14 +561,18 @@ u32 SoftwareRenderer::prepareBuffer(u32 width, u32 height) {
 
 	bool found = false;
 	while (!found) {
-		do {
+		while (m_bufferData.size() < bufferSize) {
 			m_bufferData.resize(m_bufferData.size() * 2, UNALLOCATED_COLOR);
-		} while (m_bufferData.size() < bufferSize);
+		}
 
 		for (size_t i = 0; i < m_bufferData.size(); i++) {
 			if (m_bufferUsed.contains(i)) {
 				i += m_bufferUsed[i];
 				continue;
+			}
+
+			if (i + bufferSize > m_bufferData.size()) {
+				break;
 			}
 
 			for (size_t j = 0; j < bufferSize; j++) {
@@ -585,6 +589,12 @@ u32 SoftwareRenderer::prepareBuffer(u32 width, u32 height) {
 				break;
 			}
 		}
+
+		if (found) {
+			break;
+		}
+
+		m_bufferData.resize(m_bufferData.size() * 2, UNALLOCATED_COLOR);
 	}
 
 	m_bufferUsed[freeIndex] = bufferSize;
