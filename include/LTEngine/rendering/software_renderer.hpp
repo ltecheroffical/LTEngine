@@ -3,6 +3,7 @@
 
 #include <mutex>
 #include <queue>
+#include <shared_mutex>
 #include <unordered_map>
 
 #include <LTEngine/rendering/cpu_shader.hpp>
@@ -42,6 +43,9 @@ namespace LTEngine::Rendering {
 
 		bool process();
 		void processAll();
+		bool hasQueuedTasks() {
+			return !m_rendererQueue.empty();
+		}
 
 		void setScalingMode(ScalingMode mode);
 
@@ -71,6 +75,7 @@ namespace LTEngine::Rendering {
 
 			ColorA color = ColorA::Clear;
 			RendererFlags flags = 0;
+			u64 order;
 			u16 zOrder = 0;
 
 			std::chrono::high_resolution_clock::time_point timestamp = std::chrono::high_resolution_clock::now();
@@ -94,11 +99,18 @@ namespace LTEngine::Rendering {
 			u32 dataCamId = 0;
 		};
 
-		u64 prepareBuffer(u32 width, u32 height);
-		void drawBufferPixel(u64 id, u32 x, u32 y, ColorA color);
-		ColorA getBufferPixel(u64 id, u32 x, u32 y);
-		void displayBuffer(u64 id, i32 x, i32 y, const RendererQueueOp *op, f32 rotation);
-		void deleteBuffer(u64 id);
+		void prepareBuffer(u32 width, u32 height);
+		void drawBufferPixel(u32 x, u32 y, ColorA color);
+		ColorA getBufferPixel(u32 x, u32 y);
+		void displayBuffer(i32 x, i32 y, const RendererQueueOp *op, f32 rotation);
+
+		void allocateWorkspace1(u32 width, u32 height);
+		void drawWorkspace1Pixel(u32 x, u32 y, ColorA color);
+		ColorA getWorkspace1Pixel(u32 x, u32 y);
+
+		void allocateWorkspace2(u32 width, u32 height);
+		void drawWorkspace2Pixel(u32 x, u32 y, ColorA color);
+		ColorA getWorkspace2Pixel(u32 x, u32 y);
 
 		void cameraCreated(u32 id) override;
 		void cameraDestroyed(u32 id) override;
@@ -109,7 +121,6 @@ namespace LTEngine::Rendering {
 
 		std::unordered_map<u32, std::vector<Color>> m_cameraOutputs;
 		std::unordered_map<u32, std::vector<u16>> m_cameraDepth;
-		std::unordered_map<u32, std::mutex> m_cameraMutexes;
 
 		std::vector<Color> m_screen;
 		std::vector<u16> m_screenDepth;
@@ -117,15 +128,12 @@ namespace LTEngine::Rendering {
 		u32 m_screenWidth;
 		u32 m_screenHeight;
 
-		struct Buffer {
-			u32 w, h;
-			size_t index;
-		};
-		std::unordered_map<u64, Buffer> m_buffers;
-		std::vector<ColorA> m_bufferData;
-		std::unordered_map<size_t, size_t> m_bufferUsed;
-		u64 m_nextBufferId = 0;
-		std::mutex m_bufferMutex;
+		std::vector<ColorA> m_buffer;
+		u32 m_bufferWidth;
+		u32 m_bufferHeight;
+
+		std::vector<ColorA> m_bufferWorkspaces[2];
+		u32 m_bufferWorkspaceWidth[2];
 
 		bool m_screenOnly : 1 = false;
 		bool m_cameraSelected : 1 = false;
@@ -133,7 +141,7 @@ namespace LTEngine::Rendering {
 		CPUShader *m_shader = nullptr;
 
 		std::queue<RendererQueueOp> m_rendererQueue;
-		std::mutex m_rendererQueueMutex;
+		std::shared_mutex m_renderQueueMutex;
 
 		std::chrono::high_resolution_clock::time_point m_creationTime = std::chrono::high_resolution_clock::now();
 	};
