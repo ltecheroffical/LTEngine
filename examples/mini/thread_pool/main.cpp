@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
 
+#include <LTEngine/logger.hpp>
 #include <LTEngine/random/platform_random.hpp>
 #include <LTEngine/rendering/software_renderer.hpp>
 #include <LTEngine/thread_pool.hpp>
@@ -50,6 +51,9 @@ int main() {
 	    105, 1,   51,  65,  110, 93,  14,  30,  26,  109, 9,   18};
 
 
+	Logger logger;
+	logger.setLogOutput(Logger::LogOutput::Stdout);
+
 	u16 sumResults = 0;
 	u32 timeToWrapU32InNs = 0;
 	Rendering::SoftwareRenderer renderer(1920, 1080);
@@ -58,16 +62,16 @@ int main() {
 	// The context will destroy the thread pool asking it to wait
 	{
 		LTEngine::ThreadPool threadPool(4);
-		threadPool.enqueue([&sumResults, sumArray]() {
-			std::cout << "Started summing up the array" << std::endl;
+		threadPool.enqueue([&sumResults, &logger, sumArray]() {
+			logger.info("Started array summing");
 			for (u16 i = 0; i < sizeof(sumArray) / sizeof(sumArray[0]); i++) {
 				sumResults += sumArray[i];
 			}
-			std::cout << "Finished summing up the array" << std::endl;
+			logger.info("Finished summing up the array");
 		});
 
-		threadPool.enqueue([&timeToWrapU32InNs]() {
-			std::cout << "Started wrapping u64" << std::endl;
+		threadPool.enqueue([&timeToWrapU32InNs, &logger]() {
+			logger.info("Started wrapping u32");
 
 			std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
@@ -88,20 +92,20 @@ int main() {
 
 			timeToWrapU32InNs = elapsed.count() * 1e9;
 
-			std::cout << "Finished wrapping u32" << std::endl;
+			logger.info("Finished wrapping u32");
 		});
 
 
 		for (u8 i = 0; i < 4; i++) {
-			threadPool.enqueue([i]() {
+			threadPool.enqueue([i, &logger]() {
 				Random::PlatformRandom random({});
 				u8 sleepTime = random.next_u8() % (15 - 1) + 1;
 
-				std::cout << "[Sleeper #" << (u16)i + 1 << "] Started for " << (u16)sleepTime << "s" << std::endl;
+				logger.info("[Sleeper #%u] Started for %us", (u16)i, (u16)sleepTime);
 
 				std::this_thread::sleep_for(std::chrono::seconds(sleepTime));
 
-				std::cout << "[Sleeper #" << (u16)i + 1 << "] Finished" << std::endl;
+				logger.info("[Sleeper #%u] Finished", (u16)i);
 			});
 		}
 
