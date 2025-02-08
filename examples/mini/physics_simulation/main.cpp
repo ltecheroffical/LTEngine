@@ -40,7 +40,9 @@ int main(int argc, char *argv[]) {
 	window.makeContextCurrent();
 
 	LTEngine::GLFWWindow::loadGL();
-	LTEngine::Rendering::OpenGLRenderer renderer(SCREEN_WIDTH, SCREEN_HEIGHT, [&window]() { window.makeContextCurrent(); });
+	LTEngine::Rendering::OpenGLRenderer renderer(SCREEN_WIDTH, SCREEN_HEIGHT, [&window]() {
+		window.makeContextCurrent();
+	});
 
 	window.setCleanupGLFW(true);
 
@@ -53,13 +55,17 @@ int main(int argc, char *argv[]) {
 	LTEngine::Engine engine(std::make_unique<LTEngine::Object::ObjectStructure>());
 	LTEngine::Object::ObjectStructure *structure = dynamic_cast<LTEngine::Object::ObjectStructure *>(engine.getObjectStructure());
 
-	if (structure == nullptr) { return -1; }
+	if (structure == nullptr) {
+		return -1;
+	}
 
 	structure->setClearColor(LTEngine::Rendering::Color::Cyan);
 
 	const u32 spawner = structure->addObject(std::make_unique<ObjectSpawner>(&physicsEngine));
 	ObjectSpawner *objectSpawner = dynamic_cast<ObjectSpawner *>(structure->getObject(spawner)); // Object B spawned by this
-	if (objectSpawner != nullptr) { objectSpawner->setSpawnAreaWidth(SCREEN_WIDTH); }
+	if (objectSpawner != nullptr) {
+		objectSpawner->setSpawnAreaWidth(SCREEN_WIDTH);
+	}
 
 	const u32 floor = structure->addObject(
 	    std::make_unique<Floor>(&physicsEngine, (LTEngine::Shapes::Rect){0, SCREEN_HEIGHT - BOX_HEIGHT, SCREEN_WIDTH, BOX_HEIGHT}));
@@ -76,13 +82,11 @@ int main(int argc, char *argv[]) {
 		engine.update(deltaSeconds);
 
 
-		if (!window.isMinimized() && !window.isHidden() && window.isFocused()) {
-			renderer.resize(window.getWidth(), window.getHeight());
+		renderer.resize(window.getWidth(), window.getHeight());
 
-			engine.render();
-			renderer.flush();
-			window.swapBuffers();
-		}
+		engine.render();
+		renderer.flush();
+		window.swapBuffers();
 
 		LTEngine::Rendering::OpenGLRenderer::OpenGLMessage message;
 		while (renderer.getMessage(&message)) {
