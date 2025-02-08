@@ -4,10 +4,8 @@
 
 #include <LTEngine/rendering/opengl_renderer.hpp>
 
-
 using namespace LTEngine;
 using namespace LTEngine::Rendering;
-
 
 const char *vertexShaderSource = "#version 330 core\n"
                                  "layout(location = 0) in vec3 vPosition;\n"
@@ -40,9 +38,7 @@ const char *fragmentShaderSource = "#version 330 core\n"
                                    "   }\n"
                                    "}\0";
 
-
 const GLenum ZDepthFunc = GL_GEQUAL; // Simulates Z order, higher is closer
-
 
 OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> switchContextCallback) {
 	m_switchContextCallback = switchContextCallback;
@@ -52,16 +48,13 @@ OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> swit
 	m_width = width;
 	m_height = height;
 
-
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
 	glDepthFunc(ZDepthFunc);
 	glDepthRange(0.f, 1.f);
 
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 
 	u32 vertexShader = compileShader(vertexShaderSource, GL_VERTEX_SHADER);
 	u32 fragmentShader = compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
@@ -100,8 +93,9 @@ OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> swit
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
-	std::for_each(m_imageCache.begin(), m_imageCache.end(),
-	              [](std::pair<const Image *, u32> image) { glDeleteTextures(1, &image.second); });
+	std::for_each(m_imageCache.begin(), m_imageCache.end(), [](std::pair<const Image *, u32> image) {
+		glDeleteTextures(1, &image.second);
+	});
 	m_imageCache.clear();
 	m_imageCacheLifetime.clear();
 
@@ -111,14 +105,12 @@ OpenGLRenderer::~OpenGLRenderer() {
 	glDeleteProgram(m_defaultShaderProgram);
 }
 
-
 void OpenGLRenderer::resize(u32 width, u32 height) {
 	switchContext();
 	glViewport(0, 0, width, height);
 	m_width = width;
 	m_height = height;
 }
-
 
 void OpenGLRenderer::clear(Color color) {
 	RenderQueueOp op;
@@ -137,7 +129,6 @@ void OpenGLRenderer::clear(ColorA color) {
 
 	m_renderOpQueue.push(op);
 }
-
 
 void OpenGLRenderer::setPixel(Math::Vec2i position, Color color) {
 	setPixel(position, color);
@@ -163,7 +154,6 @@ Color OpenGLRenderer::getPixel(Math::Vec2i position) {
 	return color;
 }
 
-
 void OpenGLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) {
 	RenderQueueOp op;
 
@@ -178,12 +168,27 @@ void OpenGLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags fla
 	worldToScreenPosition(&op.dataRect.x, &op.dataRect.y);
 	op.dataRect.rotation = worldToScreenRotation(rect.rotation);
 
-	const bool tooFarLeft = op.dataRect.x + op.dataRect.w < 0;
-	const bool tooFarRight = op.dataRect.x > (f32)m_width;
-	const bool tooFarUp = op.dataRect.y + op.dataRect.h < 0;
-	const bool tooFarDown = op.dataRect.y > (f32)m_height;
+	const f32 screenWidth = static_cast<f32>(m_width);
+	const f32 screenHeight = static_cast<f32>(m_height);
 
-	if (tooFarLeft || tooFarRight || tooFarUp || tooFarDown) { return; }
+	f32 leftOOB = std::max(0, -op.dataRect.x);
+	f32 rightOOB = std::max(0.0f, (op.dataRect.x + op.dataRect.w) - screenWidth);
+	f32 topOOB = std::max(0, -op.dataRect.y);
+	f32 bottomOOB = std::max(0.0f, (op.dataRect.y + op.dataRect.h) - screenHeight);
+
+	f32 oobFactorX = std::min(1.0f, (leftOOB + rightOOB) / op.dataRect.w);
+	f32 oobFactorY = std::min(1.0f, (topOOB + bottomOOB) / op.dataRect.h);
+
+	if (oobFactorX >= 1.0f || oobFactorY >= 1.0f) {
+		return;
+	}
+
+	f32 shrinkFactor = 1.0f - std::max(oobFactorX, oobFactorY);
+	op.dataRect.w = static_cast<int>(op.dataRect.w * shrinkFactor);
+	op.dataRect.h = static_cast<int>(op.dataRect.h * shrinkFactor);
+
+	op.dataRect.x += static_cast<int>((rect.w - op.dataRect.w) / 2);
+	op.dataRect.y += static_cast<int>((rect.h - op.dataRect.h) / 2);
 
 	m_renderOpQueue.push(op);
 }
@@ -209,11 +214,12 @@ void OpenGLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFla
 	const bool tooFarUp = op.dataCircle.y + op.dataCircle.radius * op.dataScale.y < 0;
 	const bool tooFarDown = op.dataCircle.y - op.dataCircle.radius * op.dataScale.y > (f32)m_height;
 
-	if (tooFarLeft || tooFarRight || tooFarUp || tooFarDown) { return; }
+	if (tooFarLeft || tooFarRight || tooFarUp || tooFarDown) {
+		return;
+	}
 
 	m_renderOpQueue.push(op);
 }
-
 
 void OpenGLRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA color, RendererFlags flags) {
 	RenderQueueOp op;
@@ -243,11 +249,12 @@ void OpenGLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererF
 	op.color = color;
 
 	op.dataPolygon = polygon;
-	for (Math::Vec2 &point : op.dataPolygon.points) { point = worldToScreenPosition(point * getWorldScale()); }
+	for (Math::Vec2 &point : op.dataPolygon.points) {
+		point = worldToScreenPosition(point * getWorldScale());
+	}
 
 	m_renderOpQueue.push(op);
 }
-
 
 void OpenGLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rotation, Shapes::Recti region, ColorA color,
                                RendererFlags flags) {
@@ -265,12 +272,36 @@ void OpenGLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rot
 	op.dataScale = getWorldScale();
 	op.dataRect = region;
 
-	const bool tooFarLeft = op.dataPosition.x + op.dataRect.w * op.dataScale.x < 0;
-	const bool tooFarRight = op.dataPosition.x > (i32)m_width;
-	const bool tooFarUp = op.dataPosition.y + op.dataRect.h * op.dataScale.y < 0;
-	const bool tooFarDown = op.dataPosition.y > (i32)m_height;
+	const f32 screenWidth = static_cast<f32>(m_width);
+	const f32 screenHeight = static_cast<f32>(m_height);
 
-	if (tooFarLeft || tooFarRight || tooFarUp || tooFarDown) { return; }
+	f32 scaledWidth = op.dataRect.w * op.dataScale.x;
+	f32 scaledHeight = op.dataRect.h * op.dataScale.y;
+
+	f32 leftOOB = std::max(0, -op.dataPosition.x);
+	f32 rightOOB = std::max(0.0f, (op.dataPosition.x + scaledWidth) - screenWidth);
+	f32 topOOB = std::max(0, -op.dataPosition.y);
+	f32 bottomOOB = std::max(0.0f, (op.dataPosition.y + scaledHeight) - screenHeight);
+
+	// Compute OOB factors
+	f32 oobFactorX = std::min(1.0f, (leftOOB + rightOOB) / scaledWidth);
+	f32 oobFactorY = std::min(1.0f, (topOOB + bottomOOB) / scaledHeight);
+
+	// If completely off-screen, discard
+	if (oobFactorX >= 1.0f || oobFactorY >= 1.0f) {
+		return;
+	}
+
+	// Apply shrinkage
+	f32 shrinkFactor = 1.0f - std::max(oobFactorX, oobFactorY);
+	op.dataScale.x *= shrinkFactor;
+	op.dataScale.y *= shrinkFactor;
+
+	// Adjust position to keep it centered while shrinking
+	f32 newScaledWidth = op.dataRect.w * op.dataScale.x;
+	f32 newScaledHeight = op.dataRect.h * op.dataScale.y;
+	op.dataPosition.x += static_cast<int>((scaledWidth - newScaledWidth) / 2);
+	op.dataPosition.y += static_cast<int>((scaledHeight - newScaledHeight) / 2);
 
 	op.dataImage = image;
 	op.dataImageNearestFilter = m_nearestFilter;
@@ -280,7 +311,9 @@ void OpenGLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rot
 
 
 void OpenGLRenderer::flush() {
-	if (m_renderOpQueue.empty()) { return; }
+	if (m_renderOpQueue.empty()) {
+		return;
+	}
 
 	switchContext();
 
@@ -415,7 +448,9 @@ void OpenGLRenderer::flush() {
 				}
 			case RenderQueueOp::RenderOpType::Polygon:
 				{
-					if (op.dataPolygon.points.empty()) { break; }
+					if (op.dataPolygon.points.empty()) {
+						break;
+					}
 
 					// This gotta be the easiest to draw in OpenGL
 					// The hardest part is making the data into vertexes
@@ -467,7 +502,9 @@ void OpenGLRenderer::flush() {
 					}
 
 					std::erase_if(m_imageCacheLifetime, [this](std::pair<const Image *, u32> pair) {
-						if (--pair.second > 0) { return false; }
+						if (--pair.second > 0) {
+							return false;
+						}
 						glDeleteTextures(1, &m_imageCache[pair.first]);
 						m_imageCache.erase(pair.first);
 						return true;
@@ -488,7 +525,6 @@ void OpenGLRenderer::flush() {
 						                v};
 					};
 
-
 					f32 atlasWidth = op.dataImage->getSize().x;
 					f32 atlasHeight = op.dataImage->getSize().y;
 
@@ -497,8 +533,12 @@ void OpenGLRenderer::flush() {
 					f32 u2 = (op.dataRect.x + op.dataRect.w) / atlasWidth;  // Right edge of the sub-region
 					f32 v2 = (op.dataRect.y + op.dataRect.h) / atlasHeight; // Bottom edge of the sub-region
 
-					if (op.flags & FLAG_FLIP_H) { std::swap(u1, u2); }
-					if (op.flags & FLAG_FLIP_V) { std::swap(v1, v2); }
+					if (op.flags & FLAG_FLIP_H) {
+						std::swap(u1, u2);
+					}
+					if (op.flags & FLAG_FLIP_V) {
+						std::swap(v1, v2);
+					}
 
 					Vertex vertices[6] = {
 					    // Triangle 1
@@ -536,7 +576,6 @@ void OpenGLRenderer::flush() {
 	}
 }
 
-
 u32 OpenGLRenderer::compileShader(const char *source, GLenum type) {
 	u32 shader = glCreateShader(type);
 	glShaderSource(shader, 1, &source, NULL);
@@ -557,7 +596,9 @@ void OpenGLRenderer::deleteShader(u32 shader) {
 }
 
 void OpenGLRenderer::useShader(u32 vertexShader, u32 fragmentShader) {
-	if (m_currentShaderProgram != m_defaultShaderProgram) { glDeleteProgram(m_currentShaderProgram); }
+	if (m_currentShaderProgram != m_defaultShaderProgram) {
+		glDeleteProgram(m_currentShaderProgram);
+	}
 
 	m_currentShaderProgram = glCreateProgram();
 	glAttachShader(m_currentShaderProgram, vertexShader);
@@ -566,20 +607,24 @@ void OpenGLRenderer::useShader(u32 vertexShader, u32 fragmentShader) {
 }
 
 void OpenGLRenderer::resetShader() {
-	if (m_currentShaderProgram != m_defaultShaderProgram) { glDeleteProgram(m_currentShaderProgram); }
+	if (m_currentShaderProgram != m_defaultShaderProgram) {
+		glDeleteProgram(m_currentShaderProgram);
+	}
 	m_currentShaderProgram = m_defaultShaderProgram;
 }
 
-
 bool OpenGLRenderer::getMessage(OpenGLMessage *message) {
-	if (m_messageQueue.empty()) { return false; }
+	if (m_messageQueue.empty()) {
+		return false;
+	}
 	*message = m_messageQueue.front();
 	m_messageQueue.pop();
 	return true;
 }
 
-
 void OpenGLRenderer::switchContext() {
-	if (m_switchContextCallback == nullptr) { throw std::runtime_error("Switch context callback not set"); }
+	if (m_switchContextCallback == nullptr) {
+		throw std::runtime_error("Switch context callback not set");
+	}
 	m_switchContextCallback();
 }
