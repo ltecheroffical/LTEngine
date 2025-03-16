@@ -1,10 +1,14 @@
 .cache/
+.vscode/
 
 **/._*
 **/.DS_Store
 
 Testing/
+
 out/
+build/
+offline/
 
 TODO.txt
 

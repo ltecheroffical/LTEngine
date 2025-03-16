@@ -97,7 +97,7 @@ void Image::load(const char *filename) {
     stbi_image_free(data);
 }
 
-void Image::load(u8 *buffer, u32 size) {
+void Image::load(u8 *buffer, size_t size) {
     int channels_in_file = 0;
     int width, height = 0;
     u8 *data = stbi_load_from_memory(buffer, size, &width, &height, &channels_in_file, 4);

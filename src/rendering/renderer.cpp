@@ -129,6 +129,12 @@ f32 Renderer::getCameraRotation(u32 id) const {
 	return it->rotation;
 }
 
+bool Renderer::isCameraIncluded(u32 id) const {
+	auto it = std::find_if(m_cameras.begin(), m_cameras.end(), [id](const Camera &camera) { return camera.id == id; });
+	if (it == m_cameras.end()) { throw std::runtime_error("Camera not found"); }
+	return !it->exclude;
+}
+
 
 void Renderer::drawTriangle(Shapes::Triangle triangle, ColorA color, RendererFlags flags) {
 	if (flags & FLAG_FILL) { drawPoints({.points = {triangle.p1, triangle.p2, triangle.p3}}, color, flags); }
@@ -232,11 +238,4 @@ Math::Vec2 Renderer::getWorldScale() const {
 	if (m_currentCameraActive && camera_it != m_cameras.end()) { camZoom = camera_it->zoom; }
 
 	return m_scaleFactor[0] / (m_offsetsApplied ? m_scaleFactor[1] : Math::Vec2::One) / camZoom;
-}
-
-
-Renderer::Camera *Renderer::getCameraById(u32 id) {
-	auto it = std::find_if(m_cameras.begin(), m_cameras.end(), [id](const Camera &camera) { return camera.id == id; });
-	if (it == m_cameras.end()) { return nullptr; }
-	return &(*it);
 }

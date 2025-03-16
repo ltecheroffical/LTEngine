@@ -70,58 +70,58 @@ private:
 };
 
 
-LTEngine_HRandom LTEngine_Random_init(LTEngine_RandomFuncs funcs) {
-	return new CRandom(funcs);
+LTEngine_HRandom LTEngine_Random(LTEngine_RandomFuncs funcs) {
+	return {{ new CRandom(funcs) }};
 }
 
 void LTEngine_Random_free(LTEngine_HRandom handle) {
-	delete (Random::Random *)handle;
+	delete (Random::Random *)handle.handle.ptr;
 }
 
 
 LTEngine_u8 LTEngine_Random_next_u8(LTEngine_HRandom handle) {
-	return ((Random::Random *)handle)->next_u8();
+	return ((Random::Random *)handle.handle.ptr)->next_u8();
 }
 
 LTEngine_u16 LTEngine_Random_next_u16(LTEngine_HRandom handle) {
-	return ((Random::Random *)handle)->next_u16();
+	return ((Random::Random *)handle.handle.ptr)->next_u16();
 }
 
 LTEngine_u32 LTEngine_Random_next_u32(LTEngine_HRandom handle) {
-	return ((Random::Random *)handle)->next_u32();
+	return ((Random::Random *)handle.handle.ptr)->next_u32();
 }
 
 LTEngine_u64 LTEngine_Random_next_u64(LTEngine_HRandom handle) {
-	return ((Random::Random *)handle)->next_u64();
+	return ((Random::Random *)handle.handle.ptr)->next_u64();
 }
 
 
 LTEngine_i8 LTEngine_Random_next_i8(LTEngine_HRandom handle) {
-	return ((Random::Random *)handle)->next_i8();
+	return ((Random::Random *)handle.handle.ptr)->next_i8();
 }
 
 LTEngine_i16 LTEngine_Random_next_i16(LTEngine_HRandom handle) {
-	return ((Random::Random *)handle)->next_i16();
+	return ((Random::Random *)handle.handle.ptr)->next_i16();
 }
 
 LTEngine_i32 LTEngine_Random_next_i32(LTEngine_HRandom handle) {
-	return ((Random::Random *)handle)->next_i32();
+	return ((Random::Random *)handle.handle.ptr)->next_i32();
 }
 
 LTEngine_i64 LTEngine_Random_next_i64(LTEngine_HRandom handle) {
-	return ((Random::Random *)handle)->next_i64();
+	return ((Random::Random *)handle.handle.ptr)->next_i64();
 }
 
 
 LTEngine_f32 LTEngine_Random_next_f32(LTEngine_HRandom handle) {
-	return ((Random::Random *)handle)->next_f32();
+	return ((Random::Random *)handle.handle.ptr)->next_f32();
 }
 
 LTEngine_f64 LTEngine_Random_next_f64(LTEngine_HRandom handle) {
-	return ((Random::Random *)handle)->next_f64();
+	return ((Random::Random *)handle.handle.ptr)->next_f64();
 }
 
 
 void LTEngine_Random_nextBytes(LTEngine_HRandom handle, void *data, size_t size) {
-	((Random::Random *)handle)->nextBytes(data, size);
+	((Random::Random *)handle.handle.ptr)->nextBytes(data, size);
 }

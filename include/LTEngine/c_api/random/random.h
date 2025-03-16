@@ -29,10 +29,12 @@ typedef struct LTENGINE_API {
 	void (*nextBytes)(void *ctx, void *data, size_t size);
 } LTEngine_RandomFuncs;
 
-typedef LTEngine_HANDLE LTEngine_HRandom;
+typedef struct {
+	LTEngine_HANDLE handle;
+ } LTEngine_HRandom;
 
 
-LTEngine_HRandom LTENGINE_API LTEngine_Random_init(LTEngine_RandomFuncs funcs);
+LTEngine_HRandom LTENGINE_API LTEngine_Random(LTEngine_RandomFuncs funcs);
 void LTENGINE_API LTEngine_Random_free(LTEngine_HRandom handle);
 
 LTEngine_u8 LTENGINE_API LTEngine_Random_next_u8(LTEngine_HRandom handle);

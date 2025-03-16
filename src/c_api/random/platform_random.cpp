@@ -13,6 +13,6 @@ LTEngine_PlatformRandom_RandomSettings LTEngine_PlatformRandom_RandomSettings_cr
 }
 
 
-LTEngine_HPlatformRandom LTEngine_PlatformRandom_init(LTEngine_PlatformRandom_RandomSettings settings) {
-	return new PlatformRandom({.unixRandomBufferSize = settings.unix_random_buffer_size});
+LTEngine_HPlatformRandom LTEngine_PlatformRandom(LTEngine_PlatformRandom_RandomSettings settings) {
+	return {{new PlatformRandom({.unixRandomBufferSize = settings.unix_random_buffer_size})}};
 }

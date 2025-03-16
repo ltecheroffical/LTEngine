@@ -25,7 +25,7 @@ namespace LTEngine::Rendering {
 		void flipH(), flipV();
 
 		void load(const char *filename);
-		void load(u8 *buffer, u32 size);
+		void load(u8 *buffer, size_t size);
 
 		const ColorA *getMemBuffer() const {
 			return m_data.data();

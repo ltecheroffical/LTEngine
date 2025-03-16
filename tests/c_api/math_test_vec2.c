@@ -15,10 +15,10 @@
 void test_vec2_storage(void **state) {
 	(void)state;
 
-	LTEngine_HPlatformRandom random = LTEngine_PlatformRandom_init(LTEngine_PlatformRandom_RandomSettings_createDefault());
+	LTEngine_HPlatformRandom random = LTEngine_PlatformRandom(LTEngine_PlatformRandom_RandomSettings_createDefault());
 
 	LTEngine_f32 vec2_contents[2] = {LTEngine_Random_next_f32(random) * 100.f, LTEngine_Random_next_f32(random) * 100.f};
-	LTEngine_HVec2 vec2 = LTEngine_Vec2_init(vec2_contents[0], vec2_contents[1]);
+	LTEngine_HVec2 vec2 = LTEngine_Vec2(vec2_contents[0], vec2_contents[1]);
 
 	assert_true(LTEngine_Vec2_x(vec2) == vec2_contents[0]);
 	assert_true(LTEngine_Vec2_y(vec2) == vec2_contents[1]);
@@ -38,10 +38,10 @@ void test_vec2_storage(void **state) {
 void test_vec2i_storage(void **state) {
 	(void)state;
 
-	LTEngine_HPlatformRandom random = LTEngine_PlatformRandom_init(LTEngine_PlatformRandom_RandomSettings_createDefault());
+	LTEngine_HPlatformRandom random = LTEngine_PlatformRandom(LTEngine_PlatformRandom_RandomSettings_createDefault());
 
 	LTEngine_i32 vec2_contents[2] = {LTEngine_Random_next_i32(random), LTEngine_Random_next_i32(random)};
-	LTEngine_HVec2i vec2 = LTEngine_Vec2i_init(vec2_contents[0], vec2_contents[1]);
+	LTEngine_HVec2i vec2 = LTEngine_Vec2i(vec2_contents[0], vec2_contents[1]);
 
 	assert_true(LTEngine_Vec2i_x(vec2) == vec2_contents[0]);
 	assert_true(LTEngine_Vec2i_y(vec2) == vec2_contents[1]);
@@ -61,10 +61,10 @@ void test_vec2i_storage(void **state) {
 void test_vec2u_storage(void **state) {
 	(void)state;
 
-	LTEngine_HPlatformRandom random = LTEngine_PlatformRandom_init(LTEngine_PlatformRandom_RandomSettings_createDefault());
+	LTEngine_HPlatformRandom random = LTEngine_PlatformRandom(LTEngine_PlatformRandom_RandomSettings_createDefault());
 
 	LTEngine_u32 vec2_contents[2] = {LTEngine_Random_next_u32(random), LTEngine_Random_next_u32(random)};
-	LTEngine_HVec2u vec2 = LTEngine_Vec2u_init(vec2_contents[0], vec2_contents[1]);
+	LTEngine_HVec2u vec2 = LTEngine_Vec2u(vec2_contents[0], vec2_contents[1]);
 
 	assert_true(LTEngine_Vec2u_x(vec2) == vec2_contents[0]);
 	assert_true(LTEngine_Vec2u_y(vec2) == vec2_contents[1]);

@@ -3,8 +3,8 @@
 	url = https://github.com/glfw/glfw
 [submodule "thirdparty/SDL"]
 	path = thirdparty/SDL
-	url = https://github.com/libsdl-org/SDL
-	branch = SDL2
+	url = https://github.com/libsdl-org/SDL.git
+	branch = release-3.2.x
 [submodule "thirdparty/box2d"]
 	path = thirdparty/box2d
 	url = https://github.com/erincatto/box2d

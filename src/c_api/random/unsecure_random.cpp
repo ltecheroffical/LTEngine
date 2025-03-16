@@ -6,11 +6,11 @@ using namespace LTEngine;
 using namespace LTEngine::Random;
 
 
-LTEngine_HUnsecureRandom LTENGINE_API LTEngine_UnsecureRandom_init() {
-	return new RandomUnsecure();
+LTEngine_HUnsecureRandom LTENGINE_API LTEngine_UnsecureRandom() {
+	return {{ new RandomUnsecure() }};
 }
 
 
 void LTENGINE_API LTEngine_UnsecureRandom_seed(LTEngine_HUnsecureRandom handle, LTEngine_u64 seed) {
-	((RandomUnsecure *)handle)->seed(seed);
+	((RandomUnsecure *)handle.handle.ptr)->seed(seed);
 }

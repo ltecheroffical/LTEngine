@@ -27,12 +27,12 @@ if (NOT TARGET soloud)
     add_subdirectory(stb_vorbis)
 
     if (LTENGINE_BUILD_WITH_SDL)
-        target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_SDL2_STATIC)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_SDL3_STATIC)
         if (NOT BUILD_SHARED_LIBS)
-            add_library(SDL2 ALIAS SDL2-static)
+            add_library(SDL3 ALIAS SDL3-static)
         endif()
 
-        target_link_libraries(${PROJECT_NAME} PUBLIC SDL2)
+        target_link_libraries(${PROJECT_NAME} PUBLIC SDL3)
     endif()
     target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_MINIAUDIO)
 

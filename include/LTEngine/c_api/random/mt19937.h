@@ -9,11 +9,10 @@ extern "C" {
 #endif
 
 
-// This handle is compatible with HRandom handle and can be used with HRandom function
 typedef LTEngine_HRandom LTEngine_HMT19937;
 
 
-LTEngine_HMT19937 LTENGINE_API LTEngine_MT19937_init();
+LTEngine_HMT19937 LTENGINE_API LTEngine_MT19937();
 
 #ifndef __cplusplus
 }

@@ -236,11 +236,7 @@ bool SoftwareRenderer::process() {
 
 			std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(),
 			              [this, blendColors, op](std::pair<u32, std::vector<Color>> output) {
-				              Camera *camera = getCameraById(output.first);
-				              if (camera == nullptr) {
-					              return;
-				              }
-				              if (camera->exclude) {
+				              if (!isCameraIncluded(output.first)) {
 					              return;
 				              }
 
@@ -261,11 +257,7 @@ bool SoftwareRenderer::process() {
 			}
 
 			std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(), [this, op](std::pair<u32, std::vector<Color>> output) {
-				Camera *camera = getCameraById(output.first);
-				if (camera == nullptr) {
-					return;
-				}
-				if (camera->exclude) {
+				if (!isCameraIncluded(output.first)) {
 					return;
 				}
 
@@ -285,11 +277,7 @@ bool SoftwareRenderer::process() {
 			}
 			std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(),
 			              [this, op, blendColors](std::pair<u32, std::vector<Color>> output) {
-				              Camera *camera = getCameraById(output.first);
-				              if (camera == nullptr) {
-					              return;
-				              }
-				              if (camera->exclude) {
+				              if (!isCameraIncluded(output.first)) {
 					              return;
 				              }
 
@@ -718,8 +706,7 @@ void SoftwareRenderer::displayBuffer(i32 posX, i32 posY, const RendererQueueOp *
 			}
 
 			std::for_each(m_cameraOutputs.begin(), m_cameraOutputs.end(), [&](std::pair<u32, std::vector<Color>> output) {
-				Camera *camera = getCameraById(output.first);
-				if (camera == nullptr || camera->exclude) {
+				if (!isCameraIncluded(output.first)) {
 					return;
 				}
 

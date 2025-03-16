@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.16)
 # Windowing
 if (LTENGINE_BUILD_WITH_SDL)
     add_subdirectory(SDL) # Oof, this takes a while to compile
-    add_library(SDL2 ALIAS SDL2-static)
+    add_library(SDL3 ALIAS SDL3-static)
 endif()
 
 if (NOT LTENGINE_DISABLE_GLFW)

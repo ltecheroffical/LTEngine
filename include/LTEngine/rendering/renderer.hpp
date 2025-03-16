@@ -21,7 +21,6 @@ namespace LTEngine::Rendering {
 		virtual ~Renderer() = default;
 
 		struct Camera {
-
 			Math::Vec2 position = Math::Vec2::Zero;
 			Math::Vec2 zoom = Math::Vec2::One;
 			f32 rotation = 0.f;
@@ -75,6 +74,7 @@ namespace LTEngine::Rendering {
 		Math::Vec2 getCameraPosition(u32 id) const;
 		Math::Vec2 getCameraZoom(u32 id) const;
 		f32 getCameraRotation(u32 id) const;
+		bool isCameraIncluded(u32 id) const;
 
 		virtual void clear(Color color) = 0;
 		virtual void clear(ColorA color) = 0;
@@ -133,11 +133,10 @@ namespace LTEngine::Rendering {
 		u16 getZOrder() {
 			return m_zOrder;
 		}
-		bool isIsIrisMode() {
+		bool isIrisMode() {
 			return m_irisMode;
 		}
 
-		Camera *getCameraById(u32 id);
 		u32 getCurrentCamera() {
 			return m_currentCamera;
 		}
