@@ -30,7 +30,7 @@ void LTEngine_Rect_setH(LTEngine_HRect handle, LTEngine_f32 h) {
 }
 
 
-LTEngine_HRecti LTEngine_Recti(LTEngine_i32 x, LTEngine_i32 y, LTEngine_i32 w, LTEngine_i32 h) {
+LTEngine_HRecti LTEngine_Recti(LTEngine_i32 x, LTEngine_i32 y, LTEngine_u32 w, LTEngine_u32 h) {
 	return {{new LTEngine::Shapes::Recti(x, y, w, h)}};
 }
 
@@ -39,19 +39,19 @@ void LTEngine_Recti_free(LTEngine_HRecti handle) {
 }
 
 
-LTEngine_i32 LTEngine_Recti_w(const LTEngine_HRecti handle) {
+LTEngine_u32 LTEngine_Recti_w(const LTEngine_HRecti handle) {
 	return ((LTEngine::Shapes::Recti *)handle.handle.ptr)->w;
 }
 
-LTEngine_i32 LTEngine_Recti_h(const LTEngine_HRecti handle) {
+LTEngine_u32 LTEngine_Recti_h(const LTEngine_HRecti handle) {
 	return ((LTEngine::Shapes::Recti *)handle.handle.ptr)->h;
 }
 
 
-void LTEngine_Recti_setW(LTEngine_HRecti handle, LTEngine_i32 w) {
+void LTEngine_Recti_setW(LTEngine_HRecti handle, LTEngine_u32 w) {
 	((LTEngine::Shapes::Recti *)handle.handle.ptr)->w = w;
 }
 
-void LTEngine_Recti_setH(LTEngine_HRecti handle, LTEngine_i32 h) {
+void LTEngine_Recti_setH(LTEngine_HRecti handle, LTEngine_u32 h) {
 	((LTEngine::Shapes::Recti *)handle.handle.ptr)->h = h;
 }

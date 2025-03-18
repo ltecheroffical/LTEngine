@@ -39,7 +39,7 @@ typedef struct LTENGINE_API {
     void (*drawRect)(LTEngine_HRenderer handle, void *ctx, const LTEngine_HRect rect, const LTEngine_HColorA color, LTEngine_RendererFlags flags);
     void (*drawCircle)(LTEngine_HRenderer handle, void *ctx, const LTEngine_HCircle circle, const LTEngine_HColorA color, LTEngine_RendererFlags flags);
 
-    void (*drawLine)(LTEngine_HRenderer handle, void *ctx, const LTEngine_HVec2 a, const LTEngine_HVec2 b, LTEngine_u16 thickness, LTEngine_RendererFlags flags);
+    void (*drawLine)(LTEngine_HRenderer handle, void *ctx, const LTEngine_HVec2 a, const LTEngine_HVec2 b, LTEngine_u16 thickness, const LTEngine_HColorA color, LTEngine_RendererFlags flags);
     void (*drawPoints)(LTEngine_HRenderer handle, void *ctx, const LTEngine_HPolygon polygon, const LTEngine_HColorA color, LTEngine_RendererFlags flags);
 
     void (*drawImage)(LTEngine_HRenderer handle, void *ctx, const LTEngine_HImage image, const LTEngine_HVec2 position, LTEngine_f32 rotation, const LTEngine_HRecti region, const LTEngine_HColorA color, LTEngine_RendererFlags flags);
@@ -48,10 +48,10 @@ typedef struct LTENGINE_API {
     void (*cameraDestroyed)(LTEngine_HRenderer handle, void *ctx, LTEngine_u32 id);
     void (*cameraSelected)(LTEngine_HRenderer handle, void *ctx, LTEngine_u32 id);
     void (*cameraDeselected)(LTEngine_HRenderer handle, void *ctx);
-} LTEngine_RendererFuncs;
+} LTEngine_CustomRendererFuncs;
 
-LTEngine_HRenderer LTENGINE_API LTEngine_Renderer(LTEngine_RendererFuncs funcs);
-void LTENGINE_API LTEngine_Renderer_free(LTEngine_HRenderer handle);
+LTEngine_HRenderer LTENGINE_API LTEngine_CustomRenderer(LTEngine_CustomRendererFuncs funcs);
+void LTENGINE_API LTEngine_CustomRenderer_free(LTEngine_HRenderer handle);
 
 void LTENGINE_API LTEngine_Renderer_setScale(LTEngine_HRenderer handle, const LTEngine_HVec2 scale);
 
@@ -77,6 +77,21 @@ LTEngine_HVec2 LTENGINE_API LTEngine_Renderer_getCameraPosition(const LTEngine_H
 LTEngine_HVec2 LTENGINE_API LTEngine_Renderer_getCameraZoom(const LTEngine_HRenderer handle, LTEngine_u32 id);
 LTEngine_f32 LTENGINE_API LTEngine_Renderer_getCameraRotation(const LTEngine_HRenderer handle, LTEngine_u32 id);
 bool LTENGINE_API LTEngine_Renderer_isCameraIncluded(const LTEngine_HRenderer handle, LTEngine_u32 id);
+
+void LTENGINE_API LTEngine_Renderer_clear(LTEngine_HRenderer handle, const LTEngine_HColor color);
+void LTENGINE_API LTEngine_Renderer_clearA(LTEngine_HRenderer handle, const LTEngine_HColorA color);
+
+void LTENGINE_API LTEngine_Renderer_setPixel(LTEngine_HRenderer handle, const LTEngine_HVec2i position, const LTEngine_HColor color);
+void LTENGINE_API LTEngine_Renderer_setPixelA(LTEngine_HRenderer handle, const LTEngine_HVec2i position, const LTEngine_HColorA color);
+LTEngine_HColor LTEngine_Renderer_getPixel(const LTEngine_HRenderer handle, const LTEngine_HVec2i position);
+
+void LTENGINE_API LTEngine_Renderer_drawRect(LTEngine_HRenderer handle, const LTEngine_HRect rect, const LTEngine_HColorA color, LTEngine_RendererFlags flags);
+void LTENGINE_API LTEngine_Renderer_drawCircle(LTEngine_HRenderer handle, const LTEngine_HCircle circle, const LTEngine_HColorA color, LTEngine_RendererFlags flags);
+
+void LTENGINE_API LTEngine_Renderer_drawLine(LTEngine_HRenderer handle, const LTEngine_HVec2 a, const LTEngine_HVec2 b, LTEngine_u16 thickness, const LTEngine_HColorA color, LTEngine_RendererFlags flags);
+void LTENGINE_API LTEngine_Renderer_drawPoints(LTEngine_HRenderer handle, const LTEngine_HPolygon polygon, const LTEngine_HColorA color, LTEngine_RendererFlags flags);
+
+void LTENGINE_API LTEngine_Renderer_drawImage(LTEngine_HRenderer handle, const LTEngine_HImage image, const LTEngine_HVec2 position, LTEngine_f32 rotation, const LTEngine_HRecti region, const LTEngine_HColorA color, LTEngine_RendererFlags flags);
 
 LTEngine_HVec2 LTENGINE_API LTEngine_Renderer_worldToScreenPosition(const LTEngine_HRenderer handle, const LTEngine_HVec2 position);
 LTEngine_HVec2i LTENGINE_API LTEngine_Renderer_worldToScreenPositioni(const LTEngine_HRenderer handle, const LTEngine_HVec2 position);

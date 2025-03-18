@@ -25,14 +25,14 @@ void LTENGINE_API LTEngine_Rect_setW(LTEngine_HRect handle, LTEngine_f32 w);
 void LTENGINE_API LTEngine_Rect_setH(LTEngine_HRect handle, LTEngine_f32 h);
 
 
-LTEngine_HRecti LTENGINE_API LTEngine_Recti(LTEngine_i32 x, LTEngine_i32 y, LTEngine_i32 w, LTEngine_i32 h);
+LTEngine_HRecti LTENGINE_API LTEngine_Recti(LTEngine_i32 x, LTEngine_i32 y, LTEngine_u32 w, LTEngine_u32 h);
 void LTENGINE_API LTEngine_Recti_free(LTEngine_HRecti handle);
 
-LTEngine_i32 LTENGINE_API LTEngine_Recti_w(const LTEngine_HRecti handle);
-LTEngine_i32 LTENGINE_API LTEngine_Recti_h(const LTEngine_HRecti handle);
+LTEngine_u32 LTENGINE_API LTEngine_Recti_w(const LTEngine_HRecti handle);
+LTEngine_u32 LTENGINE_API LTEngine_Recti_h(const LTEngine_HRecti handle);
 
-void LTENGINE_API LTEngine_Recti_setW(LTEngine_HRecti handle, LTEngine_i32 w);
-void LTENGINE_API LTEngine_Recti_setH(LTEngine_HRecti handle, LTEngine_i32 h);
+void LTENGINE_API LTEngine_Recti_setW(LTEngine_HRecti handle, LTEngine_u32 w);
+void LTENGINE_API LTEngine_Recti_setH(LTEngine_HRecti handle, LTEngine_u32 h);
 
 #ifdef __cplusplus
 }

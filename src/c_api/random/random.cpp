@@ -7,7 +7,7 @@ using namespace LTEngine;
 
 class CRandom : public Random::Random {
 public:
-	CRandom(LTEngine_RandomFuncs funcs) {
+	CRandom(LTEngine_CustomRandomFuncs funcs) {
 		m_ctx = funcs.init();
 		m_funcs = funcs;
 	}
@@ -66,15 +66,15 @@ public:
 
 private:
 	void *m_ctx;
-	LTEngine_RandomFuncs m_funcs;
+	LTEngine_CustomRandomFuncs m_funcs;
 };
 
 
-LTEngine_HRandom LTEngine_Random(LTEngine_RandomFuncs funcs) {
+LTEngine_HRandom LTEngine_CustomRandom(LTEngine_CustomRandomFuncs funcs) {
 	return {{ new CRandom(funcs) }};
 }
 
-void LTEngine_Random_free(LTEngine_HRandom handle) {
+void LTEngine_CustomRandom_free(LTEngine_HRandom handle) {
 	delete (Random::Random *)handle.handle.ptr;
 }
 

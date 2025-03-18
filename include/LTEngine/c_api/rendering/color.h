@@ -36,32 +36,32 @@ typedef enum {
     LTENGINE_COLORA_CLEAR
 } LTEngine_ColorADefaults;
 
-LTEngine_HColor LTENGINE_API LTEngine_Color(LTEngine_u32 r, LTEngine_u32 g, LTEngine_u32 b);
+LTEngine_HColor LTENGINE_API LTEngine_Color(LTEngine_u8 r, LTEngine_u8 g, LTEngine_u8 b);
 LTEngine_HColor LTENGINE_API LTEngine_Color_default(LTEngine_ColorDefaults defaultConfig);
 void LTENGINE_API LTEngine_Color_free(LTEngine_HColor handle);
 
-LTEngine_u32 LTENGINE_API LTEngine_Color_r(const LTEngine_HColor handle);
-LTEngine_u32 LTENGINE_API LTEngine_Color_g(const LTEngine_HColor handle);
-LTEngine_u32 LTENGINE_API LTEngine_Color_b(const LTEngine_HColor handle);
+LTEngine_u8 LTENGINE_API LTEngine_Color_r(const LTEngine_HColor handle);
+LTEngine_u8 LTENGINE_API LTEngine_Color_g(const LTEngine_HColor handle);
+LTEngine_u8 LTENGINE_API LTEngine_Color_b(const LTEngine_HColor handle);
 
-void LTENGINE_API LTEngine_Color_setR(LTEngine_HColor handle);
-void LTENGINE_API LTEngine_Color_setG(LTEngine_HColor handle);
-void LTENGINE_API LTEngine_Color_setB(LTEngine_HColor handle);
+void LTENGINE_API LTEngine_Color_setR(LTEngine_HColor handle, LTEngine_u8 r);
+void LTENGINE_API LTEngine_Color_setG(LTEngine_HColor handle, LTEngine_u8 g);
+void LTENGINE_API LTEngine_Color_setB(LTEngine_HColor handle, LTEngine_u8 b);
 
 
-LTEngine_HColorA LTENGINE_API LTEngine_ColorA(LTEngine_u32 r, LTEngine_u32 g, LTEngine_u32 b, LTEngine_u32 a);
+LTEngine_HColorA LTENGINE_API LTEngine_ColorA(LTEngine_u8 r, LTEngine_u8 g, LTEngine_u8 b, LTEngine_u8 a);
 LTEngine_HColorA LTENGINE_API LTEngine_ColorA_default(LTEngine_ColorADefaults defaultConfig);
 void LTENGINE_API LTEngine_ColorA_free(LTEngine_HColorA handle);
 
-LTEngine_u32 LTENGINE_API LTEngine_ColorA_r(const LTEngine_HColorA handle);
-LTEngine_u32 LTENGINE_API LTEngine_ColorA_g(const LTEngine_HColorA handle);
-LTEngine_u32 LTENGINE_API LTEngine_ColorA_b(const LTEngine_HColorA handle);
-LTEngine_u32 LTENGINE_API LTEngine_ColorA_a(const LTEngine_HColorA handle);
+LTEngine_u8 LTENGINE_API LTEngine_ColorA_r(const LTEngine_HColorA handle);
+LTEngine_u8 LTENGINE_API LTEngine_ColorA_g(const LTEngine_HColorA handle);
+LTEngine_u8 LTENGINE_API LTEngine_ColorA_b(const LTEngine_HColorA handle);
+LTEngine_u8 LTENGINE_API LTEngine_ColorA_a(const LTEngine_HColorA handle);
 
-void LTENGINE_API LTEngine_ColorA_setR(LTEngine_HColorA handle);
-void LTENGINE_API LTEngine_ColorA_setG(LTEngine_HColorA handle);
-void LTENGINE_API LTEngine_ColorA_setB(LTEngine_HColorA handle);
-void LTENGINE_API LTEngine_ColorA_setA(LTEngine_HColorA handle);
+void LTENGINE_API LTEngine_ColorA_setR(LTEngine_HColorA handle, LTEngine_u8 r);
+void LTENGINE_API LTEngine_ColorA_setG(LTEngine_HColorA handle, LTEngine_u8 g);
+void LTENGINE_API LTEngine_ColorA_setB(LTEngine_HColorA handle, LTEngine_u8 b);
+void LTENGINE_API LTEngine_ColorA_setA(LTEngine_HColorA handle, LTEngine_u8 a);
 
 
 #ifdef __cplusplus

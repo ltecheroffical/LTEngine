@@ -61,7 +61,9 @@ LTEngine is designed to support both **game cores** and **normal games**, which 
 
 ## Getting Started
 
-Currently, the recommended approach is to clone the repository into a third-party directory and use CMake to add it as a subdirectory. Releases will be available after v1.0.0.
+Currently, the recommended approach is to clone the repository into a third-party directory and use CMake to add it as a subdirectory. Releases will be available after v1.0.0. There is markdown documents in some parts.
+
+
 
 ---
 
