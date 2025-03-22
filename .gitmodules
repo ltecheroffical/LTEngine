@@ -20,3 +20,6 @@
 [submodule "tests/c_api/thirdparty/cmocka"]
 	path = tests/c_api/thirdparty/cmocka
 	url = https://git.cryptomilk.org/projects/cmocka.git
+[submodule "thirdparty/vkbootstrap"]
+	path = thirdparty/vkbootstrap
+	url = https://github.com/charles-lunarg/vk-bootstrap

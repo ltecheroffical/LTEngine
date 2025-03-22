@@ -15,6 +15,9 @@ if (NOT LTENGINE_DISABLE_GLFW)
 endif()
 
 # GPU Graphics
+if (LTENGINE_BUILD_WITH_VULKAN)
+    add_subdirectory(vkbootstrap)
+endif()
 add_subdirectory(glad)
 
 # Math
@@ -51,6 +54,12 @@ if (NOT LTENGINE_DISABLE_GLFW)
     )
 endif()
 
+if (LTENGINE_BUILD_WITH_VULKAN)
+    target_link_libraries(${PROJECT_NAME} PUBLIC
+        #GPU Graphics
+        vk-bootstrap::vk-bootstrap
+    )
+endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC
     # GPU Graphics
     glad

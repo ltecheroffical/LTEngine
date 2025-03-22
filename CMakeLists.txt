@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(LTEngine VERSION 0.1.0 LANGUAGES C CXX ASM)
+project(LTEngine VERSION 1.0.0 LANGUAGES C CXX ASM)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 20)
@@ -15,7 +15,10 @@ option(LTENGINE_BUILD_TESTS "Build LTEngine tests" ON)
 option(LTENGINE_BUILD_DOCS "Build LTEngine documentation" ON)
 
 option(LTENGINE_BUILD_WITH_SDL "Build SDL into LTEngine" OFF)
+option(LTENGINE_BUILD_WITH_VULKAN "Build Vulkan support into LTEngine" OFF)
+
 option(LTENGINE_DISABLE_GLFW "Disable GLFW building and linking (useful for github actions due to the headless mode)" OFF)
+option(LTENGINE_DEV_BUILD "Build LTEngine with dev features" OFF)
 
 
 file(GLOB_RECURSE C_SOURCE_FILES CONFIGURE_DEPENDS 
@@ -43,13 +46,26 @@ if (NOT TARGET ${PROJECT_NAME})
         target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_SHARED)
     endif()
 
+    if (LTENGINE_BUILD_WITH_SDL)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_SDL_ENABLE)
+    endif()
+
+    if (LTENGINE_BUILD_WITH_VULKAN)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_VULKAN_API)
+    endif()
+
+
     if (LTENGINE_DISABLE_GLFW)
         target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_DISABLE_GLFW)
     endif()
 
-    if (LTENGINE_BUILD_WITH_SDL)
-        target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_SDL_ENABLE)
+    if (LTENGINE_DEV_BUILD)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_DEV_BUILD)
     endif()
+
+    target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_VERSION_MAJOR=${CMAKE_PROJECT_VERSION_MAJOR})
+    target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_VERSION_MINOR=${CMAKE_PROJECT_VERSION_MINOR})
+    target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_VERSION_PATCH=${CMAKE_PROJECT_VERSION_PATCH})
 endif()
 
 if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
