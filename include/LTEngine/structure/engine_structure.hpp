@@ -14,8 +14,8 @@ namespace LTEngine::Object {
 		virtual void update(f32 delta) = 0;
 		virtual void render(LTEngine::Rendering::Renderer *renderer) = 0;
 
-		virtual std::unique_ptr<EngineStructureData> save();
-		virtual void load(const EngineStructureData *data);
+		virtual std::unique_ptr<EngineStructureData> save() = 0;
+		virtual void load(const EngineStructureData *data) = 0;
 
 		virtual void clear() = 0;
 
