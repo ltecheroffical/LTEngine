@@ -10,13 +10,6 @@ ObjectStructure::ObjectStructure() {
 }
 
 
-std::unique_ptr<ObjectStructure::Object> ObjectStructure::Object::clone(u32 id) const {
-	std::unique_ptr<ObjectStructure::Object> obj = clone();
-	obj->setId(id);
-	return obj;
-}
-
-
 void ObjectStructure::Object::setActive(bool active) {
 	m_active = active;
 }
@@ -69,16 +62,16 @@ void ObjectStructure::render(LTEngine::Rendering::Renderer *renderer) {
 }
 
 
-std::unique_ptr<EngineStructure> ObjectStructure::clone() const {
-	auto object_structure = std::make_unique<ObjectStructure>();
-
-	for (auto &object : m_objects) { object_structure->m_objects.push_back(object->clone()); }
-
-	object_structure->m_clearColor = m_clearColor;
-	object_structure->m_nextId = m_nextId;
-
-	return object_structure;
+std::unique_ptr<EngineStructure::EngineStructureData> ObjectStructure::save() {
+	return std::make_unique<ObjectStructureData>(ObjectStructureData{
+		.objects = m_objects
+	});
 }
+
+void ObjectStructure::load(const EngineStructure::EngineStructureData *data) {
+	m_objects = ((ObjectStructureData*)data)->objects;
+}
+
 
 void ObjectStructure::clear() {
 	m_objects.clear();

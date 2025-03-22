@@ -67,7 +67,7 @@ namespace LTEngine {
 
 		std::unique_ptr<Object::EngineStructure> m_objectStructure = nullptr;
 
-		std::unordered_map<u32, std::unique_ptr<Object::EngineStructure>> m_scenes;
+		std::unordered_map<u32, std::unique_ptr<Object::EngineStructure::EngineStructureData>> m_scenes;
 	};
 } // namespace LTEngine
 

@@ -7,12 +7,15 @@
 namespace LTEngine::Object {
 	class LTENGINE_API EngineStructure {
 	public:
+		struct EngineStructureData {};
+
 		virtual ~EngineStructure() = default;
 
 		virtual void update(f32 delta) = 0;
 		virtual void render(LTEngine::Rendering::Renderer *renderer) = 0;
 
-		virtual std::unique_ptr<EngineStructure> clone() const = 0;
+		virtual std::unique_ptr<EngineStructureData> save();
+		virtual void load(const EngineStructureData *data);
 
 		virtual void clear() = 0;
 

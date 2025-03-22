@@ -9,19 +9,39 @@
 namespace LTEngine::Object {
 	class LTENGINE_API ObjectStructure : public EngineStructure {
 	public:
+		class Object;
+
+		struct ObjectStructureData : EngineStructure::EngineStructureData {
+			std::vector<std::shared_ptr<Object>> objects;
+		};
+
 		ObjectStructure();
 		~ObjectStructure() override = default;
 
-
 		class LTENGINE_API Object {
 		public:
+			struct ObjectData {
+				Math::Vec2 position = Math::Vec2::Zero;
+				Math::Vec2 scale = Math::Vec2::One;
+				f32 rotation = 0.f;
+			};
 			virtual ~Object() = default;
 
 			virtual void update(f32 delta) = 0;
 			virtual void render(LTEngine::Rendering::Renderer *renderer) = 0;
 
-			virtual std::unique_ptr<Object> clone() const = 0;
-			std::unique_ptr<Object> clone(u32 id) const;
+			virtual std::unique_ptr<ObjectData> save() {
+				return std::make_unique<ObjectData>(ObjectData{
+					.position = getPosition(),
+					.scale = getScale(),
+					.rotation = getRotation()
+				});
+			}
+			virtual void load(const ObjectData *data) {
+				setPosition(data->position);
+				setScale(data->scale);
+				setRotation(data->rotation);
+			}
 
 			virtual Math::Vec2 getPosition() const {
 				return position;
@@ -118,7 +138,9 @@ namespace LTEngine::Object {
 		void update(f32 delta) override;
 		void render(LTEngine::Rendering::Renderer *renderer) override;
 
-		std::unique_ptr<EngineStructure> clone() const override;
+		std::unique_ptr<EngineStructure::EngineStructureData> save() override;
+		void load(const EngineStructure::EngineStructureData *data) override; 
+
 		void clear() override;
 
 		void setClearColor(Rendering::Color color);
