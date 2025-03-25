@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/rendering/image.h>
 #include <LTEngine/rendering/image.hpp>
 
@@ -183,3 +184,5 @@ std::vector<LTEngine::Rendering::ColorA> cArrColorAToCPPColorA(LTEngine_DynamicA
     }
     return dataA;
 }
+
+#endif

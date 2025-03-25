@@ -1,6 +1,5 @@
-#ifndef _LTENGINE_SDL_WINDOW_HPP_
+#if !_LTENGINE_SDL_WINDOW_HPP_ && LTENGINE_COMPONENT_SDL
 #define _LTENGINE_SDL_WINDOW_HPP_
-#ifdef LTENGINE_SDL_ENABLE
 
 #include <SDL3/SDL.h>
 
@@ -46,6 +45,9 @@ namespace LTEngine {
 		bool isMousePressed(WindowMouseButton button) override;
 		bool isMouseReleased(WindowMouseButton button) override;
 
+		void *getNativeWindowHandle() override;
+		void *getNativeDisplayHandle() override;
+		
 		void display(Rendering::Color *screen, u32 width, u32 height) override;
 		void display(Rendering::ColorA *screen, u32 width, u32 height) override;
 
@@ -74,5 +76,4 @@ namespace LTEngine {
 	};
 } // namespace LTEngine
 
-#endif
 #endif

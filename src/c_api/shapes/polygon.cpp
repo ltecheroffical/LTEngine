@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/shapes/polygon.h>
 
 #include <LTEngine/shapes/polygon.hpp>
@@ -32,3 +33,5 @@ void LTENGINE_API LTEngine_Polygon_setPoints(LTEngine_HPolygon handle, const LTE
     }
     ((LTEngine::Shapes::Polygon*)handle.handle.ptr)->points = array;
 }
+
+#endif

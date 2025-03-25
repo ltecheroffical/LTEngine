@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/rendering/color.h>
 
 #include <LTEngine/rendering/color.hpp>
@@ -110,3 +111,5 @@ void LTEngine_ColorA_setB(LTEngine_HColorA handle, LTEngine_u8 b) {
 void LTEngine_ColorA_setA(LTEngine_HColorA handle, LTEngine_u8 a) {
     ((LTEngine::Rendering::ColorA*)handle.handle.ptr)->a = a;
 }
+
+#endif

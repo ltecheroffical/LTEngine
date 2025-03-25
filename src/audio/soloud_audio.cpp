@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_AUDIO_SOLOUD
 #include <vector>
 
 #include <LTEngine/audio/soloud_audio.hpp>
@@ -72,3 +73,5 @@ void SoLoudAudio::playAudioAt(u32 id, Math::Vec2 position, f32 volume) {
 	}
 	m_soloud.play3d(m_resources.at(id), position.x, position.y, 0.f, 0.f, 0.f, volume);
 }
+
+#endif

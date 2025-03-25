@@ -1,4 +1,5 @@
-#ifndef _LTENGINE_C_API_CIRCLE_H_
+#ifndef _LTENGINE_C_API_CIRCLE_H_I
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_CIRCLE_H_
 
 #include <LTEngine/c_api/common/ctypes.h>
@@ -21,5 +22,6 @@ void LTENGINE_API LTEngine_Circle_setRadius(LTEngine_HCircle handle, LTEngine_f3
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

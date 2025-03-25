@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_ENGINE_CORE
 #include <LTEngine/engine.hpp>
 
 
@@ -51,7 +52,6 @@ void Engine::render() {
 
 	m_renderer->resetTransform();
 	m_renderer->setZOrder(0);
-	m_renderer->clearIrisMode();
 	m_renderer->setOffsetsApplied();
 
 	onRender(m_renderer);
@@ -61,3 +61,5 @@ void Engine::render() {
 	}
 	onRenderPost(m_renderer);
 }
+
+#endif

@@ -26,3 +26,6 @@
 [submodule "thirdparty/bgfx"]
 	path = thirdparty/bgfx
 	url = https://github.com/bkaradzic/bgfx.cmake
+[submodule "thirdparty/LLGL"]
+	path = thirdparty/LLGL
+	url = https://github.com/LukasBanana/LLGL

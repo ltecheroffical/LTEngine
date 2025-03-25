@@ -1,4 +1,5 @@
 #ifndef _LTENGINE_C_API_COLOR_H_
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_COLOR_H_
 
 #include <LTEngine/c_api/common/ctypes.h>
@@ -66,5 +67,6 @@ void LTENGINE_API LTEngine_ColorA_setA(LTEngine_HColorA handle, LTEngine_u8 a);
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

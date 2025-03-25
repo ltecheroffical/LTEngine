@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_PHYSICS_BOX2D
 #include <LTEngine/physics/box2d.hpp>
 
 using namespace LTEngine;
@@ -265,3 +266,5 @@ Math::Vec2 Box2D::getBodyPosition(u32 id) {
 f32 Box2D::getBodyRotation(u32 id) {
 	return b2Rot_GetAngle(b2Body_GetRotation(m_bodies[id]));
 }
+
+#endif

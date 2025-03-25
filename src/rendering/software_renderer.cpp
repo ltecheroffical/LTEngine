@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_RENDERER_SOFTWARE
 #include <cmath>
 
 #include <LTEngine/rendering/software_renderer.hpp>
@@ -775,3 +776,5 @@ void SoftwareRenderer::drawWorkspace2Pixel(u32 x, u32 y, ColorA color) {
 ColorA SoftwareRenderer::getWorkspace2Pixel(u32 x, u32 y) {
 	return m_bufferWorkspaces[1][y * m_bufferWorkspaceWidth[1] + x];
 }
+
+#endif

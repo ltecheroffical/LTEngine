@@ -14,11 +14,31 @@ option(LTENGINE_BUILD_EXAMPLES "Build LTEngine examples" ON)
 option(LTENGINE_BUILD_TESTS "Build LTEngine tests" ON)
 option(LTENGINE_BUILD_DOCS "Build LTEngine documentation" ON)
 
-option(LTENGINE_BUILD_WITH_SDL "Build SDL into LTEngine" OFF)
-option(LTENGINE_BUILD_WITH_VULKAN "Build Vulkan support into LTEngine" OFF)
-
-option(LTENGINE_DISABLE_GLFW "Disable GLFW building and linking (useful for github actions due to the headless mode)" OFF)
 option(LTENGINE_DEV_BUILD "Build LTEngine with dev features" OFF)
+
+# Components
+set(POSSIBLE_COMPONENTS
+    LTENGINE_COMPONENT_ENGINE_CORE 
+    LTENGINE_COMPONENT_C_API 
+    LTENGINE_COMPONENT_GLFW 
+    LTENGINE_COMPONENT_SDL
+    LTENGINE_COMPONENT_PHYSICS_BOX2D 
+    LTENGINE_COMPONENT_RENDERER_SOFTWARE 
+    LTENGINE_COMPONENT_RENDERER_LLGL 
+    LTENGINE_COMPONENT_AUDIO_SOLOUD
+)
+
+option(LTENGINE_COMPONENT_ENGINE_CORE ON)
+option(LTENGINE_COMPONENT_C_API ON)
+option(LTENGINE_COMPONENT_GLFW ON)
+option(LTENGINE_COMPONENT_SDL OFF)
+
+option(LTENGINE_COMPONENT_PHYSICS_BOX2D ON)
+
+option(LTENGINE_COMPONENT_RENDERER_SOFTWARE ON)
+option(LTENGINE_COMPONENT_RENDERER_LLGL ON)
+
+option(LTENGINE_COMPONENT_AUDIO_SOLOUD ON)
 
 
 file(GLOB_RECURSE C_SOURCE_FILES CONFIGURE_DEPENDS 
@@ -39,24 +59,17 @@ if (NOT TARGET ${PROJECT_NAME})
         set(BUILD_STATIC OFF)
     endif()
 
+    foreach (OPTION_NAME ${POSSIBLE_COMPONENTS})
+        if (${OPTION_NAME})
+            add_compile_definitions(${OPTION_NAME})
+        endif()
+    endforeach()
+
     if (BUILD_STATIC)
         add_library(${PROJECT_NAME} STATIC ${C_SOURCE_FILES} ${CXX_SOURCE_FILES} ${ASM_SOURCE_FILES})
     else()
         add_library(${PROJECT_NAME} SHARED ${C_SOURCE_FILES} ${CXX_SOURCE_FILES} ${ASM_SOURCE_FILES})
         target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_SHARED)
-    endif()
-
-    if (LTENGINE_BUILD_WITH_SDL)
-        target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_SDL_ENABLE)
-    endif()
-
-    if (LTENGINE_BUILD_WITH_VULKAN)
-        target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_VULKAN_API)
-    endif()
-
-
-    if (LTENGINE_DISABLE_GLFW)
-        target_compile_definitions(${PROJECT_NAME} PUBLIC LTENGINE_DISABLE_GLFW)
     endif()
 
     if (LTENGINE_DEV_BUILD)

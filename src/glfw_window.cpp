@@ -1,8 +1,20 @@
+#ifdef LTENGINE_COMPONENT_GLFW
 #include <stdexcept>
+
+#if __linux__
+#define GLFW_EXPOSE_NATIVE_X11
+#define GLFW_EXPOSE_NATIVE_WAYLAND
+#elif _WIN32
+#define GLFW_EXPOSE_NATIVE_COCOA
+#elif __APPLE__ && __unix__
+#define GLFW_EXPOSE_NATIVE_WIN32
+#endif
 
 #include <glad/glad.h>
 
 #include <LTEngine/glfw_window.hpp>
+
+#include <GLFW/glfw3native.h>
 
 
 #ifndef LTENGINE_DISABLE_GLFW
@@ -205,6 +217,25 @@ bool GLFWWindow::isMouseReleased(WindowMouseButton button) {
 }
 
 
+void *GLFWWindow::getNativeWindowHandle() {
+#if __linux__
+	return glfwGetPlatform() == GLFW_PLATFORM_WAYLAND ? (void*)glfwGetWaylandWindow(m_glfwWindow) : (void*)glfwGetX11Window(m_glfwWindow);
+#elif _WIN32
+	reutrn glfwGetWin32Window(m_glfwWindow);
+#elif __APPLE__ && __unix__
+	return glfwGetCocoaWindow(m_glfwWindow);
+#endif
+	return nullptr;
+}
+
+void *GLFWWindow::getNativeDisplayHandle() {
+#if __linux__
+	return glfwGetPlatform() == GLFW_PLATFORM_WAYLAND ? (void*)glfwGetWaylandDisplay() : glfwGetX11Display();
+#endif
+	return nullptr;
+}
+
+
 void GLFWWindow::display(Rendering::Color *screen, u32 width, u32 height) {
 	throw std::runtime_error("Use LTEngine::Rendering::OpenGLRenderer instead of LTEngine::GLFWWindow::display");
 }
@@ -370,4 +401,5 @@ const int windowKeyToGLFWKeyLookup[] = {GLFW_KEY_UNKNOWN,
 
 const int windowMouseButtonToGLFWMouseButtonLookup[] = {GLFW_MOUSE_BUTTON_LEFT, GLFW_MOUSE_BUTTON_RIGHT, GLFW_MOUSE_BUTTON_MIDDLE};
 
+#endif
 #endif

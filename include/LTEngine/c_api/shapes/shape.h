@@ -1,4 +1,5 @@
 #ifndef _LTENGINE_C_API_SHAPE_H_
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_SHAPE_H_
 
 #include <LTEngine/c_api/common/ctypes.h>
@@ -34,5 +35,6 @@ void LTENGINE_API LTEngine_Shapei_setRotation(LTEngine_HShapei handle, LTEngine_
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

@@ -1,4 +1,5 @@
-#ifndef _LTENGINE_C_API_IMAGE_H_
+#ifndef _LTENGINE_C_API_IMAGE_H_I
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_IMAGE_H_
 
 #include <stddef.h>
@@ -49,5 +50,6 @@ LTEngine_DynamicArray_u8 LTENGINE_API LTEngine_Image_saveBufferJPG(const LTEngin
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

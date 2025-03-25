@@ -7,7 +7,7 @@
 
 
 namespace LTEngine {
-	enum class LTENGINE_API WindowKey {
+	enum class WindowKey {
 		Unknown = 0,
 
 		Escape,
@@ -172,6 +172,9 @@ namespace LTEngine {
 		virtual f64 getMouseY() = 0;
 		virtual bool isMousePressed(WindowMouseButton button) = 0;
 		virtual bool isMouseReleased(WindowMouseButton button) = 0;
+
+		virtual void *getNativeWindowHandle() = 0;
+		virtual void *getNativeDisplayHandle() = 0;
 
 		/**
 		 * @brief Displays an image on the window.

@@ -1,4 +1,5 @@
-#ifndef _LTENGINE_C_API_TRIANGLE_H_
+#ifndef _LTENGINE_C_API_TRIANGLE_H_I
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_TRIANGLE_H_
 
 #include <LTEngine/c_api/common/ctypes.h>
@@ -28,5 +29,6 @@ void LTEngine_Triangle_setP3(const LTEngine_HTriangle handle, const LTEngine_HVe
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

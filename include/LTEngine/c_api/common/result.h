@@ -1,4 +1,5 @@
 #ifndef _LTENGINE_C_API_RESULT_H_
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_RESULT_H_
 
 #include <LTEngine/common/compiler_utils.h>
@@ -41,5 +42,6 @@ bool LTENGINE_API LTEngine_Result_get(LTEngine_Result *const result, void **out,
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

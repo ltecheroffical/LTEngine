@@ -1,4 +1,5 @@
 #ifndef _LTENGINE_C_API_RENDERER_H_
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_RENDERER_H_
 
 #include <LTEngine/common/types/inttypes.h>
@@ -111,5 +112,6 @@ bool LTENGINE_API LTEngine_Renderer_isCameraActive(const LTEngine_HRenderer hand
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

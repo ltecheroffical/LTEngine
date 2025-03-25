@@ -1,6 +1,5 @@
-#ifndef _LTENGINE_RENDERING_SDL_RENDERER_HPP_
+#if !_LTENGINE_RENDERING_SDL_RENDERER_HPP_ && LTENGINE_COMPONENT_SDL
 #define _LTENGINE_RENDERING_SDL_RENDERER_HPP_
-#ifdef LTENGINE_SDL_ENABLE
 
 #include <unordered_map>
 
@@ -49,5 +48,4 @@ namespace LTEngine::Rendering {
 	};
 } // namespace LTEngine::Rendering
 
-#endif
 #endif

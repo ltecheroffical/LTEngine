@@ -1,4 +1,4 @@
-#ifdef LTENGINE_SDL_ENABLE
+#ifdef LTENGINE_COMPONENT_SDL
 
 #include <stdexcept>
 
@@ -225,6 +225,32 @@ bool SDLWindow::isMousePressed(WindowMouseButton button) {
 
 bool SDLWindow::isMouseReleased(WindowMouseButton button) {
 	return !(SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON_MASK(windowMouseButtonToSDLMouseButtonLookup[static_cast<int>(button)]));
+}
+
+
+void *SDLWindow::getNativeWindowHandle() {
+#if __linux__
+	if (SDL_strcmp(SDL_GetCurrentVideoDriver(), "wayland") == 0) {
+		return SDL_GetPointerProperty(SDL_GetWindowProperties(m_window), SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER, nullptr);
+	} else if (SDL_strcmp(SDL_GetCurrentVideoDriver(), "x11") == 0) {
+		auto xwindow = SDL_GetNumberProperty(SDL_GetWindowProperties(m_window), SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0);
+		return (void*)xwindow;
+	}
+#elif _WIN32
+	return SDL_GetPointerProperty(SDL_GetWindowProperties(m_window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, nullptr);
+#elif __APPLE__ && __unix__
+	return SDL_GetPointerProperty(SDL_GetWindowProperties(m_window), SDL_PROP_WINDOW_COCOA_WINDOW_POINTER, nullptr);
+#endif
+	return nullptr;
+}
+
+void *SDLWindow::getNativeDisplayHandle() {
+#if __linux__
+	return SDL_strcmp(SDL_GetCurrentVideoDriver(), "wayland") == 0 ?\
+		SDL_GetPointerProperty(SDL_GetWindowProperties(m_window), SDL_PROP_WINDOW_WAYLAND_DISPLAY_POINTER, nullptr) :\
+		SDL_GetPointerProperty(SDL_GetWindowProperties(m_window), SDL_PROP_WINDOW_X11_DISPLAY_POINTER, nullptr);
+#endif
+	return nullptr;
 }
 
 

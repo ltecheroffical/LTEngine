@@ -1,4 +1,4 @@
-#ifndef _LTENGINE_ENGINE_HPP_
+#if !_LTENGINE_ENGINE_HPP_ && LTENGINE_COMPONENT_ENGINE_CORE
 #define _LTENGINE_ENGINE_HPP_
 
 #include <LTEngine/event.hpp>

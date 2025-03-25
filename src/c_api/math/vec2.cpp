@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/math/vec2.h>
 
 #include <LTEngine/math/vec2.hpp>
@@ -104,3 +105,5 @@ void LTEngine_Vec2u_setX(LTEngine_HVec2u handle, LTEngine_u32 x) {
 void LTEngine_Vec2u_setY(LTEngine_HVec2u handle, LTEngine_u32 y) {
 	((LTEngine::Math::Vec2u *)handle.handle.ptr)->y = y;
 }
+
+#endif

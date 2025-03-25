@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/random/random.h>
 #include <LTEngine/random/random.hpp>
 
@@ -125,3 +126,5 @@ LTEngine_f64 LTEngine_Random_next_f64(LTEngine_HRandom handle) {
 void LTEngine_Random_nextBytes(LTEngine_HRandom handle, void *data, size_t size) {
 	((Random::Random *)handle.handle.ptr)->nextBytes(data, size);
 }
+
+#endif

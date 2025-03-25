@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/shapes/shape.h>
 
 #include <LTEngine/shapes/shape.hpp>
@@ -53,3 +54,5 @@ void LTEngine_Shapei_setY(LTEngine_HShapei handle, LTEngine_i32 y) {
 void LTEngine_Shapei_setRotation(LTEngine_HShapei handle, LTEngine_i16 rotation) {
     ((LTEngine::Shapes::Shapei*)handle.handle.ptr)->rotation = rotation;
 }
+
+#endif

@@ -1,4 +1,5 @@
 #ifndef _LTENGINE_C_API_VEC2_H_
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_VEC2_H_
 
 #include <LTEngine/c_api/common/ctypes.h>
@@ -57,5 +58,6 @@ void LTENGINE_API LTEngine_Vec2u_setY(LTEngine_HVec2u handle, LTEngine_u32 y);
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

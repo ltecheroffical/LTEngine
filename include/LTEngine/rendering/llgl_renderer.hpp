@@ -1,17 +1,24 @@
-#ifndef _LTENGINE_RENDERING_VULKAN_RENDERER_HPP_
-#define _LTENGINE_RENDERING_VULKAN_RENDERER_HPP_
-#ifdef LTENGINE_VULKAN_API
+#if !_LTENGINE_RENDERING_LLGL_RENDERER_HPP_ && LTENGINE_COMPONENT_RENDERER_LLGL
+#define _LTENGINE_RENDERING_LLGL_RENDERER_HPP_
 
+#include <LLGL/LLGL.h>
+
+#include <LTEngine/window.hpp>
 #include <LTEngine/rendering/renderer.hpp>
-
-#include <vulkan/vulkan.h>
 
 
 namespace LTEngine::Rendering {
-	class LTENGINE_API VulkanRenderer : public Renderer {
+	class LTENGINE_API LLGLRenderer : public Renderer {
 	public:
-		VulkanRenderer(VkSurfaceKHR surface);
-		~VulkanRenderer() override;
+		enum class GraphicsAPI {
+			OpenGL = 0,
+			Vulkan,
+			D3D11,
+			D3D12
+		};
+
+		LLGLRenderer(Window *window, GraphicsAPI api);
+		~LLGLRenderer() override;
 
 		void clear(Color color) override;
 		void clear(ColorA color) override;
@@ -30,19 +37,9 @@ namespace LTEngine::Rendering {
 		               RendererFlags flags) override;
 
 	private:
-		VkInstance m_instance;
-		VkDevice m_device;
-		VkPhysicalDevice m_physicalDevice;
-		VkSurfaceKHR m_surface;
-
-		VkDebugUtilsMessengerEXT m_debugMessenger;
-
-		static u32 m_vkRendererId;
-	
-		void vulkanInit();
-		bool vulkanCheckValidationLayers();
+		LLGL::RenderSystemPtr m_renderer;
+		LLGL::SwapChain *m_swapChain;
 	};
 } // namespace LTEngine::Rendering
 
-#endif
 #endif

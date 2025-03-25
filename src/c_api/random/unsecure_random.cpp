@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/random/unsecure_random.h>
 #include <LTEngine/random/unsecure_random.hpp>
 
@@ -14,3 +15,5 @@ LTEngine_HUnsecureRandom LTENGINE_API LTEngine_UnsecureRandom() {
 void LTENGINE_API LTEngine_UnsecureRandom_seed(LTEngine_HUnsecureRandom handle, LTEngine_u64 seed) {
 	((RandomUnsecure *)handle.handle.ptr)->seed(seed);
 }
+
+#endif

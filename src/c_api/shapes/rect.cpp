@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/shapes/rect.h>
 
 #include <LTEngine/shapes/rect.hpp>
@@ -55,3 +56,5 @@ void LTEngine_Recti_setW(LTEngine_HRecti handle, LTEngine_u32 w) {
 void LTEngine_Recti_setH(LTEngine_HRecti handle, LTEngine_u32 h) {
 	((LTEngine::Shapes::Recti *)handle.handle.ptr)->h = h;
 }
+
+#endif

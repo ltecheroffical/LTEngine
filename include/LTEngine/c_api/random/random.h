@@ -1,4 +1,5 @@
 #ifndef _LTENGINE_C_API_RANDOM_H_
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_RANDOM_H_
 
 #include <LTEngine/c_api/common/ctypes.h>
@@ -53,5 +54,6 @@ LTEngine_f64 LTENGINE_API LTEngine_Random_next_f64(LTEngine_HRandom handle);
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

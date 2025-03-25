@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/shapes/circle.h>
 
 #include <LTEngine/shapes/circle.hpp>
@@ -23,3 +24,5 @@ LTEngine_f32 LTEngine_Circle_radius(const LTEngine_HCircle handle) {
 void LTEngine_Circle_setRadius(LTEngine_HCircle handle, LTEngine_f32 radius) {
     ((LTEngine::Shapes::Circle*)handle.handle.ptr)->radius = radius;
 }
+
+#endif

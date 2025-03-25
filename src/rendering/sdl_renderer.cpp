@@ -1,4 +1,4 @@
-#ifdef LTENGINE_SDL_ENABLE
+#ifdef LTENGINE_COMPONENT_SDL
 
 #include <LTEngine/rendering/sdl_renderer.hpp>
 

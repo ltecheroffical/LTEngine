@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/common/result.h>
 
 
@@ -20,3 +21,5 @@ bool LTEngine_Result_get(LTEngine_Result *const result, void **out, LTEngine_Err
 	*out = result->_result;
 	return true;
 }
+
+#endif

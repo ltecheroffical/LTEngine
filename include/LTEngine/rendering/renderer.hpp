@@ -59,9 +59,6 @@ namespace LTEngine::Rendering {
 
 		void resetTransform();
 
-		void setIrisMode();
-		void clearIrisMode();
-
 		u32 createCamera(Math::Vec2 position, Math::Vec2 zoom);
 		void deleteCamera(u32 id);
 		void setCameraPosition(u32 id, Math::Vec2 position);
@@ -133,10 +130,6 @@ namespace LTEngine::Rendering {
 		u16 getZOrder() {
 			return m_zOrder;
 		}
-		bool isIrisMode() {
-			return m_irisMode;
-		}
-
 		u32 getCurrentCamera() {
 			return m_currentCamera;
 		}
@@ -147,7 +140,6 @@ namespace LTEngine::Rendering {
 	private:
 		u16 m_zOrder = 0;
 
-		bool m_irisMode : 1 = false;
 		bool m_currentCameraActive : 1 = false;
 
 		std::vector<Camera> m_cameras;

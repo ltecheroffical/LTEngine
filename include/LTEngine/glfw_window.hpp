@@ -1,7 +1,5 @@
-#ifndef _LTENGINE_GLFW_WINDOW_HPP_
+#if !_LTENGINE_GLFW_WINDOW_HPP_ && LTENGINE_COMPONENT_GLFW
 #define _LTENGINE_GLFW_WINDOW_HPP_
-
-#ifndef LTENGINE_DISABLE_GLFW
 
 #include <unordered_map>
 
@@ -52,6 +50,9 @@ namespace LTEngine {
 		bool isMousePressed(WindowMouseButton button) override;
 		bool isMouseReleased(WindowMouseButton button) override;
 
+		void *getNativeWindowHandle() override;
+		void *getNativeDisplayHandle() override;
+
 		void display(Rendering::Color *screen, u32 width, u32 height) override;
 		void display(Rendering::ColorA *screen, u32 width, u32 height) override;
 
@@ -69,5 +70,4 @@ namespace LTEngine {
 	};
 } // namespace LTEngine
 
-#endif
 #endif

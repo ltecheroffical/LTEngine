@@ -1,4 +1,5 @@
 #ifndef _LTENGINE_C_API_RANDOM_MT19937_H_
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_RANDOM_MT19937_H_
 
 #include <LTEngine/c_api/random/random.h>
@@ -16,5 +17,6 @@ LTEngine_HMT19937 LTENGINE_API LTEngine_MT19937();
 
 #ifndef __cplusplus
 }
+#endif
 #endif
 #endif

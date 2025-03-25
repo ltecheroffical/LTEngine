@@ -37,15 +37,6 @@ void Renderer::resetTransform() {
 }
 
 
-void Renderer::setIrisMode() {
-	m_irisMode = true;
-}
-
-void Renderer::clearIrisMode() {
-	m_irisMode = false;
-}
-
-
 u32 Renderer::createCamera(Math::Vec2 position, Math::Vec2 zoom) {
 	Camera camera;
 

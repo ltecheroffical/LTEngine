@@ -1,4 +1,5 @@
 #ifndef _LTENGINE_C_API_RECT_H_
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_RECT_H_
 
 #include <LTEngine/c_api/common/ctypes.h>
@@ -36,5 +37,6 @@ void LTENGINE_API LTEngine_Recti_setH(LTEngine_HRecti handle, LTEngine_u32 h);
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

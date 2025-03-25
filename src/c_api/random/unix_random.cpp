@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/random/unix_random.h>
 #include <LTEngine/random/unix_random.hpp>
 
@@ -13,3 +14,5 @@ LTEngine_HUnixRandom LTENGINE_API LTEngine_UnixRandom() {
 LTEngine_HUnixRandom LTENGINE_API LTEngine_UnixRandom_bufSize(size_t bufferSize) {
 	return {{ new UnixRandom(bufferSize) }};
 }
+
+#endif

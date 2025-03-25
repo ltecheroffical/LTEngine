@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/shapes/triangle.h>
 
 #include <LTEngine/shapes/triangle.hpp>
@@ -43,3 +44,5 @@ void LTEngine_Triangle_setP3(const LTEngine_HTriangle handle, LTEngine_HVec2 val
     ((LTEngine::Shapes::Triangle*)handle.handle.ptr)->p3.x = LTEngine_Vec2_x(value);
     ((LTEngine::Shapes::Triangle*)handle.handle.ptr)->p3.y = LTEngine_Vec2_y(value);
 }
+
+#endif

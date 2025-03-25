@@ -1,4 +1,5 @@
 #ifndef _LTENGINE_C_API_RANDOM_PLATFORM_RANDOM_H_
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_RANDOM_PLATFORM_RANDOM_H_
 
 #include <LTEngine/c_api/random/random.h>
@@ -23,5 +24,6 @@ LTEngine_HPlatformRandom LTENGINE_API LTEngine_PlatformRandom(LTEngine_PlatformR
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif

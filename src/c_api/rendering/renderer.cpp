@@ -1,3 +1,4 @@
+#ifdef LTENGINE_COMPONENT_C_API
 #include <LTEngine/c_api/rendering/renderer.h>
 
 #include <LTEngine/rendering/renderer.hpp>
@@ -177,14 +178,6 @@ void LTEngine_Renderer_resetTransform(LTEngine_HRenderer handle) {
     ((CRenderer *)handle.handle.ptr)->resetTransform();
 }
 
-void LTENGINE_API LTEngine_Renderer_setIrisMode(LTEngine_HRenderer handle) {
-    ((CRenderer *)handle.handle.ptr)->setIrisMode();
-}
-
-void LTENGINE_API LTEngine_Renderer_clearIrisMode(LTEngine_HRenderer handle) {
-    ((CRenderer *)handle.handle.ptr)->clearIrisMode();
-}
-
 
 LTEngine_u32 LTENGINE_API LTEngine_Renderer_createCamera(LTEngine_HRenderer handle, const LTEngine_HVec2 position, const LTEngine_HVec2 zoom) {
     return ((CRenderer *)handle.handle.ptr)->createCamera({LTEngine_Vec2_x(position), LTEngine_Vec2_y(position)}, {LTEngine_Vec2_x(zoom), LTEngine_Vec2_y(zoom)});
@@ -297,3 +290,5 @@ void LTENGINE_API LTEngine_Renderer_drawImage(LTEngine_HRenderer handle, const L
         {LTEngine_ColorA_r(color), LTEngine_ColorA_g(color), LTEngine_ColorA_b(color), LTEngine_ColorA_a(color)},
         flags);
 }
+
+#endif

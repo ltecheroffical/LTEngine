@@ -1,4 +1,5 @@
 #ifndef _LTENGINE_C_API_POLYGON_H_
+#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_POLYGON_H_
 
 #include <LTEngine/c_api/math/vec2.h>
@@ -25,5 +26,6 @@ void LTENGINE_API LTEngine_Polygon_setPoints(LTEngine_HPolygon handle, const LTE
 
 #ifdef __cplusplus
 }
+#endif
 #endif
 #endif
