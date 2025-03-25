@@ -1,7 +1,6 @@
 #ifdef LTENGINE_SDL_ENABLE
 
 #include <stdexcept>
-#include <string>
 
 #include <LTEngine/sdl_window.hpp>
 
@@ -18,14 +17,8 @@ SDLWindow::SDLWindow(const char *title, u32 width, u32 height) {
 		SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 	}
 
-	m_window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_SHOWN);
-	if (m_window == nullptr) {
-		throw std::runtime_error("Failed to create SDL window");
-	}
-
-	m_renderer = SDL_CreateRenderer(m_window, -1, 0);
-	if (m_renderer == nullptr) {
-		throw std::runtime_error("Failed to create SDL renderer");
+	if (!SDL_CreateWindowAndRenderer(title, width, height, 0, &m_window, &m_renderer)) {
+		throw std::runtime_error("Failed to create SDL window and/or renderer");
 	}
 
 	m_rgbTexture = nullptr;
@@ -51,7 +44,7 @@ void SDLWindow::setTitle(const char *title) {
 }
 
 void SDLWindow::setResizable(bool resizable) {
-	SDL_SetWindowResizable(m_window, resizable ? SDL_TRUE : SDL_FALSE);
+	SDL_SetWindowResizable(m_window, resizable);
 }
 
 void SDLWindow::setFullscreen(bool fullscreen) {
@@ -130,51 +123,45 @@ void SDLWindow::pollEvents() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
-			case SDL_QUIT:
+			case SDL_EVENT_QUIT:
 				m_shouldClose = true;
 				return;
-
-			case SDL_WINDOWEVENT:
-				switch (event.window.event) {
-					case SDL_WINDOWEVENT_RESIZED:
-						onWindowResize(event.window.data1, event.window.data2);
-						break;
-					case SDL_WINDOWEVENT_MOVED:
-						onWindowMove(event.window.data1, event.window.data2);
-						break;
-					case SDL_WINDOWEVENT_MINIMIZED:
-						onWindowMinimize();
-						break;
-					case SDL_WINDOWEVENT_RESTORED:
-						onWindowRestore();
-						break;
-					case SDL_WINDOWEVENT_FOCUS_GAINED:
-						onWindowFocus();
-						break;
-					case SDL_WINDOWEVENT_FOCUS_LOST:
-						onWindowUnfocus();
-						break;
-				}
+			case SDL_EVENT_WINDOW_RESIZED:
+				onWindowResize(event.window.data1, event.window.data2);
 				break;
-
-			case SDL_KEYDOWN:
+			case SDL_EVENT_WINDOW_MOVED:
+				onWindowMove(event.window.data1, event.window.data2);
+				break;
+			case SDL_EVENT_WINDOW_MINIMIZED:
+				onWindowMinimize();
+				break;
+			case SDL_EVENT_WINDOW_RESTORED:
+				onWindowRestore();
+				break;
+			case SDL_EVENT_WINDOW_FOCUS_GAINED:
+				onWindowFocus();
+				break;
+			case SDL_EVENT_WINDOW_FOCUS_LOST:
+				onWindowUnfocus();
+				break;
+			case SDL_EVENT_KEY_DOWN:
 				// Find the correct index
 				for (u32 i = 0; i < (u32)WindowKey::Count; i++) {
-					if (windowKeyToSDLKeyLookup[i] == event.key.keysym.sym) {
+					if (windowKeyToSDLKeyLookup[i] == event.key.key) {
 						onWindowKeyPress((WindowKey)i);
 						break;
 					}
 				}
 				break;
-			case SDL_KEYUP:
+			case SDL_EVENT_KEY_UP:
 				for (u32 i = 0; i < (u32)WindowKey::Count; i++) {
-					if (windowKeyToSDLKeyLookup[i] == event.key.keysym.sym) {
+					if (windowKeyToSDLKeyLookup[i] == event.key.key) {
 						onWindowKeyRelease((WindowKey)i);
 						break;
 					}
 				}
 				break;
-			case SDL_MOUSEBUTTONDOWN:
+			case SDL_EVENT_MOUSE_BUTTON_DOWN:
 				if (event.button.button == SDL_BUTTON_LEFT) {
 					onWindowMousePress(WindowMouseButton::MouseLeft);
 				} else if (event.button.button == SDL_BUTTON_RIGHT) {
@@ -183,7 +170,7 @@ void SDLWindow::pollEvents() {
 					onWindowMousePress(WindowMouseButton::MouseMiddle);
 				}
 				break;
-			case SDL_MOUSEBUTTONUP:
+			case SDL_EVENT_MOUSE_BUTTON_UP:
 				if (event.button.button == SDL_BUTTON_LEFT) {
 					onWindowMousePress(WindowMouseButton::MouseLeft);
 				} else if (event.button.button == SDL_BUTTON_RIGHT) {
@@ -221,23 +208,23 @@ bool SDLWindow::isKeyReleased(WindowKey key) {
 
 
 f64 SDLWindow::getMouseX() {
-	int x, y;
+	f32 x, y;
 	SDL_GetMouseState(&x, &y);
 	return x;
 }
 
 f64 SDLWindow::getMouseY() {
-	int x, y;
+	f32 x, y;
 	SDL_GetMouseState(&x, &y);
 	return y;
 }
 
 bool SDLWindow::isMousePressed(WindowMouseButton button) {
-	return SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(windowMouseButtonToSDLMouseButtonLookup[static_cast<int>(button)]);
+	return SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON_MASK(windowMouseButtonToSDLMouseButtonLookup[static_cast<int>(button)]);
 }
 
 bool SDLWindow::isMouseReleased(WindowMouseButton button) {
-	return !(SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON(windowMouseButtonToSDLMouseButtonLookup[static_cast<int>(button)]));
+	return !(SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON_MASK(windowMouseButtonToSDLMouseButtonLookup[static_cast<int>(button)]));
 }
 
 
@@ -256,7 +243,7 @@ void SDLWindow::display(Rendering::Color *screen, u32 width, u32 height) {
 
 	memcpy(pixels, screen, width * height * sizeof(Rendering::Color));
 	SDL_UnlockTexture(m_rgbTexture);
-	SDL_RenderCopy(m_renderer, m_rgbTexture, nullptr, nullptr);
+	SDL_RenderTexture(m_renderer, m_rgbTexture, nullptr, nullptr);
 }
 
 void SDLWindow::display(Rendering::ColorA *screen, u32 width, u32 height) {
@@ -274,7 +261,7 @@ void SDLWindow::display(Rendering::ColorA *screen, u32 width, u32 height) {
 
 	memcpy(pixels, screen, width * height * sizeof(Rendering::ColorA));
 	SDL_UnlockTexture(m_rgbaTexture);
-	SDL_RenderCopy(m_renderer, m_rgbaTexture, nullptr, nullptr);
+	SDL_RenderTexture(m_renderer, m_rgbaTexture, nullptr, nullptr);
 }
 
 

@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.16)
 # Windowing
 if (LTENGINE_BUILD_WITH_SDL)
     add_subdirectory(SDL) # Oof, this takes a while to compile
-    add_library(SDL3 ALIAS SDL3-static)
 endif()
 
 if (NOT LTENGINE_DISABLE_GLFW)
@@ -27,6 +26,7 @@ add_subdirectory(glm)
 add_subdirectory(box2d)
 
 # Audio
+cmake_policy(SET CMP0175 OLD)
 add_subdirectory(soloud)
 
 # STB Utilites
@@ -43,7 +43,7 @@ endif()
 if (LTENGINE_BUILD_WITH_SDL)
     target_link_libraries(${PROJECT_NAME} PUBLIC
         # Windowing
-        SDL2
+        SDL3
     )
 endif()
 
@@ -63,6 +63,7 @@ endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC
     # GPU Graphics
     glad
+    bgfx
 
     # Math
     glm::glm

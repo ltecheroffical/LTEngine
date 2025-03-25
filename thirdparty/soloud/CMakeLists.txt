@@ -26,7 +26,7 @@ if (NOT TARGET soloud)
 
     add_subdirectory(stb_vorbis)
 
-    if (LTENGINE_BUILD_WITH_SDL)
+    if (LTENGINE_BUILD_WITH_SDL AND TARGET SDL3)
         target_compile_definitions(${PROJECT_NAME} PUBLIC WITH_SDL3_STATIC)
         if (NOT BUILD_SHARED_LIBS)
             add_library(SDL3 ALIAS SDL3-static)

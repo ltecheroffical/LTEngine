@@ -7,7 +7,7 @@ LTEngine_HVec2 LTEngine_Vec2(LTEngine_f32 x, LTEngine_f32 y) {
 	return {{new LTEngine::Math::Vec2(x, y)}};
 }
 
-void LTENGINE_API LTEngine_Vec2_free(LTEngine_HVec2 handle) {
+void LTEngine_Vec2_free(LTEngine_HVec2 handle) {
 	delete (LTEngine::Math::Vec2 *)handle.handle.ptr;
 }
 
@@ -45,7 +45,7 @@ LTEngine_HVec2i LTEngine_Vec2i(LTEngine_i32 x, LTEngine_i32 y) {
 	return {{new LTEngine::Math::Vec2i(x, y)}};
 }
 
-void LTENGINE_API LTEngine_Vec2i_free(LTEngine_HVec2i handle) {
+void LTEngine_Vec2i_free(LTEngine_HVec2i handle) {
 	delete (LTEngine::Math::Vec2i *)handle.handle.ptr;
 }
 
@@ -83,7 +83,7 @@ LTEngine_HVec2u LTEngine_Vec2u(LTEngine_u32 x, LTEngine_u32 y) {
 	return {{new LTEngine::Math::Vec2u(x, y)}};
 }
 
-void LTENGINE_API LTEngine_Vec2u_free(LTEngine_HVec2u handle) {
+void LTEngine_Vec2u_free(LTEngine_HVec2u handle) {
 	delete (LTEngine::Math::Vec2u *)handle.handle.ptr;
 }
 

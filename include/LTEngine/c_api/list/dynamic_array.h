@@ -21,6 +21,7 @@
     \
     void LTEngine_DynamicArray_##type_name##_add(LTEngine_DynamicArray_##type_name *array, type value); \
     void LTEngine_DynamicArray_##type_name##_remove(LTEngine_DynamicArray_##type_name *array, size_t index); \
+    void *LTEngine_DynamicArray_##type_name##_ptr(LTEngine_DynamicArray_##type_name *array, size_t index); \
     type LTEngine_DynamicArray_##type_name##_get(const LTEngine_DynamicArray_##type_name *array, size_t index)
 
 #define LTENGINE_DEFINE_DYNAMIC_ARRAY_LOGIC(type, type_name) \
@@ -62,6 +63,9 @@
             array->data[i] = array->data[i + 1]; \
         } \
         array->size--; \
+    } \
+    void *LTEngine_DynamicArray_##type_name##_ptr(LTEngine_DynamicArray_##type_name *array, size_t index) { \
+        return &array->data[index]; \
     } \
     type LTEngine_DynamicArray_##type_name##_get(const LTEngine_DynamicArray_##type_name *array, size_t index) { \
         return array->data[index]; \

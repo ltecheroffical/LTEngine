@@ -37,12 +37,12 @@ void SDLRenderer::clear(ColorA color) {
 
 void SDLRenderer::setPixel(Math::Vec2i position, Color color) {
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, 255);
-	SDL_RenderDrawPoint(m_renderer, position.x, position.y);
+	SDL_RenderPoint(m_renderer, position.x, position.y);
 }
 
 void SDLRenderer::setPixel(Math::Vec2i position, ColorA color) {
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
-	SDL_RenderDrawPoint(m_renderer, position.x, position.y);
+	SDL_RenderPoint(m_renderer, position.x, position.y);
 }
 
 Color SDLRenderer::getPixel(Math::Vec2i position) {
@@ -58,12 +58,12 @@ void SDLRenderer::drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags)
 	worldToScreenPosition(&rect.x, &rect.y);
 
 	// Draw square texture using RenderCopyEx
-	SDL_Rect dst;
+	SDL_FRect dst;
 	dst.x = rect.x;
 	dst.y = rect.y;
 	dst.w = rect.w;
 	dst.h = rect.h;
-	SDL_RenderCopyEx(m_renderer, m_squareTexture, NULL, &dst, worldToScreenRotation(rect.rotation), NULL, SDL_FLIP_NONE);
+	SDL_RenderTextureRotated(m_renderer, m_squareTexture, NULL, &dst, worldToScreenRotation(rect.rotation), NULL, SDL_FLIP_NONE);
 }
 
 void SDLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFlags flags) {
@@ -79,14 +79,14 @@ void SDLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFlags 
 	i32 p = 1 - circle.radius;
 
 	while (x >= y) {
-		SDL_RenderDrawPoint(m_renderer, centerX + x, centerY + y);
-		SDL_RenderDrawPoint(m_renderer, centerX + x, centerY - y);
-		SDL_RenderDrawPoint(m_renderer, centerX - x, centerY + y);
-		SDL_RenderDrawPoint(m_renderer, centerX - x, centerY - y);
-		SDL_RenderDrawPoint(m_renderer, centerX + y, centerY + x);
-		SDL_RenderDrawPoint(m_renderer, centerX + y, centerY - x);
-		SDL_RenderDrawPoint(m_renderer, centerX - y, centerY + x);
-		SDL_RenderDrawPoint(m_renderer, centerX - y, centerY - x);
+		SDL_RenderPoint(m_renderer, centerX + x, centerY + y);
+		SDL_RenderPoint(m_renderer, centerX + x, centerY - y);
+		SDL_RenderPoint(m_renderer, centerX - x, centerY + y);
+		SDL_RenderPoint(m_renderer, centerX - x, centerY - y);
+		SDL_RenderPoint(m_renderer, centerX + y, centerY + x);
+		SDL_RenderPoint(m_renderer, centerX + y, centerY - x);
+		SDL_RenderPoint(m_renderer, centerX - y, centerY + x);
+		SDL_RenderPoint(m_renderer, centerX - y, centerY - x);
 
 		if (p <= 0) {
 			p += 2 * ++y + 1;
@@ -104,7 +104,7 @@ void SDLRenderer::drawCircle(Shapes::Circle circle, ColorA color, RendererFlags 
 				i32 dy = y - circle.radius;
 
 				if (dx * dx + dy * dy > circle.radius * circle.radius) { continue; }
-				SDL_RenderDrawPoint(m_renderer, x, y);
+				SDL_RenderPoint(m_renderer, x, y);
 			}
 		}
 	}
@@ -122,9 +122,9 @@ void SDLRenderer::drawLine(Math::Vec2 a, Math::Vec2 b, u16 thickness, ColorA col
 
 	// Simulate thickness
 	for (u16 i = 0; i < thickness; i++) {
-		SDL_RenderDrawLine(m_renderer, a.x - i, a.y - i, b.x - i, b.y - i);
-		SDL_RenderDrawLine(m_renderer, a.x, a.y, b.x, b.y);
-		SDL_RenderDrawLine(m_renderer, a.x + i, a.y + i, b.x + i, b.y + i);
+		SDL_RenderLine(m_renderer, a.x - i, a.y - i, b.x - i, b.y - i);
+		SDL_RenderLine(m_renderer, a.x, a.y, b.x, b.y);
+		SDL_RenderLine(m_renderer, a.x + i, a.y + i, b.x + i, b.y + i);
 	}
 }
 
@@ -139,7 +139,7 @@ void SDLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlag
 		Math::Vec2 b = rotatePosition(points[(i + 1) % count], points[0], worldToScreenRotation(polygon.rotation));
 		worldToScreenPosition(&a.x, &a.y);
 		worldToScreenPosition(&b.x, &b.y);
-		SDL_RenderDrawLine(m_renderer, a.x, a.y, b.x, b.y);
+		SDL_RenderLine(m_renderer, a.x, a.y, b.x, b.y);
 	}
 
 	if (flags & Renderer::FLAG_FILL) {
@@ -173,7 +173,7 @@ void SDLRenderer::drawPoints(Shapes::Polygon polygon, ColorA color, RendererFlag
 				if (i + 1 < num_intersections) {
 					for (i32 x = intersections[i]; x <= intersections[i + 1]; x++) {
 						SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
-						SDL_RenderDrawPoint(m_renderer, x + min_x, y + min_y);
+						SDL_RenderPoint(m_renderer, x + min_x, y + min_y);
 					}
 				}
 			}
@@ -215,14 +215,14 @@ void SDLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rotati
 		texture = m_imageCache[image];
 	}
 
-	SDL_Rect rect;
+	SDL_FRect rect;
 	rect.x = worldToScreenPosition(Math::Vec2(position.x, position.y)).x;
 	rect.y = worldToScreenPosition(Math::Vec2(position.x, position.y)).x;
 	rect.w = region.w;
 	rect.h = region.h;
 
-	SDL_Point center = {(int)region.w / 2, (int)region.h / 2};
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	SDL_FPoint center = {(f32)region.w / 2, (f32)region.h / 2};
+	SDL_FlipMode flip = SDL_FLIP_NONE;
 
 	if (flags & Renderer::FLAG_FLIP_H) { flip = SDL_FLIP_HORIZONTAL; }
 	if (flags & Renderer::FLAG_FLIP_V) { flip = SDL_FLIP_VERTICAL; }
@@ -237,7 +237,7 @@ void SDLRenderer::drawImage(const Image *image, Math::Vec2i position, f32 rotati
 		return true;
 	});
 
-	SDL_RenderCopyEx(m_renderer, texture, &rect, &rect, worldToScreenRotation(rotation), &center, flip);
+	SDL_RenderTextureRotated(m_renderer, texture, &rect, &rect, worldToScreenRotation(rotation), &center, flip);
 }
 
 #endif

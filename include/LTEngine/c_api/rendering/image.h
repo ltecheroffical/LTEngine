@@ -14,6 +14,7 @@
 extern "C" {
 #endif
 
+LTENGINE_DEFINE_DYNAMIC_ARRAY(LTEngine_HColor, Color);
 LTENGINE_DEFINE_DYNAMIC_ARRAY(LTEngine_HColorA, ColorA);
 
 typedef struct {
@@ -21,8 +22,8 @@ typedef struct {
 } LTEngine_HImage;
 
 LTEngine_HImage LTENGINE_API LTEngine_Image(LTEngine_u32 width, LTEngine_u32 height);
-LTEngine_HImage LTENGINE_API LTEngine_Image_data(LTEngine_u32 width, LTEngine_u32 height);
-LTEngine_HImage LTENGINE_API LTEngine_Image_dataA(LTEngine_u32 width, LTEngine_u32 height);
+LTEngine_HImage LTENGINE_API LTEngine_Image_data(LTEngine_u32 width, LTEngine_u32 height, LTEngine_DynamicArray_Color data);
+LTEngine_HImage LTENGINE_API LTEngine_Image_dataA(LTEngine_u32 width, LTEngine_u32 height, LTEngine_DynamicArray_ColorA data);
 
 void LTENGINE_API LTEngine_Image_setSize(LTEngine_HImage handle, LTEngine_u32 width, LTEngine_u32 height);
 LTEngine_HVec2u LTENGINE_API LTEngine_Image_getSize(const LTEngine_HImage handle);
@@ -36,15 +37,15 @@ void LTENGINE_API LTEngine_Image_flipV(LTEngine_HImage handle);
 void LTENGINE_API LTEngine_Image_load(LTEngine_HImage handle, const char *filename);
 void LTENGINE_API LTEngine_Image_loadBuffer(LTEngine_HImage handle, LTEngine_u8 *buffer, size_t size);
 
-LTEngine_DynamicArray_ColorA LTENGINE_API LTEngine_HImage_getMemBuffer(const LTEngine_HImage handle);
-void LTENGINE_API LTEngine_HImage_setMemBuffer(LTEngine_HImage handle, LTEngine_DynamicArray_ColorA buffer);
+LTEngine_DynamicArray_ColorA LTENGINE_API LTEngine_Image_getMemBuffer(const LTEngine_HImage handle);
+void LTENGINE_API LTEngine_Image_setMemBuffer(LTEngine_HImage handle, LTEngine_DynamicArray_ColorA *buffer);
 
-void LTENGINE_API LTEngine_HImage_savePNG(const LTEngine_HImage handle, const char *filename);
-void LTENGINE_API LTEngine_HImage_saveBMP(const LTEngine_HImage handle, const char *filename);
-void LTENGINE_API LTEngine_HImage_saveJPG(const LTEngine_HImage handle, const char *filename);
-LTEngine_DynamicArray_u8 LTENGINE_API LTEngine_HImage_saveBufferPNG(const LTEngine_HImage handle);
-LTEngine_DynamicArray_u8 LTENGINE_API LTEngine_HImage_saveBufferBMP(const LTEngine_HImage handle);
-LTEngine_DynamicArray_u8 LTENGINE_API LTEngine_HImage_saveBufferJPG(const LTEngine_HImage handle);
+void LTENGINE_API LTEngine_Image_savePNG(const LTEngine_HImage handle, const char *filename);
+void LTENGINE_API LTEngine_Image_saveBMP(const LTEngine_HImage handle, const char *filename);
+void LTENGINE_API LTEngine_Image_saveJPG(const LTEngine_HImage handle, const char *filename);
+LTEngine_DynamicArray_u8 LTENGINE_API LTEngine_Image_saveBufferPNG(const LTEngine_HImage handle);
+LTEngine_DynamicArray_u8 LTENGINE_API LTEngine_Image_saveBufferBMP(const LTEngine_HImage handle);
+LTEngine_DynamicArray_u8 LTENGINE_API LTEngine_Image_saveBufferJPG(const LTEngine_HImage handle);
 
 #ifdef __cplusplus
 }

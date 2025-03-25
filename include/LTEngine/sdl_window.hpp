@@ -2,7 +2,7 @@
 #define _LTENGINE_SDL_WINDOW_HPP_
 #ifdef LTENGINE_SDL_ENABLE
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include <LTEngine/window.hpp>
 

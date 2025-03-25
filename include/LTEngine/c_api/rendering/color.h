@@ -16,28 +16,28 @@ typedef struct {
 } LTEngine_HColorA;
 
 typedef enum {
-    LTENGINE_COLOR_BLACK,
+    LTENGINE_COLOR_BLACK = 0,
     LTENGINE_COLOR_WHITE,
     LTENGINE_COLOR_RED,
     LTENGINE_COLOR_GREEN,
     LTENGINE_COLOR_BLUE,
-    LTENGINE_COLOR_YELOW,
+    LTENGINE_COLOR_YELLOW,
     LTENGINE_COLOR_CYAN
 } LTEngine_ColorDefaults;
 
 typedef enum {
+    LTENGINE_COLORA_CLEAR = 0,
     LTENGINE_COLORA_BLACK,
     LTENGINE_COLORA_WHITE,
     LTENGINE_COLORA_RED,
     LTENGINE_COLORA_GREEN,
     LTENGINE_COLORA_BLUE,
-    LTENGINE_COLORA_YELOW,
-    LTENGINE_COLORA_CYAN,
-    LTENGINE_COLORA_CLEAR
+    LTENGINE_COLORA_YELLOW,
+    LTENGINE_COLORA_CYAN
 } LTEngine_ColorADefaults;
 
 LTEngine_HColor LTENGINE_API LTEngine_Color(LTEngine_u8 r, LTEngine_u8 g, LTEngine_u8 b);
-LTEngine_HColor LTENGINE_API LTEngine_Color_default(LTEngine_ColorDefaults defaultConfig);
+LTEngine_HColor LTENGINE_API LTEngine_Color_default(LTEngine_ColorDefaults preset);
 void LTENGINE_API LTEngine_Color_free(LTEngine_HColor handle);
 
 LTEngine_u8 LTENGINE_API LTEngine_Color_r(const LTEngine_HColor handle);

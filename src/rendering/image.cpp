@@ -133,3 +133,33 @@ void Image::saveBMP(const char *filename) const {
 void Image::saveJPG(const char *filename) const {
     stbi_write_jpg(filename, m_width, m_height, 4, m_data.data(), 100);
 }
+
+std::vector<u8> Image::savePNG() const {
+    std::vector<u8> data;
+    stbi_write_png_to_func([](void *context, void *data, int size) {
+        auto array = (std::vector<u8>*)data;
+        array->resize(size);
+        std::memcpy(array->data(), (u8*)data, size);
+    }, &data, m_width, m_height, 4, m_data.data(), m_width * 4);
+    return data;
+}
+
+std::vector<u8> Image::saveBMP() const {
+    std::vector<u8> data;
+    stbi_write_bmp_to_func([](void *context, void *data, int size) {
+        auto array = (std::vector<u8>*)data;
+        array->resize(size);
+        std::memcpy(array->data(), (u8*)data, size);
+    }, &data, m_width, m_height, 4, m_data.data());
+    return data;
+}
+
+std::vector<u8> Image::saveJPG() const {
+    std::vector<u8> data;
+    stbi_write_jpg_to_func([](void *context, void *data, int size) {
+        auto array = (std::vector<u8>*)data;
+        array->resize(size);
+        std::memcpy(array->data(), (u8*)data, size);
+    }, &data, m_width, m_height, 4, m_data.data(), m_width * 4);
+    return data;
+}
