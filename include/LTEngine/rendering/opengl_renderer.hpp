@@ -1,4 +1,4 @@
-#ifndef _LTENGINE_RENDERING_OPENGL_RENDERER_HPP_
+#if !_LTENGINE_RENDERING_OPENGL_RENDERER_HPP_ && LTENGINE_COMPONENT_RENDERER_OPENGL
 #define _LTENGINE_RENDERING_OPENGL_RENDERER_HPP_
 
 #include <functional>
@@ -160,6 +160,7 @@ namespace LTEngine::Rendering {
 
 		u32 m_currentShaderProgram;
 		u32 m_defaultShaderProgram;
+		u32 m_defaultTextureShaderProgram;
 	};
 } // namespace LTEngine::Rendering
 

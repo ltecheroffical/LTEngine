@@ -12,13 +12,32 @@ extern const int windowKeyToSDLKeyLookup[];
 extern const int windowMouseButtonToSDLMouseButtonLookup[];
 
 
-SDLWindow::SDLWindow(const char *title, u32 width, u32 height) {
+SDLWindow::SDLWindow(const char *title, u32 width, u32 height, WindowGraphicsAPI api) {
 	if (!SDL_WasInit(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
 		SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 	}
 
-	if (!SDL_CreateWindowAndRenderer(title, width, height, 0, &m_window, &m_renderer)) {
-		throw std::runtime_error("Failed to create SDL window and/or renderer");
+	SDL_WindowFlags flags = 0;
+
+	switch (api) {
+		case WindowGraphicsAPI::Vulkan:
+			flags |= SDL_WINDOW_VULKAN;
+		default:
+			(void)((void*)0); // NOP
+	}
+
+	//if (!SDL_CreateWindowAndRenderer(title, width, height, SDL_WINDOW_VULKAN, &m_window, &m_renderer)) {
+	if (!(m_window = SDL_CreateWindow(title, width, height, flags))) {
+		throw std::runtime_error("Failed to create SDL window! " + std::string(SDL_GetError()));
+	}
+
+	switch (api) {
+		case WindowGraphicsAPI::SDL:
+			if (!(m_renderer = SDL_CreateRenderer(m_window, nullptr))) {
+				throw std::runtime_error("Failed to create SDL renderer! " + std::string(SDL_GetError()));
+			}
+		default:
+			(void)((void*)0); // NOP
 	}
 
 	m_rgbTexture = nullptr;

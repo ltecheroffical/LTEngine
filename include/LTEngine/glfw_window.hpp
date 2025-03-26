@@ -15,8 +15,10 @@ namespace LTEngine {
 		GLFWWindow(const char *title, u32 width, u32 height, const std::unordered_map<int, int> &hints);
 		~GLFWWindow() override;
 
+#ifdef LTENGINE_COMPONENT_RENDERER_OPENGL
 		// Loads OpenGL functions using GLAD
 		static void loadGL();
+#endif
 
 		void setSize(u32 width, u32 height) override;
 		void setPosition(u32 x, u32 y) override;

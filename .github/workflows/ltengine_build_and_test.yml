@@ -2,7 +2,7 @@ name: LTEngine Build + Test
 
 on:
   push:
-    branches: [ "main", "dev", "feature/*" ]
+    branches: [ "main", "dev", "feature/*", "fix/*" ]
   pull_request:
     branches: [ "dev" ]
   workflow_dispatch:

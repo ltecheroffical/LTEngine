@@ -29,3 +29,6 @@
 [submodule "thirdparty/LLGL"]
 	path = thirdparty/LLGL
 	url = https://github.com/LukasBanana/LLGL
+[submodule "thirdparty/embed"]
+	path = thirdparty/embed
+	url = https://github.com/batterycenter/embed

@@ -1,3 +1,7 @@
+#ifdef LTENGINE_COMPONENT_RENDERER_OPENGL
+
+#include <battery/embed.hpp>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -5,38 +9,7 @@
 #include <LTEngine/rendering/opengl_renderer.hpp>
 
 using namespace LTEngine;
-using namespace LTEngine::Rendering;
-
-const char *vertexShaderSource = "#version 330 core\n"
-                                 "layout(location = 0) in vec3 vPosition;\n"
-                                 "layout(location = 1) in vec4 vColor;\n"
-                                 "layout(location = 2) in vec2 vTexCoord;\n"
-                                 "\n"
-                                 "out vec4 fragColor;\n"
-                                 "out vec2 texCoord;\n"
-                                 "\n"
-                                 "void main() {\n"
-                                 "   gl_Position = vec4(vPosition, 1.f);\n"
-                                 "   fragColor = vColor;\n"
-                                 "   texCoord = vTexCoord;\n"
-                                 "}\0";
-
-const char *fragmentShaderSource = "#version 330 core\n"
-                                   "out vec4 finalColor;\n"
-                                   "\n"
-                                   "in vec4 fragColor;\n"
-                                   "in vec2 texCoord;\n"
-                                   "\n"
-                                   "uniform bool useTexture;\n"
-                                   "uniform sampler2D myTexture;\n"
-                                   "\n"
-                                   "void main() {\n"
-                                   "   if (useTexture) {\n"
-                                   "        finalColor = texture(myTexture, texCoord) * fragColor;\n"
-                                   "   } else {"
-                                   "        finalColor = fragColor;\n"
-                                   "   }\n"
-                                   "}\0";
+using namespace LTEngine::Rendering;;
 
 const GLenum ZDepthFunc = GL_GEQUAL; // Simulates Z order, higher is closer
 
@@ -56,19 +29,40 @@ OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> swit
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	u32 vertexShader = compileShader(vertexShaderSource, GL_VERTEX_SHADER);
-	u32 fragmentShader = compileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
+	auto vertexShaderData = b::embed<"resources/opengl/default_shader.vs">().vec();
+	auto fragmentShaderData = b::embed<"resources/opengl/default_shader.fs">().vec();
+	auto fragmentShaderTextureData = b::embed<"resources/opengl/default_shader_texture.fs">().vec();
+
+	vertexShaderData.push_back(0x00);
+	fragmentShaderData.push_back(0x00);
+	fragmentShaderTextureData.push_back(0x00);
+
+	u32 vertexShader = compileShader((const char *)vertexShaderData.data(), GL_VERTEX_SHADER);
+	u32 fragmentShader = compileShader((const char *)fragmentShaderData.data(), GL_FRAGMENT_SHADER);
+	u32 fragmentShaderTexture = compileShader((const char *)fragmentShaderTextureData.data(), GL_FRAGMENT_SHADER);
 
 	m_defaultShaderProgram = glCreateProgram();
 	glAttachShader(m_defaultShaderProgram, vertexShader);
 	glAttachShader(m_defaultShaderProgram, fragmentShader);
 	glLinkProgram(m_defaultShaderProgram);
 
+	m_defaultTextureShaderProgram = glCreateProgram();
+	glAttachShader(m_defaultTextureShaderProgram, vertexShader);
+	glAttachShader(m_defaultTextureShaderProgram, fragmentShaderTexture);
+	glLinkProgram(m_defaultTextureShaderProgram);
+
 	i32 success;
 	glGetProgramiv(m_defaultShaderProgram, GL_LINK_STATUS, &success);
 	if (!success) {
 		char infoLog[512];
 		glGetProgramInfoLog(m_defaultShaderProgram, 512, NULL, infoLog);
+		throw std::runtime_error(infoLog);
+	}
+
+	glGetProgramiv(m_defaultTextureShaderProgram, GL_LINK_STATUS, &success);
+	if (!success) {
+		char infoLog[512];
+		glGetProgramInfoLog(m_defaultTextureShaderProgram, 512, NULL, infoLog);
 		throw std::runtime_error(infoLog);
 	}
 
@@ -88,6 +82,7 @@ OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> swit
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	glDeleteShader(fragmentShaderTexture);
 
 	resetShader();
 }
@@ -628,3 +623,5 @@ void OpenGLRenderer::switchContext() {
 	}
 	m_switchContextCallback();
 }
+
+#endif

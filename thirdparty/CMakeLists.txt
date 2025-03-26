@@ -16,10 +16,14 @@ if (LTENGINE_COMPONENT_GLFW)
 endif()
 
 # GPU Graphics
-add_subdirectory(glad)
-if (LTENGINE_COMPONENT_RENDERER_LLGL)
-    add_subdirectory(LLGL)
-    target_link_libraries(${PROJECT_NAME} PUBLIC LLGL)
+if (LTENGINE_COMPONENT_RENDERER_OPENGL)
+    add_subdirectory(glad)
+    target_link_libraries(${PROJECT_NAME} PUBLIC glad)
+endif()
+if (LTENGINE_COMPONENT_RENDERER_VULKAN)
+    add_subdirectory(vkbootstrap)
+    find_package(Vulkan REQUIRED FATAL_ERROR)
+    target_link_libraries(${PROJECT_NAME} PUBLIC vk-bootstrap::vk-bootstrap Vulkan::Vulkan)
 endif()
 
 # Math
@@ -47,9 +51,6 @@ if (LTENGINE_BUILD_WITH_SDL)
 endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC
-    # GPU Graphics
-    glad
-
     # Math
     glm::glm
 

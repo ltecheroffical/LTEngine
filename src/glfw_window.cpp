@@ -10,7 +10,9 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #endif
 
+#ifdef LTENGINE_COMPONENT_RENDERER_OPENGL
 #include <glad/glad.h>
+#endif
 
 #include <LTEngine/glfw_window.hpp>
 
@@ -27,6 +29,9 @@ extern const int windowMouseButtonToGLFWMouseButtonLookup[3];
 
 
 GLFWWindow::GLFWWindow(const char *title, u32 width, u32 height) {
+#ifndef LTENGINE_COMPONENT_RENDERER_OPENGL
+	glfwInitHint(GLFW_CLIENT_API, GLFW_NO_API);
+#endif
 	glfwInit();
 
 	m_glfwWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
@@ -66,11 +71,13 @@ GLFWWindow::~GLFWWindow() {
 }
 
 
+#ifdef LTENGINE_COMPONENT_RENDERER_OPENGL
 void GLFWWindow::loadGL() {
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		throw std::runtime_error("Failed to load OpenGL functions");
 	}
 }
+#endif
 
 
 void GLFWWindow::setSize(u32 width, u32 height) {

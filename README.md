@@ -49,7 +49,9 @@ LTEngine is designed to support both **game cores** and **normal games**, which 
 
 - **`main` Branch**: The stable branch, used for releases. This branch should always compile without warnings.
 - **`dev` Branch**: The development branch, where experimental changes are introduced. It may be unstable.
+- **`experiment` Branch**: This branch is where all things that may or may not work go to, do not expect stuff here to always compile.
 - **Feature Branches**: Named using `feature/[feature-name]`. Commits should be prefixed with `feat: ` and may not always compile.
+- **Fix Branches**: Named using `fix/[issue]`. These branches typically are susposed to be fix stuff, these branches may not always compile.
 
 ---
 

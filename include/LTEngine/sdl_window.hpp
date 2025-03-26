@@ -9,7 +9,12 @@
 namespace LTEngine {
 	class LTENGINE_API SDLWindow : public Window {
 	public:
-		SDLWindow(const char *title, u32 width, u32 height);
+		enum class WindowGraphicsAPI {
+			SDL = 0,
+			Vulkan
+		};
+
+		SDLWindow(const char *title, u32 width, u32 height, WindowGraphicsAPI api);
 		~SDLWindow() override;
 
 		void setSize(u32 width, u32 height) override;
