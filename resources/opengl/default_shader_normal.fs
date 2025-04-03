@@ -1,7 +1,5 @@
 #version 330 core
 
-uniform sampler2D myTexture;
-
 vec4 fragment(vec2 fragPosition, vec4 fragColor, vec2 texCoord) {
-    return texture(myTexture, texCoord) * fragColor;
+    return fragColor;
 }

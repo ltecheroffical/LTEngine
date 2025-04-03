@@ -15,17 +15,6 @@ namespace LTEngine::Rendering {
 		OpenGLRenderer(u32 width, u32 height, std::function<void()> switchContextCallback);
 		~OpenGLRenderer() override;
 
-		struct OpenGLMessage {
-			GLenum source;
-			std::string stringSource;
-			GLenum type;
-			std::string stringType;
-			GLenum severity;
-			std::string stringSeverity;
-
-			u32 id;
-			std::string msg;
-		};
 
 		void setNearestFilter() {
 			m_nearestFilter = true;
@@ -34,6 +23,7 @@ namespace LTEngine::Rendering {
 			m_nearestFilter = false;
 		}
 
+
 		void resize(u32 width, u32 height);
 
 		void clear(Color color) override;
@@ -41,6 +31,7 @@ namespace LTEngine::Rendering {
 
 		void setPixel(Math::Vec2i position, Color color) override;
 		void setPixel(Math::Vec2i position, ColorA color) override;
+		void getPixelPromise(Math::Vec2i position, std::function<void(Color color)> pixelFunction);
 		Color getPixel(Math::Vec2i position) override;
 
 		void drawRect(Shapes::Rect rect, ColorA color, RendererFlags flags) override;
@@ -59,17 +50,6 @@ namespace LTEngine::Rendering {
 		void useShader(u32 vertexShader, u32 fragmentShader);
 		void resetShader();
 
-		/**
-		 * @brief Get any messags OpenGL might have
-		 *
-		 * @returns True if there are any messges
-		 *
-		 * @details
-		 * Currently this function is unused, in a later version, the messages will be used for debugging
-		 * but with that comes the fact the `OpenGLMessage` structure will be changed.
-		 */
-		bool getMessage(OpenGLMessage *message);
-
 	private:
 		LTENGINE_PACK_START() struct Vertex {
 			f32 x, y, z;
@@ -82,9 +62,9 @@ namespace LTEngine::Rendering {
 				None = 0,
 
 				SetPixel,
+				GetPixelPromise,
 
 				Clear,
-				ClearA,
 
 				Rect,
 				Circle,
@@ -94,26 +74,57 @@ namespace LTEngine::Rendering {
 				Image,
 			} opType = RenderOpType::None;
 
-			ColorA color = ColorA::Clear;
 			RendererFlags flags = 0;
-			u16 zOrder;
+			u16 zOrder = 0;
+
+			Shapes::Polygon polygon = {};
+			std::function<void(Color color)> function = nullptr;
+
+			union DrawPayload {
+				struct ClearData {
+					ColorA color = ColorA::Clear;
+				} clear;
+
+				struct PixelModify {
+					Math::Vec2i position = {};
+					ColorA color = ColorA::Clear;
+				} setPixel;
+
+				struct GetPixelPromise {
+					Math::Vec2i position = {};
+				} getPixelPromise;
 
 
-			Math::Vec2i dataPosition = Math::Vec2i::Zero;
-			Math::Vec2 dataScale = Math::Vec2::One;
-			f32 dataRotation = 0.f;
+				struct DrawRect {
+					Shapes::Rect rect = {0, 0,0 ,0};
+					ColorA color = ColorA::Clear;
+				} drawRect;
 
-			Shapes::Recti dataRect = {0, 0, 0, 0};
-			Shapes::Circle dataCircle = {{0, 0}, 0.f};
-			Shapes::Polygon dataPolygon = {{}};
+				struct DrawCircle {
+					Shapes::Circle circle = {};
+					ColorA color = ColorA::Clear;
+				} drawCircle;
 
-			Math::Vec2 dataPointA = Math::Vec2::Zero;
-			Math::Vec2 dataPointB = Math::Vec2::Zero;
-			u16 dataThickness = 0;
 
-			const Image *dataImage = nullptr;
-			bool dataImageNearestFilter = false;
-			u32 dataCamId = 0;
+				struct DrawLine {
+					Math::Vec2 a = {};
+					Math::Vec2 b = {};
+					u16 thickness = 1;
+					ColorA color = ColorA::Clear;
+				} drawLine;
+
+				struct DrawPoints {
+					ColorA color = ColorA::Clear;
+				} drawPoints;
+
+				struct DrawImage {
+					const Image *image = nullptr;
+					Math::Vec2i position = {};
+					Shapes::Recti region = {0, 0, 0, 0};
+					f32 rotation = 0.f;
+					ColorA color = ColorA::Clear;
+				} drawImage;
+			} payload;
 		};
 
 		void switchContext();
@@ -141,12 +152,12 @@ namespace LTEngine::Rendering {
 
 		const u32 MAX_IMAGE_LIFETIME = 5000;
 
-		std::queue<OpenGLMessage> m_messageQueue;
-
 		std::queue<RenderQueueOp> m_renderOpQueue;
 
 		std::unordered_map<const Image *, u32> m_imageCacheLifetime;
 		std::unordered_map<const Image *, u32> m_imageCache;
+
+		std::unordered_map<u32, u32> m_shaderCache;
 
 		std::function<void()> m_switchContextCallback = nullptr;
 
@@ -160,7 +171,6 @@ namespace LTEngine::Rendering {
 
 		u32 m_currentShaderProgram;
 		u32 m_defaultShaderProgram;
-		u32 m_defaultTextureShaderProgram;
 	};
 } // namespace LTEngine::Rendering
 

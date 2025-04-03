@@ -10,6 +10,10 @@
 
 namespace LTEngine::Shapes {
 	struct LTENGINE_API Polygon : public Shape {
+		~Polygon() {
+			points.clear();
+		}
+
 		std::vector<Math::Vec2> points;
 	};
 } // namespace LTEngine::Shapes

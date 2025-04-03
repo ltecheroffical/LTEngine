@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(pong_example LANGUAGES CXX)
+project(test_app LANGUAGES CXX)
 
 file(GLOB_RECURSE CXX_SOURCE_FILES CONFIGURE_DEPENDS 
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)

@@ -25,7 +25,6 @@ set(POSSIBLE_COMPONENTS
     LTENGINE_COMPONENT_PHYSICS_BOX2D 
     LTENGINE_COMPONENT_RENDERER_SOFTWARE 
     LTENGINE_COMPONENT_RENDERER_OPENGL
-    LTENGINE_COMPONENT_RENDERER_VULKAN
     LTENGINE_COMPONENT_AUDIO_SOLOUD
 )
 
@@ -38,7 +37,6 @@ option(LTENGINE_COMPONENT_PHYSICS_BOX2D "The Box2D physics system" ON)
 
 option(LTENGINE_COMPONENT_RENDERER_SOFTWARE "The software renderer" ON)
 option(LTENGINE_COMPONENT_RENDERER_OPENGL "The OpenGL renderer" ON)
-option(LTENGINE_COMPONENT_RENDERER_VULKAN "The Vulkan renderer" ON)
 
 option(LTENGINE_COMPONENT_AUDIO_SOLOUD "The SoLoud audio engine" ON)
 
@@ -85,7 +83,9 @@ if (NOT TARGET ${PROJECT_NAME})
     add_subdirectory(thirdparty/embed)
     b_embed(${PROJECT_NAME} resources/opengl/default_shader.vs)
     b_embed(${PROJECT_NAME} resources/opengl/default_shader.fs)
+    b_embed(${PROJECT_NAME} resources/opengl/default_shader_normal.fs)
     b_embed(${PROJECT_NAME} resources/opengl/default_shader_texture.fs)
+    b_embed(${PROJECT_NAME} resources/opengl/default_shader_circle.fs)
 endif()
 
 if (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID STREQUAL "Clang")
@@ -111,6 +111,11 @@ endif()
 # Examples
 if (LTENGINE_BUILD_EXAMPLES)
     add_subdirectory(examples)
+endif()
+
+# Dev
+if (LTENGINE_DEV_BUILD)
+    add_subdirectory(test_app)
 endif()
 
 
