@@ -15,9 +15,65 @@ using namespace LTEngine::Rendering;
 
 const GLenum ZDepthFunc = GL_GEQUAL; // Simulates Z order, higher is closer
 
-OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> switchContextCallback) {
+OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> switchContextCallback, Logger *logger) {
 	m_switchContextCallback = switchContextCallback;
 	switchContext();
+
+	m_logger = logger;
+
+	int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); 
+		glDebugMessageCallback([](
+			GLenum source, 
+			GLenum type, 
+			unsigned int id, 
+			GLenum severity, 
+			GLsizei length, 
+			const char *message, 
+			const void *userParam) {
+			Logger *logger = (Logger*)(*(Logger**)userParam);
+
+			if ((Logger**)userParam == nullptr) {
+				return;
+			}
+
+			if (id == 131169 || id == 131185 || id == 131218 || id == 131204) return;
+
+			logger->error("OPENGL MESSAGE");
+			logger->error("Message: %s", message);
+
+			switch (source) {
+				case GL_DEBUG_SOURCE_API:            logger->error("Source: API"); break;
+				case GL_DEBUG_SOURCE_WINDOW_SYSTEM:  logger->error("Source: Window System"); break;
+				case GL_DEBUG_SOURCE_SHADER_COMPILER:logger->error("Source: Shader Compiler"); break;
+				case GL_DEBUG_SOURCE_THIRD_PARTY:    logger->error("Source: Third Party"); break;
+				case GL_DEBUG_SOURCE_APPLICATION:    logger->error("Source: Application"); break;
+				case GL_DEBUG_SOURCE_OTHER:          logger->error("Source: Other"); break;
+			} logger->error("");
+		
+			switch (type) {
+				case GL_DEBUG_TYPE_ERROR:              logger->error("Type: Error"); break;
+				case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:logger->error("Type: Deprecated Behaviour"); break;
+				case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: logger->error("Type: Undefined Behaviour"); break; 
+				case GL_DEBUG_TYPE_PORTABILITY:        logger->error("Type: Portability"); break;
+				case GL_DEBUG_TYPE_PERFORMANCE:        logger->error("Type: Performance"); break;
+				case GL_DEBUG_TYPE_MARKER:             logger->error("Type: Marker"); break;
+				case GL_DEBUG_TYPE_PUSH_GROUP:         logger->error("Type: Push Group"); break;
+				case GL_DEBUG_TYPE_POP_GROUP:          logger->error("Type: Pop Group"); break;
+				case GL_DEBUG_TYPE_OTHER:              logger->error("Type: Other"); break;
+			}
+			
+			switch (severity) {
+				case GL_DEBUG_SEVERITY_HIGH:           logger->error("Severity: high"); break;
+				case GL_DEBUG_SEVERITY_MEDIUM:         logger->error("Severity: medium"); break;
+				case GL_DEBUG_SEVERITY_LOW:            logger->error("Severity: low"); break;
+				case GL_DEBUG_SEVERITY_NOTIFICATION:   logger->error("Severity: notification"); break;
+			} logger->error("");
+		}, &m_logger);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+	}
 
 	glViewport(0, 0, width, height);
 	m_width = width;
@@ -70,18 +126,13 @@ OpenGLRenderer::OpenGLRenderer(u32 width, u32 height, std::function<void()> swit
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
+	glUseProgram(m_defaultShaderProgram);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, x));
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, r));
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, u));
 	glEnableVertexAttribArray(2);
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-	glDeleteShader(fragmentShaderNormal);
-	glDeleteShader(fragmentShaderTexture);
-	glDeleteShader(fragmentShaderCircle);
 
 	resetShader();
 }
@@ -276,7 +327,7 @@ void OpenGLRenderer::flush() {
 	};
 
 	u16 order = 0;
-	VertexData currentVertex = {.preDraw = [this](){}, .vertex = {}};
+	VertexData currentVertex = {.preDraw = nullptr, .vertex = {}};
 	std::vector<VertexData> vertexes;
 
 	auto drawVertexes = [this, &vertexes, &currentVertex]() {
@@ -294,6 +345,10 @@ void OpenGLRenderer::flush() {
 
 		if (vertex.preDraw == nullptr) {
 			vertex.preDraw = defaultVertexPreDraw;
+		}
+
+		if (currentVertex.preDraw == nullptr) {
+			currentVertex = vertex;
 		}
 
 		if (currentVertex.mode != vertex.mode ||\
@@ -663,10 +718,6 @@ u32 OpenGLRenderer::compileShader(const char *source, GLenum type) {
 	}
 	m_shaderCache[shaderHash] = shader;
 	return shader;
-}
-
-void OpenGLRenderer::deleteShader(u32 shader) {
-	glDeleteShader(shader);
 }
 
 void OpenGLRenderer::useShader(u32 vertexShader, u32 fragmentShader) {

@@ -7,12 +7,13 @@
 #include <glad/glad.h>
 
 #include <LTEngine/rendering/renderer.hpp>
+#include <LTEngine/logger.hpp>
 
 
 namespace LTEngine::Rendering {
 	class LTENGINE_API OpenGLRenderer : public Renderer {
 	public:
-		OpenGLRenderer(u32 width, u32 height, std::function<void()> switchContextCallback);
+		OpenGLRenderer(u32 width, u32 height, std::function<void()> switchContextCallback, Logger *logger = nullptr);
 		~OpenGLRenderer() override;
 
 
@@ -45,8 +46,11 @@ namespace LTEngine::Rendering {
 
 		void flush();
 
+		void setLogger(Logger *logger) {
+			m_logger = logger;
+		}
+
 		u32 compileShader(const char *source, GLenum shaderType);
-		void deleteShader(u32 shader);
 		void useShader(u32 vertexShader, u32 fragmentShader);
 		void resetShader();
 
@@ -162,6 +166,8 @@ namespace LTEngine::Rendering {
 		std::function<void()> m_switchContextCallback = nullptr;
 
 		bool m_nearestFilter : 1 = false;
+
+		Logger *m_logger;
 
 		u32 m_width;
 		u32 m_height;
