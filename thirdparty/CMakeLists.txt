@@ -46,10 +46,12 @@ endif()
 add_subdirectory(stb_image)
 add_subdirectory(stb_truetype)
 
-# Linking
-if (LTENGINE_BUILD_WITH_SDL)
-endif()
+# OpenSSL
+find_package(OpenSSL REQUIRED)
 
+target_link_libraries(LTEngine PRIVATE OpenSSL::Crypto)
+
+# Linking
 target_link_libraries(${PROJECT_NAME} PUBLIC
     # Math
     glm::glm

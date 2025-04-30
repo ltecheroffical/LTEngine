@@ -25,7 +25,7 @@ void LTEngine_Shape_setY(LTEngine_HShape handle, LTEngine_f32 y) {
     ((LTEngine::Shapes::Shape*)handle.handle.ptr)->y = y;
 }
 
-void LTEngine_Shape_setRotation(LTEngine_HShape handle, LTEngine_f32 rotation) {
+void LTEngine_Shape_setRotation(LTEngine_HShape handle, LTEngine_i32 rotation) {
     ((LTEngine::Shapes::Shape*)handle.handle.ptr)->rotation = rotation;
 }
 

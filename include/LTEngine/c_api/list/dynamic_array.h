@@ -73,6 +73,9 @@
     } \
     
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 LTENGINE_DEFINE_DYNAMIC_ARRAY(LTEngine_u8,  u8);
 LTENGINE_DEFINE_DYNAMIC_ARRAY(LTEngine_u16, u16);
@@ -83,6 +86,10 @@ LTENGINE_DEFINE_DYNAMIC_ARRAY(LTEngine_i8,  i8);
 LTENGINE_DEFINE_DYNAMIC_ARRAY(LTEngine_i16, i16);
 LTENGINE_DEFINE_DYNAMIC_ARRAY(LTEngine_i32, i32);
 LTENGINE_DEFINE_DYNAMIC_ARRAY(LTEngine_i64, i64);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 #endif

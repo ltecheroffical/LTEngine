@@ -4,7 +4,7 @@
 #include <LTEngine/shapes/circle.hpp>
 
 
-LTEngine_HCircle LTEngine_Circle(LTEngine_f32 x, LTEngine_f32 y) {
+LTEngine_HCircle LTEngine_Circle(LTEngine_f32 x, LTEngine_f32 y, LTEngine_f32 radius) {
     auto circle=  new LTEngine::Shapes::Circle();
     circle->x = x;
     circle->y = y;
