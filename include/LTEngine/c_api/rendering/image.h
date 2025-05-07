@@ -1,6 +1,6 @@
-#ifndef _LTENGINE_C_API_IMAGE_H_I
-#ifdef LTENGINE_COMPONENT_C_API
+#ifndef _LTENGINE_C_API_IMAGE_H_
 #define _LTENGINE_C_API_IMAGE_H_
+#ifdef LTENGINE_COMPONENT_C_API
 
 #include <stddef.h>
 

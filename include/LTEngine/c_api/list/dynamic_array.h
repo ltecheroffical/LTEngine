@@ -1,6 +1,6 @@
 #ifndef _LTENGINE_C_API_DYNAMIC_ARRAY_
-#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_DYNAMIC_ARRAY_
+#ifdef LTENGINE_COMPONENT_C_API
 
 #include <stddef.h>
 #include <stdlib.h>

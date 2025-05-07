@@ -1,6 +1,6 @@
 #ifndef _LTENGINE_C_API_RENDERER_H_
-#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_RENDERER_H_
+#ifdef LTENGINE_COMPONENT_C_API
 
 #include <LTEngine/common/types/inttypes.h>
 #include <LTEngine/c_api/common/ctypes.h>
@@ -105,7 +105,6 @@ LTEngine_f32 LTENGINE_API LTEngine_Renderer_screenToWorldRotation(const LTEngine
 LTEngine_HVec2 LTENGINE_API LTEngine_Renderer_getWorldScale(const LTEngine_HRenderer handle);
 
 LTEngine_u16 LTENGINE_API LTEngine_Renderer_getZOrder(const LTEngine_HRenderer handle);
-bool LTENGINE_API LTEngine_Renderer_isIrisMode(const LTEngine_HRenderer handle);
 
 LTEngine_u32 LTENGINE_API LTEngine_Renderer_getCurrentCamera(const LTEngine_HRenderer handle);
 bool LTENGINE_API LTEngine_Renderer_isCameraActive(const LTEngine_HRenderer handle);

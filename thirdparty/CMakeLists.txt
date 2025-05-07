@@ -22,7 +22,7 @@ if (LTENGINE_COMPONENT_RENDERER_OPENGL)
 endif()
 if (LTENGINE_COMPONENT_RENDERER_VULKAN)
     add_subdirectory(vkbootstrap)
-    find_package(Vulkan REQUIRED FATAL_ERROR)
+    find_package(Vulkan REQUIRED)
     target_link_libraries(${PROJECT_NAME} PUBLIC vk-bootstrap::vk-bootstrap Vulkan::Vulkan)
 endif()
 

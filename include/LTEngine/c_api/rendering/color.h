@@ -1,6 +1,6 @@
 #ifndef _LTENGINE_C_API_COLOR_H_
-#ifdef LTENGINE_COMPONENT_C_API
 #define _LTENGINE_C_API_COLOR_H_
+#ifdef LTENGINE_COMPONENT_C_API
 
 #include <LTEngine/c_api/common/ctypes.h>
 #include <LTEngine/common/compiler_utils.h>
