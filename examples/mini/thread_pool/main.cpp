@@ -1,29 +1,12 @@
 #include <chrono>
 #include <iostream>
 
-#include <LTEngine/logger.hpp>
-#include <LTEngine/random/platform_random.hpp>
-#include <LTEngine/rendering/software_renderer.hpp>
-#include <LTEngine/thread_pool.hpp>
-
-class RandomRectangleShader : public LTEngine::Rendering::CPUShader {
-public:
-	RandomRectangleShader() : m_random({}) {};
-	~RandomRectangleShader() override = default;
-
-	void fragment(LTEngine::Rendering::CPUShaderIO *io) override {
-		io->color.r = m_random.next_u8();
-		io->color.g = m_random.next_u8();
-		io->color.b = m_random.next_u8();
-	}
-
-private:
-	LTEngine::Random::PlatformRandom m_random;
-};
-
+#include <LTCore/logger.hpp>
+#include <LTCore/random/platform_random.hpp>
+#include <LTCore/thread_pool.hpp>
 
 int main() {
-	const LTEngine::u8 sumArray[] = {
+	const LTCore::u8 sumArray[] = {
 	    42,  123, 80,  47,  126, 32,  86,  68,  19,  77,  93,  111, 25, 36,  91,  71,  56,  116, 30,  52,  8,   33,  115, 4,   53,
 	    85,  103, 79,  72,  109, 49,  112, 128, 1,   50,  20,  121, 54, 118, 100, 88,  101, 107, 110, 114, 58,  16,  92,  29,  27,
 	    9,   14,  38,  113, 62,  35,  67,  70,  59,  26,  106, 44,  64, 46,  74,  7,   94,  122, 99,  102, 24,  15,  90,  13,  55,
@@ -47,20 +30,18 @@ int main() {
 	    105, 1,   51,  65,  110, 93,  14,  30,  26,  109, 9,   18};
 
 
-	LTEngine::Logger logger;
-	logger.setLogOutput(LTEngine::Logger::LogOutput::Stdout);
+	LTCore::Logger logger;
+	logger.setLogOutput(LTCore::Logger::LogOutput::Stdout);
 
-	LTEngine::u16 sumResults = 0;
-	LTEngine::u32 timeToWrapU32InNs = 0;
-	LTEngine::Rendering::SoftwareRenderer renderer(1920, 1080);
-	RandomRectangleShader shader; // We have to load the shader now since otherwise it would get destroyed and UAFed
+	LTCore::u16 sumResults = 0;
+	LTCore::u32 timeToWrapU32InNs = 0;
 
 	// The context will destroy the thread pool asking it to wait
 	{
-		LTEngine::ThreadPool threadPool(4);
+		LTCore::ThreadPool threadPool(4);
 		threadPool.enqueue([&sumResults, &logger, sumArray]() {
 			logger.info("Started array summing");
-			for (LTEngine::u16 i = 0; i < sizeof(sumArray) / sizeof(sumArray[0]); i++) {
+			for (LTCore::u16 i = 0; i < sizeof(sumArray) / sizeof(sumArray[0]); i++) {
 				sumResults += sumArray[i];
 			}
 			logger.info("Finished summing up the array");
@@ -71,12 +52,12 @@ int main() {
 
 			std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 
-			LTEngine::u32 num = 1;
-			LTEngine::u8 lastPercent = 0;
+			LTCore::u32 num = 1;
+			LTCore::u8 lastPercent = 0;
 
 			while (num != 0) {
-				LTEngine::f32 percent = (LTEngine::f32)num / (LTEngine::f32)std::numeric_limits<LTEngine::u32>::max();
-				if ((LTEngine::u32)(percent * 100.f) > lastPercent && (LTEngine::u32)(percent * 100.f) % 5 == 0) {
+				LTCore::f32 percent = (LTCore::f32)num / (LTCore::f32)std::numeric_limits<LTCore::u32>::max();
+				if ((LTCore::u32)(percent * 100.f) > lastPercent && (LTCore::u32)(percent * 100.f) % 5 == 0) {
 					std::cout << "Wrapping u32: " << percent * 100.f << "%" << std::endl;
 					lastPercent = percent * 100.f;
 				}
@@ -92,52 +73,21 @@ int main() {
 		});
 
 
-		for (LTEngine::u8 i = 0; i < 4; i++) {
+		for (LTCore::u8 i = 0; i < 4; i++) {
 			threadPool.enqueue([i, &logger]() {
-				LTEngine::Random::PlatformRandom random({});
-				LTEngine::u8 sleepTime = random.next_u8() % (15 - 1) + 1;
+				LTCore::Random::PlatformRandom random({});
+				LTCore::u8 sleepTime = random.next_u8() % (15 - 1) + 1;
 
-				logger.info("[Sleeper #%u] Started for %us", (LTEngine::u16)i, (LTEngine::u16)sleepTime);
+				logger.info("[Sleeper #%u] Started for %us", (LTCore::u16)i, (LTCore::u16)sleepTime);
 
 				std::this_thread::sleep_for(std::chrono::seconds(sleepTime));
 
-				logger.info("[Sleeper #%u] Finished", (LTEngine::u16)i);
+				logger.info("[Sleeper #%u] Finished", (LTCore::u16)i);
 			});
 		}
-
-		// Build a simple scene using the CPU
-		LTEngine::Rendering::SoftwareRenderer renderer(1920, 1080);
-		renderer.setScreenOnly();
-		renderer.clear(LTEngine::Rendering::Color::Cyan);
-
-		renderer.drawRect(LTEngine::Shapes::Rect(100, 100, 500, 500), LTEngine::Rendering::ColorA::Red);
-		renderer.drawCircle(LTEngine::Shapes::Circle{{465 + 250, 318 + 250}, 250}, LTEngine::Rendering::ColorA::Blue, LTEngine::Rendering::Renderer::FLAG_FILL);
-
-		renderer.setShader(&shader);
-		renderer.drawRect(LTEngine::Shapes::Rect(1224, 147, 585, 375), LTEngine::Rendering::ColorA::Green);
-		renderer.clearShader();
-
-		threadPool.enqueue([&renderer]() {
-			renderer.processAll();
-		});
 	}
 
 	std::cout << "Sum: " << sumResults << std::endl;
 	std::cout << "Time to wrap u32: " << timeToWrapU32InNs << "ns" << std::endl;
-
-	std::cout << "Save the rendered CPU scene? (y/n) ";
-	std::string save = "";
-	std::getline(std::cin, save);
-	if (save == "y") {
-		std::string path = "";
-		std::cout << "Please enter a PNG path: ";
-		std::getline(std::cin, path);
-
-		std::vector<LTEngine::Rendering::Color> screen(renderer.getScreenData(nullptr));
-		renderer.getScreenData(screen.data());
-
-		LTEngine::Rendering::Image image(screen.data(), 1920, 1080);
-		image.savePNG(path.c_str());
-	}
 	return 0;
 }

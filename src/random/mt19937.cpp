@@ -1,8 +1,8 @@
-#include <LTEngine/random/mt19937.hpp>
+#include <LTCore/random/mt19937.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::Random;
+using namespace LTCore;
+using namespace LTCore::Random;
 
 
 MT19937::MT19937() {

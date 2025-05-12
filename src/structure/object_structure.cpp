@@ -1,8 +1,8 @@
-#include <LTEngine/structure/object_structure.hpp>
+#include <LTCore/structure/object_structure.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::Object;
+using namespace LTCore;
+using namespace LTCore::Object;
 
 
 ObjectStructure::ObjectStructure() {
@@ -47,16 +47,9 @@ void ObjectStructure::update(f32 delta) {
 	for (u32 i = 0; i < m_objects.size(); i++) { m_objects[i]->update(delta); }
 }
 
-void ObjectStructure::render(LTEngine::Rendering::Renderer *renderer) {
+void ObjectStructure::render() {
 	for (auto &object : m_objects) {
-		renderer->resetTransform();
-		renderer->setPositionOffset(object->getPosition());
-		renderer->setRotationOffset(object->getRotation());
-		renderer->setScaleFactor(object->getScale());
-		renderer->setZOrder(0);
-		renderer->setOffsetsApplied();
-
-		object->render(renderer);
+		object->render();
 	}
 }
 
@@ -77,11 +70,6 @@ void ObjectStructure::clear() {
 }
 
 
-void ObjectStructure::setClearColor(Rendering::Color color) {
-	m_clearColor = color;
-}
-
-
 u32 ObjectStructure::addObject(std::unique_ptr<Object> object) {
 	u32 id = m_nextId++;
 	object->setId(id);
@@ -90,24 +78,18 @@ u32 ObjectStructure::addObject(std::unique_ptr<Object> object) {
 	return id;
 }
 
-u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec2 position) {
+u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec3 position) {
 	object->setPosition(position);
 	return addObject(std::move(object));
 }
 
-u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec2 position, f32 rotation) {
+u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec3 position, Math::Vec3 rotation) {
 	object->setPosition(position);
 	object->setRotation(rotation);
 	return addObject(std::move(object));
 }
 
-u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec2 position, Math::Vec2 scale) {
-	object->setPosition(position);
-	object->setScale(scale);
-	return addObject(std::move(object));
-}
-
-u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec2 position, f32 rotation, Math::Vec2 scale) {
+u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec3 position, Math::Vec3 rotation, Math::Vec3 scale) {
 	object->setPosition(position);
 	object->setRotation(rotation);
 	object->setScale(scale);

@@ -4,39 +4,39 @@
 #include <arpa/inet.h>
 #endif
 
-#include <LTEngine/hash.hpp>
+#include <LTCore/hash.hpp>
 
-#include <LTEngine/assets/ltbundle_asset_manager.hpp>
+#include <LTCore/assets/ltbundle_asset_manager.hpp>
 
-#include <LTEngine/exceptions/exc_already_exists.hpp>
-#include <LTEngine/exceptions/exc_corrupt_data.hpp>
-#include <LTEngine/exceptions/exc_invalid_argument.hpp>
-#include <LTEngine/exceptions/exc_invalid_data.hpp>
-#include <LTEngine/exceptions/exc_not_found.hpp>
+#include <LTCore/exceptions/exc_already_exists.hpp>
+#include <LTCore/exceptions/exc_corrupt_data.hpp>
+#include <LTCore/exceptions/exc_invalid_argument.hpp>
+#include <LTCore/exceptions/exc_invalid_data.hpp>
+#include <LTCore/exceptions/exc_not_found.hpp>
 
 
-using namespace LTEngine;
+using namespace LTCore;
 
 
 const u16 LTBUNDLE_VERSION = 1;
 const char LTBUNDLE_MAGIC[4] = {'L', 'T', 'B', 'N'};
 
 
-LTENGINE_PACK_START() struct LTBundleHeader {
+LTCORE_PACK_START() struct LTBundleHeader {
 	char magic[4] = {LTBUNDLE_MAGIC[0], LTBUNDLE_MAGIC[1], LTBUNDLE_MAGIC[2], LTBUNDLE_MAGIC[3]};
 	u16 version = LTBUNDLE_VERSION;
 
 	u32 assetCount = 0;
-} LTENGINE_PACK_END();
+} LTCORE_PACK_END();
 
-LTENGINE_PACK_START() struct LTBundleAssetEntry {
+LTCORE_PACK_START() struct LTBundleAssetEntry {
 	u32 pathSize;
 	u64 size;
 	u32 checksum;
-} LTENGINE_PACK_END();
+} LTCORE_PACK_END();
 
 
-LTBundleAssetManager::LTBundleAssetManager(LTEngine::OS::File *file) : m_file(file) {
+LTBundleAssetManager::LTBundleAssetManager(LTCore::OS::File *file) : m_file(file) {
 }
 
 

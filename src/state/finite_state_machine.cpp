@@ -1,9 +1,9 @@
-#include <LTEngine/state/finite_state_machine.hpp>
-#include <LTEngine/state/fsm_state.hpp>
+#include <LTCore/state/finite_state_machine.hpp>
+#include <LTCore/state/fsm_state.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::State;
+using namespace LTCore;
+using namespace LTCore::State;
 
 
 void FiniteStateMachine::update(f32 delta) {

@@ -1,7 +1,7 @@
-#include <LTEngine/assets/directory_asset_manager.hpp>
+#include <LTCore/assets/directory_asset_manager.hpp>
 
 
-using namespace LTEngine;
+using namespace LTCore;
 
 
 DirectoryAssetManager::DirectoryAssetManager(std::string directory) : m_directory(directory) {

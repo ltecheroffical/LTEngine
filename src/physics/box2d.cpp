@@ -1,8 +1,8 @@
-#ifdef LTENGINE_COMPONENT_PHYSICS_BOX2D
-#include <LTEngine/physics/box2d.hpp>
+#ifdef LTCORE_COMPONENT_PHYSICS_BOX2D
+#include <LTCore/physics/box2d.hpp>
 
-using namespace LTEngine;
-using namespace LTEngine::Physics;
+using namespace LTCore;
+using namespace LTCore::Physics;
 
 const f32 PIXELS_PER_METER = 50.f;
 const f32 METERS_PER_PIXEL = 1.f / PIXELS_PER_METER;
@@ -52,18 +52,18 @@ Math::Vec2 Box2D::getGravity() const {
 	return Math::Vec2(b2World_GetGravity(m_world).x, b2World_GetGravity(m_world).y);
 }
 
-u32 Box2D::addBody(Shapes::Rect rect, PhysicsEngine::BodyType bodyType) {
+u32 Box2D::addBody(Shapes::Rect rect, PhysicsEngine2D::BodyType bodyType) {
 	b2BodyDef bodyDef = b2DefaultBodyDef();
 
 	switch (bodyType) {
 		default:
-		case PhysicsEngine::BodyType::BODY_TYPE_STATIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_STATIC:
 			bodyDef.type = b2_staticBody;
 			break;
-		case PhysicsEngine::BodyType::BODY_TYPE_DYNAMIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_DYNAMIC:
 			bodyDef.type = b2_dynamicBody;
 			break;
-		case PhysicsEngine::BodyType::BODY_TYPE_KINEMATIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_KINEMATIC:
 			bodyDef.type = b2_kinematicBody;
 			break;
 	}
@@ -83,18 +83,18 @@ u32 Box2D::addBody(Shapes::Rect rect, PhysicsEngine::BodyType bodyType) {
 	return id;
 }
 
-u32 Box2D::addBody(Shapes::Circle circle, PhysicsEngine::BodyType bodyType) {
+u32 Box2D::addBody(Shapes::Circle circle, PhysicsEngine2D::BodyType bodyType) {
 	b2BodyDef bodyDef = b2DefaultBodyDef();
 
 	switch (bodyType) {
 		default:
-		case PhysicsEngine::BodyType::BODY_TYPE_STATIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_STATIC:
 			bodyDef.type = b2_staticBody;
 			break;
-		case PhysicsEngine::BodyType::BODY_TYPE_DYNAMIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_DYNAMIC:
 			bodyDef.type = b2_dynamicBody;
 			break;
-		case PhysicsEngine::BodyType::BODY_TYPE_KINEMATIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_KINEMATIC:
 			bodyDef.type = b2_kinematicBody;
 			break;
 	}
@@ -116,18 +116,18 @@ u32 Box2D::addBody(Shapes::Circle circle, PhysicsEngine::BodyType bodyType) {
 	return id;
 }
 
-u32 Box2D::addBody(Shapes::Polygon polygon, PhysicsEngine::BodyType bodyType) {
+u32 Box2D::addBody(Shapes::Polygon polygon, PhysicsEngine2D::BodyType bodyType) {
 	b2BodyDef bodyDef = b2DefaultBodyDef();
 
 	switch (bodyType) {
 		default:
-		case PhysicsEngine::BodyType::BODY_TYPE_STATIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_STATIC:
 			bodyDef.type = b2_staticBody;
 			break;
-		case PhysicsEngine::BodyType::BODY_TYPE_DYNAMIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_DYNAMIC:
 			bodyDef.type = b2_dynamicBody;
 			break;
-		case PhysicsEngine::BodyType::BODY_TYPE_KINEMATIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_KINEMATIC:
 			bodyDef.type = b2_kinematicBody;
 			break;
 	}
@@ -154,18 +154,18 @@ u32 Box2D::addBody(Shapes::Polygon polygon, PhysicsEngine::BodyType bodyType) {
 	return id;
 }
 
-u32 Box2D::addBody(Shapes::Triangle triangle, PhysicsEngine::BodyType bodyType) {
+u32 Box2D::addBody(Shapes::Triangle triangle, PhysicsEngine2D::BodyType bodyType) {
 	b2BodyDef bodyDef = b2DefaultBodyDef();
 
 	switch (bodyType) {
 		default:
-		case PhysicsEngine::BodyType::BODY_TYPE_STATIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_STATIC:
 			bodyDef.type = b2_staticBody;
 			break;
-		case PhysicsEngine::BodyType::BODY_TYPE_DYNAMIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_DYNAMIC:
 			bodyDef.type = b2_dynamicBody;
 			break;
-		case PhysicsEngine::BodyType::BODY_TYPE_KINEMATIC:
+		case PhysicsEngine2D::BodyType::BODY_TYPE_KINEMATIC:
 			bodyDef.type = b2_kinematicBody;
 			break;
 	}

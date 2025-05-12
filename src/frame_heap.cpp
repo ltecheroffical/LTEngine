@@ -1,7 +1,7 @@
-#include <LTEngine/frame_heap.hpp>
+#include <LTCore/frame_heap.hpp>
 
 
-using namespace LTEngine;
+using namespace LTCore;
 
 
 void FrameHeap::endFrame() {

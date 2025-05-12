@@ -1,10 +1,10 @@
 #include <limits>
 
-#include <LTEngine/random/unix_random.hpp>
+#include <LTCore/random/unix_random.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::Random;
+using namespace LTCore;
+using namespace LTCore::Random;
 
 
 UnixRandom::UnixRandom(size_t bufferSize) {

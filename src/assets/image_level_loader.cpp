@@ -1,10 +1,10 @@
-#include <LTEngine/assets/image_level_loader.hpp>
+#include <LTCore/assets/image_level_loader.hpp>
 
 
-using namespace LTEngine;
+using namespace LTCore;
 
 
-void ImageLevelLoader::loadLevel(const Rendering::Image *image) {
+void ImageLevelLoader::loadLevel(const Graphics::Image *image) {
 	m_image = image;
 }
 
@@ -19,11 +19,11 @@ void ImageLevelLoader::buildLevel(std::function<void(u32 x, u32 y, u32 tile)> ad
 }
 
 
-void ImageLevelLoader::addMapping(Rendering::Color color, u32 tile) {
+void ImageLevelLoader::addMapping(Graphics::Color color, u32 tile) {
 	m_tileMap[color] = tile;
 }
 
-void ImageLevelLoader::removeMapping(Rendering::Color color) {
+void ImageLevelLoader::removeMapping(Graphics::Color color) {
 	m_tileMap.erase(color);
 }
 

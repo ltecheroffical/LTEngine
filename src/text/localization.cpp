@@ -1,8 +1,8 @@
-#include <LTEngine/text/localization.hpp>
+#include <LTCore/text/localization.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::Text;
+using namespace LTCore;
+using namespace LTCore::Text;
 
 
 void Localization::addMapping(Language lang, std::string path, std::string localizedText) {

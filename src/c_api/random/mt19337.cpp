@@ -1,13 +1,13 @@
-#ifdef LTENGINE_COMPONENT_C_API
-#include <LTEngine/c_api/random/mt19937.h>
-#include <LTEngine/random/mt19937.hpp>
+#ifdef LTCORE_COMPONENT_C_API
+#include <LTCore/c_api/random/mt19937.h>
+#include <LTCore/random/mt19937.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::Random;
+using namespace LTCore;
+using namespace LTCore::Random;
 
 
-LTEngine_HMT19937 LTEngine_MT19937() {
+LTCore_HMT19937 LTCore_MT19937() {
 	return {{new MT19937() }};
 }
 

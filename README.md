@@ -1,16 +1,16 @@
-# LTEngine
+# LTCore
 
-![Github Workflow Status](https://img.shields.io/github/actions/workflow/status/ltecheroffical/LTEngine/ltengine_build_and_test.yml?branch=dev)
-![GitHub License](https://img.shields.io/github/license/ltecheroffical/LTEngine)
-![GitHub Release](https://img.shields.io/github/v/release/ltecheroffical/LTEngine)
+![Github Workflow Status](https://img.shields.io/github/actions/workflow/status/ltecheroffical/LTCore/ltengine_build_and_test.yml?branch=dev)
+![GitHub License](https://img.shields.io/github/license/ltecheroffical/LTCore)
+![GitHub Release](https://img.shields.io/github/v/release/ltecheroffical/LTCore)
 
-**LTEngine** is an open-source game engine written in C/C++. The engine has no UI, so interaction is direct via the API. Most components are modular and can be detached and used independently. Currently, the engine supports 2D.
+**LTCore** is an open-source game core written in C/C++. The engine has no UI, so interaction is direct via the API. Most components are modular and can be detached and used independently. This engine is designed to sit on frameworks and provide the other part of frameworks. The engine may become standalone soon.
 
 ---
 
 ## Game Cores vs. Normal Games
 
-LTEngine is designed to support both **game cores** and **normal games**, which have distinct differences:
+LTCore is designed to support both **game cores** and **normal games**, which have distinct differences:
 
 - **Game cores**: Provided in a library format with an API for updates and output. Game cores are ideal for reusability across multiple projects, but they typically output raw pixels, which requires a headless renderer, as most graphics APIs aren't optimized for pixel-only output.
 
@@ -26,7 +26,6 @@ LTEngine is designed to support both **game cores** and **normal games**, which 
 | Modular and reusable                                              | All functionality in a single executable                                          |
 | Ideal for custom game engines or platforms                        | Can be optimized for specific hardware                                            |
 | Flexible for updates and changes without rebuilding the whole game| More performance-optimized for a target system                                    |
-| Can be integrated with various rendering systems                  | Easier to distribute as a single file                                             |
 | Simplifies testing/debugging individual components (e.g., AI)     | More control over system resources (e.g., memory)                                 |
 | Good for multi-platform development                               | Self-contained, with no external dependencies                                     |
 
@@ -34,14 +33,11 @@ LTEngine is designed to support both **game cores** and **normal games**, which 
 
 | Game Cores                                                        | Normal Games                                              |
 |-------------------------------------------------------------------|-----------------------------------------------------------|
-| Requires a headless renderer for pixel output                     | Fixed to specific system or platform                      |
-| Raw pixel output can be inefficient                               | Harder to integrate with other systems                    |
-| May need extra layers for rendering and system management         | Limited flexibility in customizability                    |
 | Not optimized for out-of-the-box performance                      | Less modular and reusable across projects                 |
 | May depend on third-party libraries or frameworks                 | Not easily transferable across projects                   |
 | More complex setup with external dependencies                     | Reduced flexibility for modifications and extensions      |
 
-*Initially, LTEngine was designed to build game cores, but now it supports both architectures.*
+*Initially, LTCore was designed to build game cores, but now it supports both architectures.*
 
 ---
 
@@ -55,12 +51,6 @@ LTEngine is designed to support both **game cores** and **normal games**, which 
 
 ---
 
-## In the Future
-
-- [ ] **3D Support**: Although ambitious, 3D rendering support may be added in future versions.
-
----
-
 ## Getting Started
 
 Currently, the recommended approach is to clone the repository into a third-party directory and use CMake to add it as a subdirectory. Releases will be available after v1.0.0. There is markdown documents in some parts.
@@ -71,5 +61,5 @@ Currently, the recommended approach is to clone the repository into a third-part
 
 ## Licensing
 
-LTEngine is licensed under the MIT License, allowing free use for both commercial and non-commercial projects.
+LTCore is licensed under the MIT License, allowing free use for both commercial and non-commercial projects.
 

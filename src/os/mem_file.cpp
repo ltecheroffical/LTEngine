@@ -1,8 +1,8 @@
-#include <LTEngine/os/mem_file.hpp>
+#include <LTCore/os/mem_file.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::OS;
+using namespace LTCore;
+using namespace LTCore::OS;
 
 
 MemFile::MemFile(u8 mode) : File(mode) {}

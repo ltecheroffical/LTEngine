@@ -1,10 +1,10 @@
 #include <limits>
 
-#include <LTEngine/random/unsecure_random.hpp>
+#include <LTCore/random/unsecure_random.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::Random;
+using namespace LTCore;
+using namespace LTCore::Random;
 
 
 u8 RandomUnsecure::next_u8() {

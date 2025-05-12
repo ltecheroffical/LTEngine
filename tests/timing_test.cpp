@@ -1,13 +1,13 @@
-#define LTENGINE_GLOBAL_BASIC_TYPES
+#define LTCORE_GLOBAL_BASIC_TYPES
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <LTEngine/tick_system.hpp>
-#include <LTEngine/timer.hpp>
+#include <LTCore/tick_system.hpp>
+#include <LTCore/timer.hpp>
 
 
 TEST_CASE("The tick system should correctly call the callbacks", "[tick_system]") {
-	LTEngine::TickSystem tickSystem;
+	LTCore::TickSystem tickSystem;
 	tickSystem.setTickDelay(0.1f);
 
 	tickSystem.registerTick("test_tick1", 2);
@@ -38,7 +38,7 @@ TEST_CASE("The tick system should correctly call the callbacks", "[tick_system]"
 }
 
 TEST_CASE("The timer should correctly call the callback", "[timer]") {
-	LTEngine::Timer timer;
+	LTCore::Timer timer;
 
 	const f32 time = 2.f;
 

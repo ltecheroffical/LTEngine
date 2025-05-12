@@ -1,11 +1,11 @@
 #include <cmath>
 
-#include <LTEngine/common/types/inttypes.h>
+#include <LTCore/common/types/inttypes.h>
 
-#include <LTEngine/timer.hpp>
+#include <LTCore/timer.hpp>
 
 
-using namespace LTEngine;
+using namespace LTCore;
 
 
 void Timer::start(f32 time) {

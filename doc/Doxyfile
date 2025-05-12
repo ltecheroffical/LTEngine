@@ -1,6 +1,6 @@
 DOXYFILE_ENCODING = UTF-8
 
-PROJECT_NAME = "LTEngine"
+PROJECT_NAME = "LTCore"
 PROJECT_BRIEF = "A simple game engine written in C++"   
 
 RECURSIVE = YES

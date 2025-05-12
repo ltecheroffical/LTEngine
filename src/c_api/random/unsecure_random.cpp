@@ -1,18 +1,18 @@
-#ifdef LTENGINE_COMPONENT_C_API
-#include <LTEngine/c_api/random/unsecure_random.h>
-#include <LTEngine/random/unsecure_random.hpp>
+#ifdef LTCORE_COMPONENT_C_API
+#include <LTCore/c_api/random/unsecure_random.h>
+#include <LTCore/random/unsecure_random.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::Random;
+using namespace LTCore;
+using namespace LTCore::Random;
 
 
-LTEngine_HUnsecureRandom LTENGINE_API LTEngine_UnsecureRandom() {
+LTCore_HUnsecureRandom LTCORE_API LTCore_UnsecureRandom() {
 	return {{ new RandomUnsecure() }};
 }
 
 
-void LTENGINE_API LTEngine_UnsecureRandom_seed(LTEngine_HUnsecureRandom handle, LTEngine_u64 seed) {
+void LTCORE_API LTCore_UnsecureRandom_seed(LTCore_HUnsecureRandom handle, LTCore_u64 seed) {
 	((RandomUnsecure *)handle.handle.ptr)->seed(seed);
 }
 

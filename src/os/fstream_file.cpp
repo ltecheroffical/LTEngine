@@ -1,8 +1,8 @@
-#include <LTEngine/os/fstream_file.hpp>
+#include <LTCore/os/fstream_file.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::OS;
+using namespace LTCore;
+using namespace LTCore::OS;
 
 
 FStreamFile::FStreamFile(const char *path, u8 mode) : File(mode) {

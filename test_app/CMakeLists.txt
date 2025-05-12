@@ -6,4 +6,4 @@ file(GLOB_RECURSE CXX_SOURCE_FILES CONFIGURE_DEPENDS
 
 add_executable(${PROJECT_NAME} ${CXX_SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE LTEngine)
+target_link_libraries(${PROJECT_NAME} PRIVATE LTCore)

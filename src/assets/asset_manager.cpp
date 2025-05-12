@@ -1,7 +1,7 @@
-#include <LTEngine/assets/asset_manager.hpp>
+#include <LTCore/assets/asset_manager.hpp>
 
 
-using namespace LTEngine;
+using namespace LTCore;
 
 
 const std::vector<u8> AssetManager::loadAsset(std::string path) {

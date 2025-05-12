@@ -1,14 +1,14 @@
-#ifdef LTENGINE_COMPONENT_C_API
-#include <LTEngine/c_api/random/random.h>
-#include <LTEngine/random/random.hpp>
+#ifdef LTCORE_COMPONENT_C_API
+#include <LTCore/c_api/random/random.h>
+#include <LTCore/random/random.hpp>
 
 
-using namespace LTEngine;
+using namespace LTCore;
 
 
 class CRandom : public Random::Random {
 public:
-	CRandom(LTEngine_CustomRandomFuncs funcs) {
+	CRandom(LTCore_CustomRandomFuncs funcs) {
 		m_ctx = funcs.init();
 		m_funcs = funcs;
 	}
@@ -67,63 +67,63 @@ public:
 
 private:
 	void *m_ctx;
-	LTEngine_CustomRandomFuncs m_funcs;
+	LTCore_CustomRandomFuncs m_funcs;
 };
 
 
-LTEngine_HRandom LTEngine_CustomRandom(LTEngine_CustomRandomFuncs funcs) {
+LTCore_HRandom LTCore_CustomRandom(LTCore_CustomRandomFuncs funcs) {
 	return {{ new CRandom(funcs) }};
 }
 
-void LTEngine_CustomRandom_free(LTEngine_HRandom handle) {
+void LTCore_CustomRandom_free(LTCore_HRandom handle) {
 	delete (Random::Random *)handle.handle.ptr;
 }
 
 
-LTEngine_u8 LTEngine_Random_next_u8(LTEngine_HRandom handle) {
+LTCore_u8 LTCore_Random_next_u8(LTCore_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_u8();
 }
 
-LTEngine_u16 LTEngine_Random_next_u16(LTEngine_HRandom handle) {
+LTCore_u16 LTCore_Random_next_u16(LTCore_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_u16();
 }
 
-LTEngine_u32 LTEngine_Random_next_u32(LTEngine_HRandom handle) {
+LTCore_u32 LTCore_Random_next_u32(LTCore_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_u32();
 }
 
-LTEngine_u64 LTEngine_Random_next_u64(LTEngine_HRandom handle) {
+LTCore_u64 LTCore_Random_next_u64(LTCore_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_u64();
 }
 
 
-LTEngine_i8 LTEngine_Random_next_i8(LTEngine_HRandom handle) {
+LTCore_i8 LTCore_Random_next_i8(LTCore_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_i8();
 }
 
-LTEngine_i16 LTEngine_Random_next_i16(LTEngine_HRandom handle) {
+LTCore_i16 LTCore_Random_next_i16(LTCore_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_i16();
 }
 
-LTEngine_i32 LTEngine_Random_next_i32(LTEngine_HRandom handle) {
+LTCore_i32 LTCore_Random_next_i32(LTCore_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_i32();
 }
 
-LTEngine_i64 LTEngine_Random_next_i64(LTEngine_HRandom handle) {
+LTCore_i64 LTCore_Random_next_i64(LTCore_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_i64();
 }
 
 
-LTEngine_f32 LTEngine_Random_next_f32(LTEngine_HRandom handle) {
+LTCore_f32 LTCore_Random_next_f32(LTCore_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_f32();
 }
 
-LTEngine_f64 LTEngine_Random_next_f64(LTEngine_HRandom handle) {
+LTCore_f64 LTCore_Random_next_f64(LTCore_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_f64();
 }
 
 
-void LTEngine_Random_nextBytes(LTEngine_HRandom handle, void *data, size_t size) {
+void LTCore_Random_nextBytes(LTCore_HRandom handle, void *data, size_t size) {
 	((Random::Random *)handle.handle.ptr)->nextBytes(data, size);
 }
 

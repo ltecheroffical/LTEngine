@@ -1,10 +1,10 @@
 #include <limits>
 
-#include <LTEngine/random/openssl_random.hpp>
+#include <LTCore/random/openssl_random.hpp>
 
 
-using namespace LTEngine;
-using namespace LTEngine::Random;
+using namespace LTCore;
+using namespace LTCore::Random;
 
 
 u8 OpenSSLRandom::next_u8() {

@@ -1,8 +1,8 @@
-#ifdef LTENGINE_COMPONENT_ENGINE_CORE
-#include <LTEngine/engine.hpp>
+#ifdef LTCORE_COMPONENT_ENGINE_CORE
+#include <LTCore/engine.hpp>
 
 
-using namespace LTEngine;
+using namespace LTCore;
 
 
 Engine::Engine(std::unique_ptr<Object::EngineStructure> structure) {
@@ -10,8 +10,7 @@ Engine::Engine(std::unique_ptr<Object::EngineStructure> structure) {
 }
 
 
-void Engine::initDisplay(Rendering::Renderer *renderer) {
-	m_renderer = renderer;
+void Engine::initDisplay() {
 	m_displayInitialized = true;
 }
 
@@ -50,16 +49,11 @@ void Engine::render() {
 	}
 
 
-	m_renderer->resetTransform();
-	m_renderer->setZOrder(0);
-	m_renderer->setOffsetsApplied();
-
-	onRender(m_renderer);
+	onRender();
 	if (m_objectStructure != nullptr) {
-		m_renderer->clear(m_objectStructure->getClearColor());
-		m_objectStructure->render(m_renderer);
+		m_objectStructure->render();
 	}
-	onRenderPost(m_renderer);
+	onRenderPost();
 }
 
 #endif

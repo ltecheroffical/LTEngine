@@ -1,10 +1,10 @@
 #include <cstdarg>
 #include <iostream>
 
-#include <LTEngine/logger.hpp>
+#include <LTCore/logger.hpp>
 
 
-using namespace LTEngine;
+using namespace LTCore;
 
 
 void Logger::info(const char *format, ...) {
