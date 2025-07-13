@@ -1,16 +1,16 @@
-# LTCore
+# LTEngine
 
-![Github Workflow Status](https://img.shields.io/github/actions/workflow/status/ltecheroffical/LTCore/ltengine_build_and_test.yml?branch=dev)
-![GitHub License](https://img.shields.io/github/license/ltecheroffical/LTCore)
-![GitHub Release](https://img.shields.io/github/v/release/ltecheroffical/LTCore)
+![Github Workflow Status](https://img.shields.io/github/actions/workflow/status/ltecheroffical/LTEngine/ltengine_build_and_test.yml?branch=dev)
+![GitHub License](https://img.shields.io/github/license/ltecheroffical/LTEngine)
+![GitHub Release](https://img.shields.io/github/v/release/ltecheroffical/LTEngine)
 
-**LTCore** is an open-source game core written in C/C++. The engine has no UI, so interaction is direct via the API. Most components are modular and can be detached and used independently. This engine is designed to sit on frameworks and provide the other part of frameworks. The engine may become standalone soon.
+**LTEngine** is an open-source game core written in C/C++. The engine has no UI, so interaction is direct via the API. Most components are modular and can be detached and used independently. This engine is designed to sit on frameworks and provide the other part of frameworks. The engine may become standalone soon.
 
 ---
 
 ## Game Cores vs. Normal Games
 
-LTCore is designed to support both **game cores** and **normal games**, which have distinct differences:
+LTEngine is designed to support both **game cores** and **normal games**, which have distinct differences:
 
 - **Game cores**: Provided in a library format with an API for updates and output. Game cores are ideal for reusability across multiple projects, but they typically output raw pixels, which requires a headless renderer, as most graphics APIs aren't optimized for pixel-only output.
 
@@ -37,7 +37,7 @@ LTCore is designed to support both **game cores** and **normal games**, which ha
 | May depend on third-party libraries or frameworks                 | Not easily transferable across projects                   |
 | More complex setup with external dependencies                     | Reduced flexibility for modifications and extensions      |
 
-*Initially, LTCore was designed to build game cores, but now it supports both architectures.*
+*Initially, LTEngine was designed to build game cores, but now it supports both architectures.*
 
 ---
 
@@ -61,5 +61,5 @@ Currently, the recommended approach is to clone the repository into a third-part
 
 ## Licensing
 
-LTCore is licensed under the MIT License, allowing free use for both commercial and non-commercial projects.
+LTEngine is licensed under the MIT License, allowing free use for both commercial and non-commercial projects.
 

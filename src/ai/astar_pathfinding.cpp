@@ -1,12 +1,12 @@
 #include <set>
 
-#include <LTCore/exceptions/exc_not_possible.hpp>
+#include <LTEngine/exceptions/exc_not_possible.hpp>
 
-#include <LTCore/ai/astar_pathfinding.hpp>
+#include <LTEngine/ai/astar_pathfinding.hpp>
 
 
-using namespace LTCore;
-using namespace LTCore::AI;
+using namespace LTEngine;
+using namespace LTEngine::AI;
 
 
 AStarPathfinding::AStarPathfinding() {

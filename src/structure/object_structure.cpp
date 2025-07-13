@@ -1,8 +1,8 @@
-#include <LTCore/structure/object_structure.hpp>
+#include <LTEngine/structure/object_structure.hpp>
 
 
-using namespace LTCore;
-using namespace LTCore::Object;
+using namespace LTEngine;
+using namespace LTEngine::Object;
 
 
 ObjectStructure::ObjectStructure() {

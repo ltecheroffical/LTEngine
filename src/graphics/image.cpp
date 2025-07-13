@@ -1,11 +1,11 @@
 #include <stb_image/stb_image.h>
 #include <stb_image/stb_image_write.h>
 
-#include <LTCore/graphics/image.hpp>
+#include <LTEngine/graphics/image.hpp>
 
 
-using namespace LTCore;
-using namespace LTCore::Graphics;
+using namespace LTEngine;
+using namespace LTEngine::Graphics;
 
 
 Image::Image(u32 width, u32 height) : m_width(width), m_height(height) {

@@ -4,41 +4,49 @@
 #include <arpa/inet.h>
 #endif
 
-#include <LTCore/hash.hpp>
+#include <LTEngine/hash.hpp>
 
-#include <LTCore/assets/ltbundle_asset_manager.hpp>
+#include <LTEngine/assets/ltbundle_asset_manager.hpp>
 
-#include <LTCore/exceptions/exc_already_exists.hpp>
-#include <LTCore/exceptions/exc_corrupt_data.hpp>
-#include <LTCore/exceptions/exc_invalid_argument.hpp>
-#include <LTCore/exceptions/exc_invalid_data.hpp>
-#include <LTCore/exceptions/exc_not_found.hpp>
-
-
-using namespace LTCore;
+#include <LTEngine/exceptions/exc_already_exists.hpp>
+#include <LTEngine/exceptions/exc_corrupt_data.hpp>
+#include <LTEngine/exceptions/exc_invalid_argument.hpp>
+#include <LTEngine/exceptions/exc_invalid_data.hpp>
+#include <LTEngine/exceptions/exc_not_found.hpp>
 
 
-const u16 LTBUNDLE_VERSION = 1;
-const char LTBUNDLE_MAGIC[4] = {'L', 'T', 'B', 'N'};
+using namespace LTEngine;
 
+inline u64 ntohll(u64 val) {
+	return ((u64)ntohl((val >> 32) & 0xFFFFFFFF) << 32) | ntohl(val & 0xFFFFFFFF);
+}
 
-LTCORE_PACK_START() struct LTBundleHeader {
-	char magic[4] = {LTBUNDLE_MAGIC[0], LTBUNDLE_MAGIC[1], LTBUNDLE_MAGIC[2], LTBUNDLE_MAGIC[3]};
-	u16 version = LTBUNDLE_VERSION;
+inline u64 htonll(u64 val) {
+	return ((u64)htonl((val >> 32) & 0xFFFFFFFF) << 32) | htonl(val & 0xFFFFFFFF);
+}
+
+const u16 LTBUNDLE_VERSION = 0;
+const u64 LTBUNDLE_MAGIC = ((u64)'L' << 56) | ((u64)'T' << 48) | ((u64)'E' << 40) | ((u64)'B' << 32) | ('N' << 24) | ('\0' << 16) | LTBUNDLE_VERSION;
+
+LTENGINE_PACK_START()
+
+struct LTBundleHeader {
+	u64 magic = LTBUNDLE_MAGIC;
 
 	u32 assetCount = 0;
-} LTCORE_PACK_END();
+} LTENGINE_PACK_END();
 
-LTCORE_PACK_START() struct LTBundleAssetEntry {
+LTENGINE_PACK_START()
+
+struct LTBundleAssetEntry {
 	u32 pathSize;
 	u64 size;
 	u32 checksum;
-} LTCORE_PACK_END();
+} LTENGINE_PACK_END();
 
-
-LTBundleAssetManager::LTBundleAssetManager(LTCore::OS::File *file) : m_file(file) {
+LTBundleAssetManager::LTBundleAssetManager(LTEngine::OS::File *file)
+    : m_file(file) {
 }
-
 
 const std::vector<u8> LTBundleAssetManager::loadAssetPure(std::string path) {
 	if (!(m_file->getMode() & OS::File::FLAG_FILE_READ)) {
@@ -55,44 +63,41 @@ const std::vector<u8> LTBundleAssetManager::loadAssetPure(std::string path) {
 	LTBundleHeader header;
 	m_file->read(&header, sizeof(LTBundleHeader));
 
-	if (header.magic[0] != 'L' || header.magic[1] != 'T' || header.magic[2] != 'B' || header.magic[3] != 'N') {
+	if (header.magic != LTBUNDLE_MAGIC) {
 		throw CorruptDataException("Invalid magic!");
-	}
-
-	if (ntohs(header.version) != LTBUNDLE_VERSION) {
-		throw InvalidDataException("Invalid version!");
 	}
 
 	for (u32 i = 0; i < ntohl(header.assetCount); i++) {
 		LTBundleAssetEntry entry;
 		m_file->read(&entry, sizeof(LTBundleAssetEntry));
 
-		u32 entrySize = (ntohl(((entry.size >> 32) & 0xFFFFFFFF)) | (ntohl(entry.size) & 0xFFFFFFFF));
-		if (ntohl(entry.pathSize) + entrySize > fileSize) {
-			throw CorruptDataException("Entry path size too large! " + std::to_string(ntohl(entry.pathSize)) + " + " +
-			                           std::to_string(entrySize) + " > " + std::to_string(fileSize) + ")");
+		if (m_file->tellg() + ntohl(entry.pathSize) > fileSize) {
+			throw CorruptDataException("Entry path size too large!");
 		}
 
-		std::string entry_path;
-		entry_path.resize(ntohl(entry.pathSize));
+		std::string entryPath;
+		entryPath.resize(ntohl(entry.pathSize));
+		m_file->read(entryPath.data(), ntohl(entry.pathSize));
 
-		m_file->read(entry_path.data(), ntohl(entry.pathSize));
+		if (entryPath == path) {
+			if (m_file->tellg() + ntohl(entry.size) > fileSize) {
+				throw CorruptDataException("Entry size is too large!");
+			}
 
-		if (entry_path == path) {
-			std::vector<u8> data(ntohl(((entry.size >> 32) & 0xFFFFFFFF)) | (ntohl(entry.size) & 0xFFFFFFFF));
-			m_file->read(data.data(), ntohl(((entry.size >> 32) & 0xFFFFFFFF)) | (entry.size & 0xFFFFFFFF));
-			if (entry.checksum != Hash::crc32(data.data(), ntohl((entry.size >> 32) & 0xFFFFFFFF))) {
+			std::vector<u8> data(ntohll(entry.size));
+			m_file->read(data.data(), ntohll(entry.size));
+			if (entry.checksum != Hash::crc32(data.data(), ntohll(entry.size))) {
 				throw CorruptDataException("Asset " + path + " is corrupt!");
 			}
 			return data;
 		}
 		// Advance forward past data or data will be read as an entry header
-		m_file->seekg(ntohl(((entry.size >> 32) & 0xFFFFFFFF)) | (ntohl(entry.size) & 0xFFFFFFFF), OS::File::Seek::Current);
+		m_file->seekg(ntohll(entry.size), OS::File::Seek::Current);
 	}
 	throw NotFoundException("Asset " + path + " not found!");
 }
 
-void LTBundleAssetManager::saveAssetPure(std::string path, const u8 *data, size_t size) {
+void LTBundleAssetManager::saveAssetPure(std::string path, const u8 *data, size_t size, bool correctErrors) {
 	if (m_file->getMode() & OS::File::FLAG_FILE_APPEND) {
 		throw InvalidArgumentException("Cannot save to append mode file!");
 	}
@@ -109,55 +114,83 @@ void LTBundleAssetManager::saveAssetPure(std::string path, const u8 *data, size_
 		m_file->seekp(sizeof(LTBundleHeader), OS::File::Seek::Begin);
 	} else {
 		m_file->read(&header, sizeof(LTBundleHeader));
-		header.version = ntohs(header.version);
 		header.assetCount = ntohl(header.assetCount);
 	}
 
-	if (header.magic[0] != 'L' || header.magic[1] != 'T' || header.magic[2] != 'B' || header.magic[3] != 'N') {
-		header = {};
-		header.assetCount = 0;
-	}
+	std::vector<LTBundleAssetEntry> entries;
+	std::vector<std::string> paths;
+	std::vector<std::vector<u8>> assetsData;
 
+	if (header.magic == LTBUNDLE_MAGIC) {
+		for (u32 i = 0; i < header.assetCount; i++) {
+			bool errored = false;
 
-	std::vector<LTBundleAssetEntry> entries(header.assetCount + 1);
-	std::vector<std::string> paths(header.assetCount + 1);
-	std::vector<std::vector<u8>> assetsData(header.assetCount + 1);
-	for (u32 i = 0; i < header.assetCount; i++) {
-		m_file->read(&entries[i], sizeof(LTBundleAssetEntry));
-		paths[i].resize(ntohl(entries[i].pathSize));
-		m_file->read(paths[i].data(), ntohl(entries[i].pathSize));
-		if (paths[i] == path) {
-			throw AlreadyExistsException("Asset " + path + " already exists!");
+			LTBundleAssetEntry entry;
+			m_file->read(&entry, sizeof(LTBundleAssetEntry));
+
+			std::string entryPath;
+			if (m_file->tellg() + ntohl(entry.pathSize) > fileSize) {
+				if (!correctErrors) {
+					throw CorruptDataException("Entry path size too large!");
+				}
+				errored = true;
+				m_file->seekg(ntohl(entry.pathSize), OS::File::Seek::Current);
+			} else {
+				entryPath.resize(ntohl(entry.pathSize));
+				m_file->read(entryPath.data(), ntohl(entry.pathSize));
+				if (entryPath == path) {
+					errored = true;
+				}
+			}
+
+			std::vector<u8> data(ntohll(entry.size));
+			if (m_file->tellg() + ntohll(entry.size) > fileSize) {
+				if (!correctErrors) {
+					throw CorruptDataException("Entry size is too large!");
+				}
+				errored = true;
+				m_file->seekg(ntohll(entry.size), OS::File::Seek::Current);
+			} else {
+				m_file->read(data.data(), ntohll(entry.size));
+				if (entry.checksum != Hash::crc32(data.data(), ntohll(entry.size))) {
+					if (!correctErrors) {
+						throw CorruptDataException("Asset " + path + " is corrupt!");
+					}
+					errored = true;
+				}
+			}
+
+			if (!errored) {
+				entries.push_back(entry);
+				paths.push_back(entryPath);
+				assetsData.push_back(data);
+			}
 		}
-		std::vector<u8> assetData((u64)ntohl(entries[i].size & 0xFFFFFFFF) << 32 | ntohl((entries[i].size >> 32) & 0xFFFFFFFF));
-		m_file->read(assetData.data(), ntohl((entries[i].size >> 32) & 0xFFFFFFFF) | ntohl(entries[i].size & 0xFFFFFFFF));
-		assetsData[i] = assetData;
+	} else {
+		header = {};
 	}
 
+	LTBundleAssetEntry entry;
+	entry.pathSize = htonl(path.size());
+	entry.size = htonll(size);
+	entry.checksum = Hash::crc32(data, size);
 
-	entries[header.assetCount].pathSize = htonl(path.size());
-	entries[header.assetCount].size = (u64)htonl(size & 0xFFFFFFFF) << 32 | htonl((size >> 32) & 0xFFFFFFFF);
-	entries[header.assetCount].checksum = Hash::crc32(data, size);
+	entries.push_back(entry);
+	paths.push_back(path);
 
-	paths[header.assetCount] = path;
+	std::vector<u8> assetData(size);
+	memcpy(assetData.data(), data, size);
+	assetsData.push_back(assetData);
 
-	assetsData[header.assetCount].resize(size);
-	for (u32 i = 0; i < size; i++) {
-		assetsData[header.assetCount][i] = data[i];
-	}
-	header.assetCount++;
+	header.assetCount = htonl(entries.size());
 
-
-	// Rewrite file
+	m_file->clear();
 	m_file->seekp(0, OS::File::Seek::Begin);
-
-	header.version = htons(header.version);
-	header.assetCount = htonl(header.assetCount);
 
 	m_file->write(&header, sizeof(LTBundleHeader));
 	for (u32 i = 0; i < ntohl(header.assetCount); i++) {
-		m_file->write((char *)&entries[i], sizeof(LTBundleAssetEntry));
+		m_file->write((u8 *)&entries[i], sizeof(LTBundleAssetEntry));
 		m_file->write(paths[i].data(), ntohl(entries[i].pathSize));
-		m_file->write((char *)assetsData[i].data(), assetsData[i].size());
+		m_file->write(assetsData[i].data(), assetsData[i].size());
 	}
 }

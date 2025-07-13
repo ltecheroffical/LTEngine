@@ -1,10 +1,10 @@
 #include <cmath>
 #include <vector>
 
-#include <LTCore/hash.hpp>
+#include <LTEngine/hash.hpp>
 
 
-LTCore::u32 LTCore::Hash::crc32(const u8 *data, u32 size) {
+LTEngine::u32 LTEngine::Hash::crc32(const u8 *data, u32 size) {
 	static u32 table[256];
 	static bool initialized = false;
 
@@ -23,7 +23,7 @@ LTCore::u32 LTCore::Hash::crc32(const u8 *data, u32 size) {
 }
 
 
-void LTCore::Hash::md5(const u8 *data, u32 size, u8 output[16]) {
+void LTEngine::Hash::md5(const u8 *data, u32 size, u8 output[16]) {
 	const u32 s[] = {7,  12, 17, 22, 7,  12, 17, 22, 7,  12, 17, 22, 7,  12, 17, 22, 5,  9,  14, 20, 5,  9,
 	                 14, 20, 5,  9,  14, 20, 5,  9,  14, 20, 4,  11, 16, 23, 4,  11, 16, 23, 4,  11, 16, 23,
 	                 4,  11, 16, 23, 6,  10, 15, 21, 6,  10, 15, 21, 6,  10, 15, 21, 6,  10, 15, 21};

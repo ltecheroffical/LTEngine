@@ -1,9 +1,9 @@
 #include <stdexcept>
 
-#include <LTCore/tick_system.hpp>
+#include <LTEngine/tick_system.hpp>
 
 
-using namespace LTCore;
+using namespace LTEngine;
 
 
 TickSystem::TickSystem() {

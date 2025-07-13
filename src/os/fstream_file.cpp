@@ -1,11 +1,11 @@
-#include <LTCore/os/fstream_file.hpp>
+#include <LTEngine/os/fstream_file.hpp>
 
 
-using namespace LTCore;
-using namespace LTCore::OS;
+using namespace LTEngine;
+using namespace LTEngine::OS;
 
-
-FStreamFile::FStreamFile(const char *path, u8 mode) : File(mode) {
+FStreamFile::FStreamFile(const char *path, u8 mode)
+    : File(mode) {
 	open(path, mode);
 }
 
@@ -13,16 +13,20 @@ FStreamFile::~FStreamFile() {
 	m_stream.close();
 }
 
-
 void FStreamFile::open(const char *path, u8 mode) {
 	std::ios::openmode openMode = std::ios::openmode{};
 	bool create = (mode & FLAG_FILE_CREATE) != 0;
 
-	if (mode & FLAG_FILE_READ) openMode |= std::ios::in;
-	if (mode & FLAG_FILE_WRITE) openMode |= std::ios::out;
-	if (mode & FLAG_FILE_APPEND) openMode |= std::ios::app;
+	if (mode & FLAG_FILE_READ)
+		openMode |= std::ios::in;
+	if (mode & FLAG_FILE_WRITE)
+		openMode |= std::ios::out;
+	if (mode & FLAG_FILE_APPEND)
+		openMode |= std::ios::app;
 
-	if (m_stream.is_open()) { m_stream.close(); }
+	if (m_stream.is_open()) {
+		m_stream.close();
+	}
 
 	m_stream.open(path, openMode);
 	if (!m_stream.is_open()) {
@@ -30,14 +34,37 @@ void FStreamFile::open(const char *path, u8 mode) {
 			m_stream.open(path, std::ios::out);
 			m_stream.close();
 			m_stream.open(path, openMode);
-			return;
+		} else {
+			throw std::runtime_error("Failed to open file: " + std::string(path));
 		}
-		throw std::runtime_error("Failed to open file: " + std::string(path));
 	}
 
 	setMode(mode);
+	m_path = path;
 }
 
+void FStreamFile::clear() {
+	m_stream.open(m_path, std::ios::trunc);
+	if (!m_stream.is_open()) {
+		throw std::runtime_error("Failed to clear file: " + std::string(m_path));
+	}
+	m_stream.close();
+
+	std::ios::openmode openMode = std::ios::openmode{};
+	bool create = (getMode() & FLAG_FILE_CREATE) != 0;
+
+	if (getMode() & FLAG_FILE_READ)
+		openMode |= std::ios::in;
+	if (getMode() & FLAG_FILE_WRITE)
+		openMode |= std::ios::out;
+	if (getMode() & FLAG_FILE_APPEND)
+		openMode |= std::ios::app;
+
+	m_stream.open(m_path, openMode);
+	if (!m_stream.is_open()) {
+		throw std::runtime_error("Failed to open file: " + std::string(m_path));
+	}
+}
 
 void FStreamFile::seekp(size_t offset, Seek origin) {
 	std::ios_base::seekdir dir;
@@ -88,11 +115,9 @@ size_t FStreamFile::size() {
 	return size;
 }
 
-
 bool FStreamFile::eof() const {
 	return m_stream.eof();
 }
-
 
 size_t FStreamFile::read(void *buffer, size_t size) {
 	return m_stream.read(reinterpret_cast<char *>(buffer), size).gcount();
@@ -101,7 +126,6 @@ size_t FStreamFile::read(void *buffer, size_t size) {
 void FStreamFile::write(const void *buffer, size_t size) {
 	m_stream.write(reinterpret_cast<const char *>(buffer), size);
 }
-
 
 void FStreamFile::flush() {
 	m_stream.flush();

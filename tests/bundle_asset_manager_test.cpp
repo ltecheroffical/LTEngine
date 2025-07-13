@@ -1,14 +1,14 @@
-#define LTCORE_GLOBAL_BASIC_TYPES
+#define LTENGINE_GLOBAL_BASIC_TYPES
 
 #include <catch2/catch_test_macros.hpp>
 
-#include <LTCore/os/fstream_file.hpp>
-#include <LTCore/os/mem_file.hpp>
+#include <LTEngine/os/fstream_file.hpp>
+#include <LTEngine/os/mem_file.hpp>
 
-#include <LTCore/assets/ltbundle_asset_manager.hpp>
+#include <LTEngine/assets/ltbundle_asset_manager.hpp>
 
-#include <LTCore/exceptions/exc_already_exists.hpp>
-#include <LTCore/exceptions/exc_not_found.hpp>
+#include <LTEngine/exceptions/exc_already_exists.hpp>
+#include <LTEngine/exceptions/exc_not_found.hpp>
 
 
 // Thanks XXD! (The command line utility for dumping binary files)
@@ -35,8 +35,8 @@ const u8 testAssetData[] = {0x4c, 0x54, 0x42, 0x4e, 0x00, 0x01, 0x00, 0x00, 0x00
 
 
 TEST_CASE("The bundle asset manager should correcrly save asset and read them back", "[bundle_asset_manager_write]") {
-	LTCore::OS::MemFile memFile(LTCore::OS::File::FLAG_FILE_READ | LTCore::OS::File::FLAG_FILE_WRITE);
-	LTCore::LTBundleAssetManager manager(&memFile);
+	LTEngine::OS::MemFile memFile(LTEngine::OS::File::FLAG_FILE_READ | LTEngine::OS::File::FLAG_FILE_WRITE);
+	LTEngine::LTBundleAssetManager manager(&memFile);
 
 	const std::vector<u8> testData1 = {41,  40, 69,  124, 186, 7,  173, 185, 205, 195, 236, 8,  4,   210, 86,  29,
 	                                   220, 61, 193, 230, 157, 72, 246, 249, 213, 155, 182, 52, 112, 36,  214, 147};
@@ -53,14 +53,14 @@ TEST_CASE("The bundle asset manager should correcrly save asset and read them ba
 }
 
 TEST_CASE("The bundle asset manager should correctly read a file saved on another computer", "[bundle_asset_manager_read]") {
-#ifdef LTCORE_COMPILER_DATA_COMPATIBILITY_ISSUE
+#ifdef LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
 	// For the test asset data, it's been saved where data compatibility is expected
 	// Without it, it's likely the test will fail
 	SKIP("Data compatibility issue");
 #endif
 
-	LTCore::OS::MemFile file(testAssetData, sizeof(testAssetData), LTCore::OS::File::FLAG_FILE_READ);
-	LTCore::LTBundleAssetManager manager(&file);
+	LTEngine::OS::MemFile file(testAssetData, sizeof(testAssetData), LTEngine::OS::File::FLAG_FILE_READ);
+	LTEngine::LTBundleAssetManager manager(&file);
 
 	const std::vector<u8> testData1 = {53,  13, 231, 75,  160, 241, 201, 69,  70, 143, 153, 235, 171, 45, 194, 225,
 	                                   114, 64, 18,  247, 130, 154, 120, 205, 93, 101, 51,  234, 103, 80, 195, 196};
@@ -77,27 +77,27 @@ TEST_CASE("The bundle asset manager should correctly read a file saved on anothe
 }
 
 TEST_CASE("The bundle asset manager should correctly handle asset name collisions", "[bundle_asset_manager_name_collision]") {
-#ifdef LTCORE_COMPILER_DATA_COMPATIBILITY_ISSUE
+#ifdef LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
 	// For the test asset data, it's been saved where data compatibility is expected
 	// Without it, it's likely the test will fail
 	SKIP("Data compatibility issue");
 #endif
 
-	LTCore::OS::MemFile file(testAssetData, sizeof(testAssetData),
-	                           LTCore::OS::File::FLAG_FILE_WRITE | LTCore::OS::File::FLAG_FILE_READ);
-	LTCore::LTBundleAssetManager manager(&file);
+	LTEngine::OS::MemFile file(testAssetData, sizeof(testAssetData),
+	                           LTEngine::OS::File::FLAG_FILE_WRITE | LTEngine::OS::File::FLAG_FILE_READ);
+	LTEngine::LTBundleAssetManager manager(&file);
 	const u8 testData[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-	REQUIRE_THROWS_AS(manager.saveAsset("test_asset1", testData, sizeof(testData)), LTCore::AlreadyExistsException);
+	REQUIRE_THROWS_AS(manager.saveAsset("test_asset1", testData, sizeof(testData)), LTEngine::AlreadyExistsException);
 }
 
 TEST_CASE("The bundle asset manager should correctly handle non-existent assets", "[bundle_asset_manager_non_existent]") {
-#ifdef LTCORE_COMPILER_DATA_COMPATIBILITY_ISSUE
+#ifdef LTENGINE_COMPILER_DATA_COMPATIBILITY_ISSUE
 	// For the test asset data, it's been saved where data compatibility is expected
 	// Without it, it's likely the test will fail
 	SKIP("Data compatibility issue");
 #endif
 
-	LTCore::OS::MemFile file(&testAssetData, sizeof(testAssetData), LTCore::OS::File::FLAG_FILE_READ);
-	LTCore::LTBundleAssetManager manager(&file);
-	REQUIRE_THROWS_AS(manager.loadAsset("non_existent_asset"), LTCore::NotFoundException);
+	LTEngine::OS::MemFile file(&testAssetData, sizeof(testAssetData), LTEngine::OS::File::FLAG_FILE_READ);
+	LTEngine::LTBundleAssetManager manager(&file);
+	REQUIRE_THROWS_AS(manager.loadAsset("non_existent_asset"), LTEngine::NotFoundException);
 }

@@ -1,8 +1,8 @@
-#include <LTCore/random/platform_random_secure.hpp>
+#include <LTEngine/random/platform_random_secure.hpp>
 
 
-using namespace LTCore;
-using namespace LTCore::Random;
+using namespace LTEngine;
+using namespace LTEngine::Random;
 
 #if defined(__linux__) || defined(__APPLE__)
 PlatformRandomSecure::PlatformRandomSecure(RandomSettings settings) : m_random(settings.unixRandomBufferSize) {

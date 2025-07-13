@@ -1,109 +1,109 @@
-#ifdef LTCORE_COMPONENT_C_API
-#include <LTCore/c_api/math/vec2.h>
+#ifdef LTENGINE_COMPONENT_C_API
+#include <LTEngine/c_api/math/vec2.h>
 
-#include <LTCore/math/vec2.hpp>
+#include <LTEngine/math/vec2.hpp>
 
 
-LTCore_HVec2 LTCore_Vec2(LTCore_f32 x, LTCore_f32 y) {
-	return {{new LTCore::Math::Vec2(x, y)}};
+LTEngine_HVec2 LTEngine_Vec2(LTEngine_f32 x, LTEngine_f32 y) {
+	return {{new LTEngine::Math::Vec2(x, y)}};
 }
 
-void LTCore_Vec2_free(LTCore_HVec2 handle) {
-	delete (LTCore::Math::Vec2 *)handle.handle.ptr;
-}
-
-
-LTCore_f32 LTCore_Vec2_x(const LTCore_HVec2 handle) {
-	return ((LTCore::Math::Vec2 *)handle.handle.ptr)->x;
-}
-
-LTCore_f32 LTCore_Vec2_y(const LTCore_HVec2 handle) {
-	return ((LTCore::Math::Vec2 *)handle.handle.ptr)->y;
+void LTEngine_Vec2_free(LTEngine_HVec2 handle) {
+	delete (LTEngine::Math::Vec2 *)handle.handle.ptr;
 }
 
 
-void LTCore_Vec2_setX(LTCore_HVec2 handle, LTCore_f32 x) {
-	((LTCore::Math::Vec2 *)handle.handle.ptr)->x = x;
+LTEngine_f32 LTEngine_Vec2_x(const LTEngine_HVec2 handle) {
+	return ((LTEngine::Math::Vec2 *)handle.handle.ptr)->x;
 }
 
-void LTCore_Vec2_setY(LTCore_HVec2 handle, LTCore_f32 y) {
-	((LTCore::Math::Vec2 *)handle.handle.ptr)->y = y;
+LTEngine_f32 LTEngine_Vec2_y(const LTEngine_HVec2 handle) {
+	return ((LTEngine::Math::Vec2 *)handle.handle.ptr)->y;
 }
 
 
-LTCore_HVec2 LTCore_Vec2_normalize(const LTCore_HVec2 handle) {
-	auto vec2 = new LTCore::Math::Vec2();
-	*vec2 = ((LTCore::Math::Vec2 *)handle.handle.ptr)->normalize();
+void LTEngine_Vec2_setX(LTEngine_HVec2 handle, LTEngine_f32 x) {
+	((LTEngine::Math::Vec2 *)handle.handle.ptr)->x = x;
+}
+
+void LTEngine_Vec2_setY(LTEngine_HVec2 handle, LTEngine_f32 y) {
+	((LTEngine::Math::Vec2 *)handle.handle.ptr)->y = y;
+}
+
+
+LTEngine_HVec2 LTEngine_Vec2_normalize(const LTEngine_HVec2 handle) {
+	auto vec2 = new LTEngine::Math::Vec2();
+	*vec2 = ((LTEngine::Math::Vec2 *)handle.handle.ptr)->normalize();
 	return {{vec2}};
 }
 
-LTCore_f32 LTCore_Vec2_distance(const LTCore_HVec2 handle1, const LTCore_HVec2 handle2) {
-	return ((LTCore::Math::Vec2 *)handle1.handle.ptr)->distance(*(LTCore::Math::Vec2 *)handle2.handle.ptr);
+LTEngine_f32 LTEngine_Vec2_distance(const LTEngine_HVec2 handle1, const LTEngine_HVec2 handle2) {
+	return ((LTEngine::Math::Vec2 *)handle1.handle.ptr)->distance(*(LTEngine::Math::Vec2 *)handle2.handle.ptr);
 }
 
 
-LTCore_HVec2i LTCore_Vec2i(LTCore_i32 x, LTCore_i32 y) {
-	return {{new LTCore::Math::Vec2i(x, y)}};
+LTEngine_HVec2i LTEngine_Vec2i(LTEngine_i32 x, LTEngine_i32 y) {
+	return {{new LTEngine::Math::Vec2i(x, y)}};
 }
 
-void LTCore_Vec2i_free(LTCore_HVec2i handle) {
-	delete (LTCore::Math::Vec2i *)handle.handle.ptr;
-}
-
-
-LTCore_i32 LTCore_Vec2i_x(const LTCore_HVec2i handle) {
-	return ((LTCore::Math::Vec2i *)handle.handle.ptr)->x;
-}
-
-LTCore_i32 LTCore_Vec2i_y(const LTCore_HVec2i handle) {
-	return ((LTCore::Math::Vec2i *)handle.handle.ptr)->x;
+void LTEngine_Vec2i_free(LTEngine_HVec2i handle) {
+	delete (LTEngine::Math::Vec2i *)handle.handle.ptr;
 }
 
 
-void LTCore_Vec2i_setX(LTCore_HVec2i handle, LTCore_i32 x) {
-	((LTCore::Math::Vec2i *)handle.handle.ptr)->x = x;
+LTEngine_i32 LTEngine_Vec2i_x(const LTEngine_HVec2i handle) {
+	return ((LTEngine::Math::Vec2i *)handle.handle.ptr)->x;
 }
 
-void LTCore_Vec2i_setY(LTCore_HVec2i handle, LTCore_i32 y) {
-	((LTCore::Math::Vec2i *)handle.handle.ptr)->y = y;
+LTEngine_i32 LTEngine_Vec2i_y(const LTEngine_HVec2i handle) {
+	return ((LTEngine::Math::Vec2i *)handle.handle.ptr)->x;
 }
 
 
-LTCore_HVec2i LTCore_Vec2i_normalize(const LTCore_HVec2i handle) {
-	auto vec2 = new LTCore::Math::Vec2i();
-	*vec2 = ((LTCore::Math::Vec2i *)handle.handle.ptr)->normalize();
+void LTEngine_Vec2i_setX(LTEngine_HVec2i handle, LTEngine_i32 x) {
+	((LTEngine::Math::Vec2i *)handle.handle.ptr)->x = x;
+}
+
+void LTEngine_Vec2i_setY(LTEngine_HVec2i handle, LTEngine_i32 y) {
+	((LTEngine::Math::Vec2i *)handle.handle.ptr)->y = y;
+}
+
+
+LTEngine_HVec2i LTEngine_Vec2i_normalize(const LTEngine_HVec2i handle) {
+	auto vec2 = new LTEngine::Math::Vec2i();
+	*vec2 = ((LTEngine::Math::Vec2i *)handle.handle.ptr)->normalize();
 	return {{vec2}};
 }
 
-LTCore_f32 LTCore_Vec2i_distance(const LTCore_HVec2i handle1, const LTCore_HVec2i handle2) {
-	return ((LTCore::Math::Vec2i *)handle1.handle.ptr)->distance(*(LTCore::Math::Vec2i *)handle2.handle.ptr);
+LTEngine_f32 LTEngine_Vec2i_distance(const LTEngine_HVec2i handle1, const LTEngine_HVec2i handle2) {
+	return ((LTEngine::Math::Vec2i *)handle1.handle.ptr)->distance(*(LTEngine::Math::Vec2i *)handle2.handle.ptr);
 }
 
 
-LTCore_HVec2u LTCore_Vec2u(LTCore_u32 x, LTCore_u32 y) {
-	return {{new LTCore::Math::Vec2u(x, y)}};
+LTEngine_HVec2u LTEngine_Vec2u(LTEngine_u32 x, LTEngine_u32 y) {
+	return {{new LTEngine::Math::Vec2u(x, y)}};
 }
 
-void LTCore_Vec2u_free(LTCore_HVec2u handle) {
-	delete (LTCore::Math::Vec2u *)handle.handle.ptr;
-}
-
-
-LTCore_u32 LTCore_Vec2u_x(const LTCore_HVec2u handle) {
-	return ((LTCore::Math::Vec2u *)handle.handle.ptr)->x;
-}
-
-LTCore_u32 LTCore_Vec2u_y(const LTCore_HVec2u handle) {
-	return ((LTCore::Math::Vec2u *)handle.handle.ptr)->x;
+void LTEngine_Vec2u_free(LTEngine_HVec2u handle) {
+	delete (LTEngine::Math::Vec2u *)handle.handle.ptr;
 }
 
 
-void LTCore_Vec2u_setX(LTCore_HVec2u handle, LTCore_u32 x) {
-	((LTCore::Math::Vec2u *)handle.handle.ptr)->x = x;
+LTEngine_u32 LTEngine_Vec2u_x(const LTEngine_HVec2u handle) {
+	return ((LTEngine::Math::Vec2u *)handle.handle.ptr)->x;
 }
 
-void LTCore_Vec2u_setY(LTCore_HVec2u handle, LTCore_u32 y) {
-	((LTCore::Math::Vec2u *)handle.handle.ptr)->y = y;
+LTEngine_u32 LTEngine_Vec2u_y(const LTEngine_HVec2u handle) {
+	return ((LTEngine::Math::Vec2u *)handle.handle.ptr)->x;
+}
+
+
+void LTEngine_Vec2u_setX(LTEngine_HVec2u handle, LTEngine_u32 x) {
+	((LTEngine::Math::Vec2u *)handle.handle.ptr)->x = x;
+}
+
+void LTEngine_Vec2u_setY(LTEngine_HVec2u handle, LTEngine_u32 y) {
+	((LTEngine::Math::Vec2u *)handle.handle.ptr)->y = y;
 }
 
 #endif

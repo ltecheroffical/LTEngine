@@ -1,7 +1,7 @@
-#include <LTCore/physics/collision_2d.hpp>
+#include <LTEngine/physics/collision_2d.hpp>
 
 
-using namespace LTCore;
+using namespace LTEngine;
 
 
 bool Physics::testCollision(Shapes::Rect a, Shapes::Rect b) {

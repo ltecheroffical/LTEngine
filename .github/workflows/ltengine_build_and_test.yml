@@ -1,4 +1,4 @@
-name: LTCore Build + Test
+name: LTEngine Build + Test
 
 on:
   push:
@@ -67,8 +67,8 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DBUILD_SHARED_LIBS=OFF
-        -DLTCORE_BUILD_STATIC=${{ matrix.static_lib }}
-        -DLTCORE_BUILD_DOCS=OFF
+        -DLTENGINE_BUILD_STATIC=${{ matrix.static_lib }}
+        -DLTENGINE_BUILD_DOCS=OFF
         -G Ninja
         -S ${{ github.workspace }}
 
@@ -86,8 +86,8 @@ jobs:
       uses: actions/upload-artifact@v4
       if: ${{ steps.build.outcome == 'success' }}
       with:
-        name: LTCore-${{ matrix.os }}-${{ matrix.static_lib == 'YES' && 'static' || 'shared' }}
-        path: ${{ steps.strings.outputs.build-output-dir }}/libLTCore.*
+        name: LTEngine-${{ matrix.os }}-${{ matrix.static_lib == 'YES' && 'static' || 'shared' }}
+        path: ${{ steps.strings.outputs.build-output-dir }}/libLTEngine.*
         retention-days: 3
 
     - name: Setup tmate session

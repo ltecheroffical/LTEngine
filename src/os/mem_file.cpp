@@ -1,16 +1,21 @@
-#include <LTCore/os/mem_file.hpp>
+#include <LTEngine/os/mem_file.hpp>
 
 
-using namespace LTCore;
-using namespace LTCore::OS;
+using namespace LTEngine;
+using namespace LTEngine::OS;
 
+MemFile::MemFile(u8 mode)
+    : File(mode) {
+}
 
-MemFile::MemFile(u8 mode) : File(mode) {}
-
-MemFile::MemFile(const void *data, size_t size, u8 mode) : File(mode) {
+MemFile::MemFile(const void *data, size_t size, u8 mode)
+    : File(mode) {
 	m_buffer.insert(m_buffer.end(), reinterpret_cast<const u8 *>(data), reinterpret_cast<const u8 *>(data) + size);
 }
 
+void MemFile::clear() {
+	m_buffer.clear();
+}
 
 void MemFile::seekp(size_t offset, Seek origin) {
 	switch (origin) {
@@ -54,15 +59,17 @@ size_t MemFile::size() {
 	return m_buffer.size();
 }
 
-
 bool MemFile::eof() const {
 	return m_offset >= m_buffer.size();
 }
 
-
 size_t MemFile::read(void *buffer, size_t size) {
-	if (size == 0) { return 0; }
-	if (m_offset + size > m_buffer.size()) { size = m_buffer.size() - m_offset; }
+	if (size == 0) {
+		return 0;
+	}
+	if (m_offset + size > m_buffer.size()) {
+		size = m_buffer.size() - m_offset;
+	}
 	memcpy(buffer, m_buffer.data() + m_offset, size);
 	m_offset += size;
 	return size;
@@ -74,12 +81,13 @@ void MemFile::write(const void *buffer, size_t size) {
 		                reinterpret_cast<const u8 *>(buffer) + size);
 	} else if (getMode() & FLAG_FILE_WRITE) {
 		// Ensure we have enough space
-		if (m_offset + size > m_buffer.size()) { m_buffer.resize(m_buffer.size() + (size - (m_buffer.size() - m_offset))); }
+		if (m_offset + size > m_buffer.size()) {
+			m_buffer.resize(m_buffer.size() + (size - (m_buffer.size() - m_offset)));
+		}
 		memcpy(m_buffer.data() + m_offset, buffer, size);
 	}
 	m_offset += size;
 }
-
 
 void MemFile::flush() {
 	// No op

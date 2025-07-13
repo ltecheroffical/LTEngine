@@ -10,12 +10,12 @@ add_executable(ai_pathfinding_test ai_pathfinding_test.cpp)
 add_executable(timing_test timing_test.cpp)
 
 
-target_link_libraries(hash_test PRIVATE LTCore Catch2WithMain)
-target_link_libraries(bundle_asset_manager_test PRIVATE LTCore Catch2WithMain)
+target_link_libraries(hash_test PRIVATE LTEngine Catch2WithMain)
+target_link_libraries(bundle_asset_manager_test PRIVATE LTEngine Catch2WithMain)
 
-target_link_libraries(ai_pathfinding_test PRIVATE LTCore Catch2WithMain)
+target_link_libraries(ai_pathfinding_test PRIVATE LTEngine Catch2WithMain)
 
-target_link_libraries(timing_test PRIVATE LTCore Catch2WithMain)
+target_link_libraries(timing_test PRIVATE LTEngine Catch2WithMain)
 
 
 # Hash tests

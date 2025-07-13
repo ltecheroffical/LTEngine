@@ -1,16 +1,17 @@
-#include <LTCore/assets/directory_asset_manager.hpp>
+#include <filesystem>
+
+#include <LTEngine/assets/directory_asset_manager.hpp>
 
 
-using namespace LTCore;
+using namespace LTEngine;
 
-
-DirectoryAssetManager::DirectoryAssetManager(std::string directory) : m_directory(directory) {
+DirectoryAssetManager::DirectoryAssetManager(std::string directory)
+    : m_directory(directory) {
 }
-
 
 const std::vector<u8> DirectoryAssetManager::loadAssetPure(std::string path) {
 	if (!m_files.contains(path)) {
-		m_files[path].open((m_directory + "/" + path).c_str(), OS::File::FLAG_FILE_READ | OS::File::FLAG_FILE_WRITE);
+		m_files[path].open((std::filesystem::path(m_directory) / std::filesystem::path(path)).c_str(), OS::File::FLAG_FILE_READ | OS::File::FLAG_FILE_WRITE);
 	}
 	m_files[path].seekp(0, OS::File::Seek::Begin);
 
@@ -19,9 +20,9 @@ const std::vector<u8> DirectoryAssetManager::loadAssetPure(std::string path) {
 	return data;
 }
 
-void DirectoryAssetManager::saveAssetPure(std::string path, const u8 *data, size_t size) {
+void DirectoryAssetManager::saveAssetPure(std::string path, const u8 *data, size_t size, bool) {
 	if (!m_files.contains(path)) {
-		m_files[path].open((m_directory + "/" + path).c_str(),
+		m_files[path].open((std::filesystem::path(m_directory) / std::filesystem::path(path)).c_str(),
 		                   OS::File::FLAG_FILE_READ | OS::File::FLAG_FILE_WRITE | OS::File::FLAG_FILE_CREATE);
 	}
 	m_files[path].seekp(0, OS::File::Seek::Begin);

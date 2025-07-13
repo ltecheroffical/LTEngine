@@ -1,7 +1,7 @@
-#include <LTCore/thread_pool.hpp>
+#include <LTEngine/thread_pool.hpp>
 
 
-using namespace LTCore;
+using namespace LTEngine;
 
 
 ThreadPool::ThreadPool(size_t threads) {

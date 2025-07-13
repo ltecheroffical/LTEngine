@@ -1,32 +1,29 @@
-#include <LTCore/text/localization.hpp>
+#include <LTEngine/text/localization.hpp>
 
 
-using namespace LTCore;
-using namespace LTCore::Text;
+using namespace LTEngine;
+using namespace LTEngine::Text;
 
-
-void Localization::addMapping(Language lang, std::string path, std::string localizedText) {
-	u32 textId = m_nextTextId++;
-	u32 langId = m_nextLanguageId++;
-
-	m_pathMapping[path] = langId;
-	m_languageMapping[langId] = std::make_pair(lang, textId);
-	m_textPaths[textId] = localizedText;
+void Localization::addMapping(u32 locale, std::string path, std::string localizedText) {
+	m_mappings[path][locale] = localizedText;
 }
 
-bool Localization::doesMappingExist(Language lang, std::string path) {
-	if (!m_pathMapping.contains(path)) { return false; }
-	u32 textId = m_pathMapping.at(path);
-	if (!m_languageMapping.contains(textId)) { return false; }
-	return m_languageMapping.at(textId).first == lang;
+bool Localization::doesMappingExist(u32 locale, std::string path) {
+	if (!m_mappings.contains(path)) {
+		return false;
+	}
+
+	if (!m_mappings.at(path).contains(locale)) {
+		return false;
+	}
+
+	return true;
 }
 
-
-std::string Localization::getLocalized(Language lang, std::string path) {
-	if (!doesMappingExist(lang, path)) {
+std::string Localization::getLocalized(u32 locale, std::string path) {
+	if (!doesMappingExist(locale, path)) {
 		return path; // Very simple fallback, better than throwing an exception
 	}
 
-	u32 textId = m_pathMapping.at(path);
-	return m_textPaths.at(textId);
+	return m_mappings[path][locale];
 }

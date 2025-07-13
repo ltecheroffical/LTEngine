@@ -1,8 +1,8 @@
-#ifdef LTCORE_COMPONENT_ENGINE_CORE
-#include <LTCore/engine.hpp>
+#ifdef LTENGINE_COMPONENT_ENGINE_CORE
+#include <LTEngine/engine.hpp>
 
 
-using namespace LTCore;
+using namespace LTEngine;
 
 
 Engine::Engine(std::unique_ptr<Object::EngineStructure> structure) {

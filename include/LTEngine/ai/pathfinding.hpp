@@ -1,0 +1,28 @@
+#ifndef _LTENGINE_PATHFINDING_HPP_
+#define _LTENGINE_PATHFINDING_HPP_
+
+#include <vector>
+
+#include <LTEngine/math/vec3.hpp>
+
+
+namespace LTEngine::AI {
+	class LTENGINE_API Pathfinding {
+	public:
+		virtual ~Pathfinding() = default;
+
+		virtual void setPath(Math::Vec3i start, Math::Vec3i end) = 0;
+		virtual bool isPossibleToReachInTheory() = 0;
+
+		// If this is empty (it is by default), then the path will simply ignore the walkable path
+		virtual void setWalkablePath(std::vector<Math::Vec3i> path) = 0;
+
+		virtual u32 addObstacle(Math::Vec3i pos) = 0;
+		virtual void removeObstacle(u32 id) = 0;
+
+		// May throw NotPossibleException
+		virtual std::vector<Math::Vec3i> calculatePath() = 0;
+	};
+} // namespace LTEngine::AI
+
+#endif

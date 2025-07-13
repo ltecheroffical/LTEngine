@@ -1,4 +1,4 @@
-name: LTCore Create Release
+name: LTEngine Create Release
 
 on:
   push:
@@ -58,8 +58,8 @@ jobs:
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DBUILD_SHARED_LIBS=OFF
-        -DLTCORE_BUILD_STATIC=${{ matrix.static_lib }}
-        -DLTCORE_BUILD_DOCS=OFF
+        -DLTENGINE_BUILD_STATIC=${{ matrix.static_lib }}
+        -DLTENGINE_BUILD_DOCS=OFF
         -G Ninja
         -S ${{ github.workspace }}
 
@@ -72,8 +72,8 @@ jobs:
       uses: actions/upload-artifact@v4
       if: ${{ steps.build.outcome == 'success' }}
       with:
-        name: LTCore-${{ matrix.os }}-${{ matrix.static_lib == 'YES' && 'static' || 'shared' }}
-        path: ${{ steps.strings.outputs.build-output-dir }}/libLTCore.*
+        name: LTEngine-${{ matrix.os }}-${{ matrix.static_lib == 'YES' && 'static' || 'shared' }}
+        path: ${{ steps.strings.outputs.build-output-dir }}/libLTEngine.*
         retention-days: 1
 
   create_release:
@@ -87,10 +87,10 @@ jobs:
       - name: Rename Artifacts
         run: |
           mkdir builds
-          mv ${{ github.workspace }}/LTCore-ubuntu-latest-shared/libLTCore.so ${{ github.workspace }}/builds/libLTCore-linux.so
-          mv ${{ github.workspace }}/LTCore-ubuntu-latest-static/libLTCore.a ${{ github.workspace }}/builds/libLTCore-linux.a
-          mv ${{ github.workspace }}/LTCore-macos-latest-shared/libLTCore.dylib ${{ github.workspace }}/builds/libLTCore-macos.dylib
-          mv ${{ github.workspace }}/LTCore-macos-latest-static/libLTCore.a ${{ github.workspace }}/builds/libLTCore-macos.a
+          mv ${{ github.workspace }}/LTEngine-ubuntu-latest-shared/libLTEngine.so ${{ github.workspace }}/builds/libLTEngine-linux.so
+          mv ${{ github.workspace }}/LTEngine-ubuntu-latest-static/libLTEngine.a ${{ github.workspace }}/builds/libLTEngine-linux.a
+          mv ${{ github.workspace }}/LTEngine-macos-latest-shared/libLTEngine.dylib ${{ github.workspace }}/builds/libLTEngine-macos.dylib
+          mv ${{ github.workspace }}/LTEngine-macos-latest-static/libLTEngine.a ${{ github.workspace }}/builds/libLTEngine-macos.a
       - name: Upload Release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -98,5 +98,5 @@ jobs:
           tag: ${{ github.ref_name }}
         run: |
           gh release create "$tag" \
-            $(find ${{ github.workspace }}/builds -type f -name "libLTCore-*.*") \
+            $(find ${{ github.workspace }}/builds -type f -name "libLTEngine-*.*") \
             --title="${GITHUB_REPOSITORY#*/} ${tag#v}"

@@ -1,7 +1,7 @@
-#include <LTCore/assets/image_level_loader.hpp>
+#include <LTEngine/assets/image_level_loader.hpp>
 
 
-using namespace LTCore;
+using namespace LTEngine;
 
 
 void ImageLevelLoader::loadLevel(const Graphics::Image *image) {
