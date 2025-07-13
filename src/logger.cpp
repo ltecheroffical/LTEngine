@@ -10,7 +10,7 @@ using namespace LTEngine;
 void Logger::info(const char *format, ...) {
 	Log log;
 
-	log.type = LogType::Info;
+	log.type = LogType::INFO;
 
 	va_list args;
 	va_start(args, format);
@@ -22,35 +22,35 @@ void Logger::info(const char *format, ...) {
 
 	va_end(args);
 
-	m_logs.push(log);
+	_logs.push(log);
 
-	switch (m_output) {
-		case LogOutput::Stdout:
+	switch (_output) {
+		case LogOutput::STDOUT:
 			{
 				std::string type = "";
-				if (log.type == LogType::Info) {
+				if (log.type == LogType::INFO) {
 					type = "INFO";
-				} else if (log.type == LogType::Warn) {
+				} else if (log.type == LogType::WARN) {
 					type = "WARN";
-				} else if (log.type == LogType::Error) {
+				} else if (log.type == LogType::ERROR) {
 					type = "ERROR";
-				} else if (log.type == LogType::Fatal) {
+				} else if (log.type == LogType::FATAL) {
 					type = "FATAL";
 				}
 
 				std::cout << "[" << log.time << "][" << type << "] " << log.message << std::endl;
 				break;
 			}
-		case LogOutput::Stderr:
+		case LogOutput::STDERR:
 			{
 				std::string type = "";
-				if (log.type == LogType::Info) {
+				if (log.type == LogType::INFO) {
 					type = "INFO";
-				} else if (log.type == LogType::Warn) {
+				} else if (log.type == LogType::WARN) {
 					type = "WARN";
-				} else if (log.type == LogType::Error) {
+				} else if (log.type == LogType::ERROR) {
 					type = "ERROR";
-				} else if (log.type == LogType::Fatal) {
+				} else if (log.type == LogType::FATAL) {
 					type = "FATAL";
 				}
 
@@ -65,7 +65,7 @@ void Logger::info(const char *format, ...) {
 void Logger::warn(const char *format, ...) {
 	Log log;
 
-	log.type = LogType::Info;
+	log.type = LogType::INFO;
 
 	va_list args;
 	va_start(args, format);
@@ -77,16 +77,16 @@ void Logger::warn(const char *format, ...) {
 
 	va_end(args);
 
-	m_logs.push(log);
+	_logs.push(log);
 
-	switch (m_output) {
-		case LogOutput::Stdout:
+	switch (_output) {
+		case LogOutput::STDOUT:
 			{
 				std::string type = "INFO";
 				std::cout << "[" << log.time << "][" << type << "] " << log.message << std::endl;
 				break;
 			}
-		case LogOutput::Stderr:
+		case LogOutput::STDERR:
 			{
 				std::string type = "INFO";
 
@@ -101,7 +101,7 @@ void Logger::warn(const char *format, ...) {
 void Logger::error(const char *format, ...) {
 	Log log;
 
-	log.type = LogType::Info;
+	log.type = LogType::INFO;
 
 	va_list args;
 	va_start(args, format);
@@ -113,16 +113,16 @@ void Logger::error(const char *format, ...) {
 
 	va_end(args);
 
-	m_logs.push(log);
+	_logs.push(log);
 
-	switch (m_output) {
-		case LogOutput::Stdout:
+	switch (_output) {
+		case LogOutput::STDOUT:
 			{
 				std::string type = "WARN";
 				std::cout << "[" << log.time << "][" << type << "] " << log.message << std::endl;
 				break;
 			}
-		case LogOutput::Stderr:
+		case LogOutput::STDERR:
 			{
 				std::string type = "WARN";
 				std::cerr << "[" << log.time << "][" << type << "] " << log.message << std::endl;
@@ -136,7 +136,7 @@ void Logger::error(const char *format, ...) {
 void Logger::fatal(const char *format, ...) {
 	Log log;
 
-	log.type = LogType::Info;
+	log.type = LogType::INFO;
 
 	va_list args;
 	va_start(args, format);
@@ -148,16 +148,16 @@ void Logger::fatal(const char *format, ...) {
 
 	va_end(args);
 
-	m_logs.push(log);
+	_logs.push(log);
 
-	switch (m_output) {
-		case LogOutput::Stdout:
+	switch (_output) {
+		case LogOutput::STDOUT:
 			{
 				std::string type = "FATAL";
 				std::cout << "[" << log.time << "][" << type << "] " << log.message << std::endl;
 				break;
 			}
-		case LogOutput::Stderr:
+		case LogOutput::STDERR:
 			{
 				std::string type = "FATAL";
 				std::cerr << "[" << log.time << "][" << type << "] " << log.message << std::endl;

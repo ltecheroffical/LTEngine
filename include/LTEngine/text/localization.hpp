@@ -12,13 +12,13 @@ class LTENGINE_API Localization {
 	Localization() = default;
 	~Localization() = default;
 
-	void addMapping(u32 locale, std::string path, std::string localizedText);
-	bool doesMappingExist(u32 locale, std::string path);
+	void add_mapping(u32 locale, std::string path, std::string localized_text);
+	bool does_mapping_exist(u32 locale, std::string path);
 
-	std::string getLocalized(u32 locale, std::string path);
+	std::string get_localized(u32 locale, std::string path);
 
   private:
-	std::unordered_map<std::string, std::unordered_map<u32, std::string>> m_mappings;
+	std::unordered_map<std::string, std::unordered_map<u32, std::string>> _mappings;
 };
 } // namespace LTEngine::Text
 

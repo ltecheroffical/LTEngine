@@ -21,7 +21,3 @@ target_link_libraries(${PROJECT_NAME} PUBLIC stb_image stb_truetype)
 find_package(OpenSSL REQUIRED) # Not in the repo as a submodule because OpenSSL is way to common place to manually include it
 
 target_link_libraries(LTEngine PRIVATE OpenSSL::Crypto)
-
-# GLSL, HLSL, and SPIRV
-add_subdirectory(glslang)
-target_link_libraries(${PROJECT_NAME} PUBLIC glslang)

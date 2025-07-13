@@ -13,12 +13,12 @@ class LTENGINE_API DirectoryAssetManager : public AssetManager {
 	DirectoryAssetManager(std::string directory);
 	~DirectoryAssetManager() = default;
 
-	const std::vector<u8> loadAssetPure(std::string path) override;
-	void saveAssetPure(std::string path, const u8 *data, size_t size, bool) override;
+	const std::vector<u8> _load_asset_pure(std::string path) ;
+	void _save_asset_pure(std::string path, const u8 *data, size_t size, bool) ;
 
   private:
-	std::string m_directory;
-	std::unordered_map<std::string, OS::FStreamFile> m_files;
+	std::string _directory;
+	std::unordered_map<std::string, OS::FStreamFile> _files;
 };
 } // namespace LTEngine
 

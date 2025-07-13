@@ -36,7 +36,7 @@ void LTEngine::Hash::md5(const u8 *data, u32 size, u8 output[16]) {
 		initialized = true;
 	}
 
-	const auto rotateLeft = [](u32 x, u32 n) {
+	const auto rotate_left = [](u32 x, u32 n) {
 		return (x << n) | (x >> (32 - n));
 	};
 
@@ -45,26 +45,26 @@ void LTEngine::Hash::md5(const u8 *data, u32 size, u8 output[16]) {
 	u32 c0 = 0x98BADCFE;
 	u32 d0 = 0x10325476;
 
-	std::vector<u8> processedData;
-	processedData.insert(processedData.end(), data, data + size);
+	std::vector<u8> processed_data;
+	processed_data.insert(processed_data.end(), data, data + size);
 
 	// Pre-processing: Add a single bit
-	processedData.push_back(0x80);
+	processed_data.push_back(0x80);
 
 	// Pre-processing: Pad with zeros until length is 56 bytes
-	u32 padding = (56 - (processedData.size() % 64)) % 64;
-	for (u32 p = 0; p < padding; p++) { processedData.push_back(0x00); }
+	u32 padding = (56 - (processed_data.size() % 64)) % 64;
+	for (u32 p = 0; p < padding; p++) { processed_data.push_back(0x00); }
 
 
 	// Pre-processing: Append length in bits
 	u64 length = size * 8;
-	for (u32 i = 0; i < 8; i++) { processedData.push_back((length >> (i * 8)) & 0xff); }
+	for (u32 i = 0; i < 8; i++) { processed_data.push_back((length >> (i * 8)) & 0xff); }
 
-	for (u32 i = 0; i < processedData.size(); i += 64) {
-		u32 M[16];
-		for (u32 m = 0; m < 16; m++) {
-			M[m] = (processedData[i + m * 4 + 0]) | (processedData[i + m * 4 + 1] << 8) | (processedData[i + m * 4 + 2] << 16) |
-			       (processedData[i + m * 4 + 3] << 24);
+	for (u32 i = 0; i < processed_data.size(); i += 64) {
+		u32 m[16];
+		for (u32 j = 0; j < 16; j++) {
+			m[j] = (processed_data[i + j * 4 + 0]) | (processed_data[i + j * 4 + 1] << 8) | (processed_data[i + j * 4 + 2] << 16) |
+			       (processed_data[i + j * 4 + 3] << 24);
 		}
 
 		u32 a = a0;
@@ -91,7 +91,7 @@ void LTEngine::Hash::md5(const u8 *data, u32 size, u8 output[16]) {
 			u32 temp = d;
 			d = c;
 			c = b;
-			b = b + rotateLeft(a + f + k[j] + M[g], s[j]);
+			b = b + rotate_left(a + f + k[j] + m[g], s[j]);
 			a = temp;
 		}
 

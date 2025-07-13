@@ -10,11 +10,11 @@ namespace LTEngine::Shapes {
 	struct Polygon : public Shape2D {
 		std::vector<Math::Vec2> points;
 
-		void addPoint(Math::Vec2 point) {
+		void add_point(Math::Vec2 point) {
 			points.push_back(point);
 		}
 
-		void removePoint(Math::Vec2 point) {
+		void remove_point(Math::Vec2 point) {
 			points.erase(std::remove(points.begin(), points.end(), point), points.end());
 		}
 	};

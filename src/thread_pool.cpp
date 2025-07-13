@@ -6,18 +6,18 @@ using namespace LTEngine;
 
 ThreadPool::ThreadPool(size_t threads) {
     for (size_t i = 0; i < threads; i++) {
-        m_workers.emplace_back([this] {
+        _workers.emplace_back([this] {
             while (true) {
                 std::function<void()> task;
 
                 {
-                    std::unique_lock<std::mutex> lock(m_queueMutex);
-                    m_condition.wait(lock, [this] { return !m_tasks.empty() || m_isShuttingDown; });
-                    if (m_isShuttingDown && m_tasks.empty()) {
+                    std::unique_lock<std::mutex> lock(_queue_mutex);
+                    _condition.wait(lock, [this] { return !_tasks.empty() || _is_shutting_down; });
+                    if (_is_shutting_down && _tasks.empty()) {
                         return;
                     }
-                    task = std::move(m_tasks.front());
-                    m_tasks.pop();
+                    task = std::move(_tasks.front());
+                    _tasks.pop();
                 }
 
                 task();
@@ -28,11 +28,11 @@ ThreadPool::ThreadPool(size_t threads) {
 
 ThreadPool::~ThreadPool() {
     {
-        std::unique_lock<std::mutex> lock(m_queueMutex);
-        m_isShuttingDown = true;
+        std::unique_lock<std::mutex> lock(_queue_mutex);
+        _is_shutting_down = true;
     }
-    m_condition.notify_all();
-    for (std::thread& worker : m_workers) {
+    _condition.notify_all();
+    for (std::thread& worker : _workers) {
         worker.join();
     }
 }
@@ -40,8 +40,8 @@ ThreadPool::~ThreadPool() {
 
 void ThreadPool::enqueue(std::function<void()> task) {
     {
-        std::unique_lock<std::mutex> lock(m_queueMutex);
-        m_tasks.push(task);
+        std::unique_lock<std::mutex> lock(_queue_mutex);
+        _tasks.push(task);
     }
-    m_condition.notify_one();
+    _condition.notify_one();
 }

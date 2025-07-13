@@ -14,48 +14,48 @@ namespace LTEngine::Physics {
 		Box2D();
 		~Box2D();
 
-		void update(f32 timeStep) override;
+		void update(f32 time_step) override;
 
-		void setGravity(const Math::Vec2 &gravity) override;
-		Math::Vec2 getGravity() const override;
+		void set_gravity(const Math::Vec2 &gravity) override;
+		Math::Vec2 get_gravity() const override;
 
-		u32 addBody(Shapes::Rect rect, PhysicsEngine2D::BodyType bodyType) override;
-		u32 addBody(Shapes::Circle circle, PhysicsEngine2D::BodyType bodyType) override;
-		u32 addBody(Shapes::Polygon polygon, PhysicsEngine2D::BodyType bodyType) override;
-		u32 addBody(Shapes::Triangle triangle, PhysicsEngine2D::BodyType bodyType) override;
+		u32 add_body(Shapes::Rect rect, PhysicsEngine2D::BodyType body_type) override;
+		u32 add_body(Shapes::Circle circle, PhysicsEngine2D::BodyType body_type) override;
+		u32 add_body(Shapes::Polygon polygon, PhysicsEngine2D::BodyType body_type) override;
+		u32 add_body(Shapes::Triangle triangle, PhysicsEngine2D::BodyType body_type) override;
 
-		u32 addJoint(u32 bodyIdA, u32 bodyIdB, Math::Vec2 anchorA, Math::Vec2 anchorB) override;
+		u32 add_joint(u32 body_id_a, u32 body_id_b, Math::Vec2 anchor_a, Math::Vec2 anchor_b) override;
 
-		void addForce(u32 id, Math::Vec2 force) override;
+		void add_force(u32 id, Math::Vec2 force) override;
 
-		void setJointLength(u32 id, f32 length) override;
-		void setJointSpring(u32 id, bool spring) override;
+		void set_joint_length(u32 id, f32 length) override;
+		void set_joint_spring(u32 id, bool spring) override;
 
-		void disableBody(u32 id) override;
-		void enableBody(u32 id) override;
+		void disable_body(u32 id) override;
+		void enable_body(u32 id) override;
 
-		void removeJoint(u32 id) override;
-		void removeBody(u32 id) override;
+		void remove_joint(u32 id) override;
+		void remove_body(u32 id) override;
 
-		void setBodyPosition(u32 id, Math::Vec2 position) override;
-		void setBodyRotation(u32 id, f32 rotation) override;
+		void set_body_position(u32 id, Math::Vec2 position) override;
+		void set_body_rotation(u32 id, f32 rotation) override;
 
-		Math::Vec2 getJointAnchorA(u32 id) override;
-		Math::Vec2 getJointAnchorB(u32 id) override;
+		Math::Vec2 get_joint_anchor_a(u32 id) override;
+		Math::Vec2 get_joint_anchor_b(u32 id) override;
 
-		Math::Vec2 getBodyPosition(u32 id) override;
-		f32 getBodyRotation(u32 id) override;
+		Math::Vec2 get_body_position(u32 id) override;
+		f32 get_body_rotation(u32 id) override;
 
 
 	private:
-		b2WorldId m_world;
+		b2WorldId _world;
 
-		u32 m_nextId = 0;
+		u32 _next_id = 0;
 
-		std::unordered_map<u32, b2BodyId> m_bodies;
-		std::unordered_map<u32, b2JointId> m_joints;
+		std::unordered_map<u32, b2BodyId> _bodies;
+		std::unordered_map<u32, b2JointId> _joints;
 
-		std::unordered_map<u32, b2Vec2> m_bodySizes;
+		std::unordered_map<u32, b2Vec2> _body_sizes;
 	};
 } // namespace LTEngine::Physics
 

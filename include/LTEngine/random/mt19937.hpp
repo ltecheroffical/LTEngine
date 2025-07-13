@@ -26,10 +26,10 @@ namespace LTEngine::Random {
 		f32 next_f32() override;
 		f64 next_f64() override;
 
-		void nextBytes(void *data, size_t size) override;
+		void next_bytes(void *data, size_t size) ;
 
 	private:
-		std::mt19937 m_generator;
+		std::mt19937 _generator;
 	};
 } // namespace LTEngine::Random
 

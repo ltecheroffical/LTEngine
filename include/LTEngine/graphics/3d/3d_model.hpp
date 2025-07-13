@@ -27,16 +27,16 @@ namespace LTEngine::Graphics {
             u32 a, b, c;
         };
 
-        void addVertex(Vertex vertex);
-        void removeVertex(Vertex vertex);
+        void add_vertex(Vertex vertex);
+        void remove_vertex(Vertex vertex);
 
-        Vertex getVertex(u32 index);
-        std::vector<Vertex> getVertices();
-        std::vector<Face> getFaces();
+        Vertex get_vertex(u32 index);
+        std::vector<Vertex> get_vertices();
+        std::vector<Face> get_faces();
 
     private:
-        std::vector<Vertex> m_vertices;
-        std::vector<u32> m_indices;
+        std::vector<Vertex> _vertices;
+        std::vector<u32> _indices;
     };
 }
 

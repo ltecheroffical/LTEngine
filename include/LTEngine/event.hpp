@@ -8,43 +8,43 @@
 
 
 namespace LTEngine {
-	template <typename... argsTy> class LTENGINE_API Event {
+	template <typename... args_ty> class LTENGINE_API Event {
 	public:
 		Event() = default;
 		~Event() = default;
 
 
-		void invoke(argsTy... args) {
-			for (auto &listener : m_listeners) {
+		void invoke(args_ty... args) {
+			for (auto &listener : _listeners) {
 				listener(args...);
 			}
 		}
 
-		void listen(std::function<void(argsTy...)> listener) {
-			m_listeners.push_back(listener);
+		void listen(std::function<void(args_ty...)> listener) {
+			_listeners.push_back(listener);
 		}
-		void unlisten(std::function<void(argsTy...)> listener) {
-			m_listeners.erase(std::remove(m_listeners.begin(), m_listeners.end(), listener), m_listeners.end());
+		void unlisten(std::function<void(args_ty...)> listener) {
+			_listeners.erase(std::remove(_listeners.begin(), _listeners.end(), listener), _listeners.end());
 		}
 
 		void clear() {
-			m_listeners.clear();
+			_listeners.clear();
 		}
 
 
-		void operator+=(std::function<void(argsTy...)> listener) {
+		void operator+=(std::function<void(args_ty...)> listener) {
 			listen(listener);
 		}
-		void operator-=(std::function<void(argsTy...)> listener) {
+		void operator-=(std::function<void(args_ty...)> listener) {
 			unlisten(listener);
 		}
 
-		void operator()(argsTy... args) {
+		void operator()(args_ty... args) {
 			invoke(args...);
 		}
 
 	private:
-		std::vector<std::function<void(argsTy...)>> m_listeners;
+		std::vector<std::function<void(args_ty...)>> _listeners;
 	};
 } // namespace LTEngine
 

@@ -27,13 +27,13 @@ class LTENGINE_API MemFile : public File {
 
 	void flush() override;
 
-	void getBuffer(void *buffer) {
-		memcpy(buffer, m_buffer.data(), m_buffer.size());
+	void get_buffer(void *buffer) {
+		memcpy(buffer, _buffer.data(), _buffer.size());
 	}
 
   private:
-	std::vector<u8> m_buffer;
-	size_t m_offset = 0;
+	std::vector<u8> _buffer;
+	size_t _offset = 0;
 };
 } // namespace LTEngine::OS
 

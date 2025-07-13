@@ -8,25 +8,25 @@
 
 
 namespace LTEngine::Physics {
-	bool LTENGINE_API testCollision(Shapes::Rect a, Shapes::Rect b);
-	bool LTENGINE_API testCollision(Shapes::Rect a, Shapes::Circle b);
-	bool LTENGINE_API testCollision(Shapes::Rect a, Shapes::Polygon b);
-	bool LTENGINE_API testCollision(Shapes::Rect a, Shapes::Triangle b);
+	bool LTENGINE_API test_collision(Shapes::Rect a, Shapes::Rect b);
+	bool LTENGINE_API test_collision(Shapes::Rect a, Shapes::Circle b);
+	bool LTENGINE_API test_collision(Shapes::Rect a, Shapes::Polygon b);
+	bool LTENGINE_API test_collision(Shapes::Rect a, Shapes::Triangle b);
 
-	bool LTENGINE_API testCollision(Shapes::Circle a, Shapes::Circle b);
-	bool LTENGINE_API testCollision(Shapes::Circle a, Shapes::Rect b);
-	bool LTENGINE_API testCollision(Shapes::Circle a, Shapes::Polygon b);
-	bool LTENGINE_API testCollision(Shapes::Circle a, Shapes::Triangle b);
+	bool LTENGINE_API test_collision(Shapes::Circle a, Shapes::Circle b);
+	bool LTENGINE_API test_collision(Shapes::Circle a, Shapes::Rect b);
+	bool LTENGINE_API test_collision(Shapes::Circle a, Shapes::Polygon b);
+	bool LTENGINE_API test_collision(Shapes::Circle a, Shapes::Triangle b);
 
-	bool LTENGINE_API testCollision(Shapes::Polygon a, Shapes::Polygon b);
-	bool LTENGINE_API testCollision(Shapes::Polygon a, Shapes::Rect b);
-	bool LTENGINE_API testCollision(Shapes::Polygon a, Shapes::Circle b);
-	bool LTENGINE_API testCollision(Shapes::Polygon a, Shapes::Triangle b);
+	bool LTENGINE_API test_collision(Shapes::Polygon a, Shapes::Polygon b);
+	bool LTENGINE_API test_collision(Shapes::Polygon a, Shapes::Rect b);
+	bool LTENGINE_API test_collision(Shapes::Polygon a, Shapes::Circle b);
+	bool LTENGINE_API test_collision(Shapes::Polygon a, Shapes::Triangle b);
 
-	bool LTENGINE_API testCollision(Shapes::Triangle a, Shapes::Triangle b);
-	bool LTENGINE_API testCollision(Shapes::Triangle a, Shapes::Rect b);
-	bool LTENGINE_API testCollision(Shapes::Triangle a, Shapes::Circle b);
-	bool LTENGINE_API testCollision(Shapes::Triangle a, Shapes::Polygon b);
+	bool LTENGINE_API test_collision(Shapes::Triangle a, Shapes::Triangle b);
+	bool LTENGINE_API test_collision(Shapes::Triangle a, Shapes::Rect b);
+	bool LTENGINE_API test_collision(Shapes::Triangle a, Shapes::Circle b);
+	bool LTENGINE_API test_collision(Shapes::Triangle a, Shapes::Polygon b);
 } // namespace LTEngine::Physics
 
 #endif

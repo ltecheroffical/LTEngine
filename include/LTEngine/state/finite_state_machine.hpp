@@ -16,17 +16,17 @@ namespace LTEngine::State {
 
 		void update(f32 delta);
 
-		void addState(const std::string &name, std::unique_ptr<FSMState> state);
-		FSMState *getState(const std::string &name);
+		void add_state(const std::string &name, std::unique_ptr<FSMState> state);
+		FSMState *get_state(const std::string &name);
 
-		bool isInState(const std::string &name);
+		bool is_in_state(const std::string &name);
 		void transition(const std::string &name);
 
 	private:
-		std::string m_currentState;
-		bool m_isInState = false;
+		std::string _current_state;
+		bool _is_in_state = false;
 
-		std::unordered_map<std::string, std::unique_ptr<FSMState>> m_states;
+		std::unordered_map<std::string, std::unique_ptr<FSMState>> _states;
 	};
 } // namespace LTEngine::State
 

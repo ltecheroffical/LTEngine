@@ -10,123 +10,123 @@ FStreamFile::FStreamFile(const char *path, u8 mode)
 }
 
 FStreamFile::~FStreamFile() {
-	m_stream.close();
+	_stream.close();
 }
 
 void FStreamFile::open(const char *path, u8 mode) {
-	std::ios::openmode openMode = std::ios::openmode{};
+	std::ios::openmode open_mode = std::ios::openmode{};
 	bool create = (mode & FLAG_FILE_CREATE) != 0;
 
 	if (mode & FLAG_FILE_READ)
-		openMode |= std::ios::in;
+		open_mode |= std::ios::in;
 	if (mode & FLAG_FILE_WRITE)
-		openMode |= std::ios::out;
+		open_mode |= std::ios::out;
 	if (mode & FLAG_FILE_APPEND)
-		openMode |= std::ios::app;
+		open_mode |= std::ios::app;
 
-	if (m_stream.is_open()) {
-		m_stream.close();
+	if (_stream.is_open()) {
+		_stream.close();
 	}
 
-	m_stream.open(path, openMode);
-	if (!m_stream.is_open()) {
+	_stream.open(path, open_mode);
+	if (!_stream.is_open()) {
 		if (create) {
-			m_stream.open(path, std::ios::out);
-			m_stream.close();
-			m_stream.open(path, openMode);
+			_stream.open(path, std::ios::out);
+			_stream.close();
+			_stream.open(path, open_mode);
 		} else {
 			throw std::runtime_error("Failed to open file: " + std::string(path));
 		}
 	}
 
-	setMode(mode);
-	m_path = path;
+	set_mode(mode);
+	_path = path;
 }
 
 void FStreamFile::clear() {
-	m_stream.open(m_path, std::ios::trunc);
-	if (!m_stream.is_open()) {
-		throw std::runtime_error("Failed to clear file: " + std::string(m_path));
+	_stream.open(_path, std::ios::trunc);
+	if (!_stream.is_open()) {
+		throw std::runtime_error("Failed to clear file: " + std::string(_path));
 	}
-	m_stream.close();
+	_stream.close();
 
-	std::ios::openmode openMode = std::ios::openmode{};
-	bool create = (getMode() & FLAG_FILE_CREATE) != 0;
+	std::ios::openmode open_mode = std::ios::openmode{};
+	bool create = (get_mode() & FLAG_FILE_CREATE) != 0;
 
-	if (getMode() & FLAG_FILE_READ)
-		openMode |= std::ios::in;
-	if (getMode() & FLAG_FILE_WRITE)
-		openMode |= std::ios::out;
-	if (getMode() & FLAG_FILE_APPEND)
-		openMode |= std::ios::app;
+	if (get_mode() & FLAG_FILE_READ)
+		open_mode |= std::ios::in;
+	if (get_mode() & FLAG_FILE_WRITE)
+		open_mode |= std::ios::out;
+	if (get_mode() & FLAG_FILE_APPEND)
+		open_mode |= std::ios::app;
 
-	m_stream.open(m_path, openMode);
-	if (!m_stream.is_open()) {
-		throw std::runtime_error("Failed to open file: " + std::string(m_path));
+	_stream.open(_path, open_mode);
+	if (!_stream.is_open()) {
+		throw std::runtime_error("Failed to open file: " + std::string(_path));
 	}
 }
 
 void FStreamFile::seekp(size_t offset, Seek origin) {
 	std::ios_base::seekdir dir;
 	switch (origin) {
-		case Seek::Begin:
+		case Seek::BEGIN:
 			dir = std::ios_base::beg;
 			break;
-		case Seek::Current:
+		case Seek::CURRENT:
 			dir = std::ios_base::cur;
 			break;
-		case Seek::End:
+		case Seek::END:
 			dir = std::ios_base::end;
 			break;
 	}
-	m_stream.seekp(offset, dir);
+	_stream.seekp(offset, dir);
 }
 
 size_t FStreamFile::tellp() {
-	return m_stream.tellp();
+	return _stream.tellp();
 }
 
 void FStreamFile::seekg(size_t offset, Seek origin) {
 	std::ios_base::seekdir dir;
 	switch (origin) {
-		case Seek::Begin:
+		case Seek::BEGIN:
 			dir = std::ios_base::beg;
 			break;
-		case Seek::Current:
+		case Seek::CURRENT:
 			dir = std::ios_base::cur;
 			break;
-		case Seek::End:
+		case Seek::END:
 			dir = std::ios_base::end;
 			break;
 	}
-	m_stream.seekg(offset, dir);
+	_stream.seekg(offset, dir);
 }
 
 size_t FStreamFile::tellg() {
-	return m_stream.tellg();
+	return _stream.tellg();
 }
 
 size_t FStreamFile::size() {
-	std::ios::pos_type pos = m_stream.tellp();
+	std::ios::pos_type pos = _stream.tellp();
 
-	m_stream.seekg(0, std::ios::end);
-	size_t size = m_stream.tellg();
-	m_stream.seekg(pos, std::ios::beg);
+	_stream.seekg(0, std::ios::end);
+	size_t size = _stream.tellg();
+	_stream.seekg(pos, std::ios::beg);
 	return size;
 }
 
 bool FStreamFile::eof() const {
-	return m_stream.eof();
+	return _stream.eof();
 }
 
 size_t FStreamFile::read(void *buffer, size_t size) {
-	return m_stream.read(reinterpret_cast<char *>(buffer), size).gcount();
+	return _stream.read(reinterpret_cast<char *>(buffer), size).gcount();
 }
 
 void FStreamFile::write(const void *buffer, size_t size) {
-	m_stream.write(reinterpret_cast<const char *>(buffer), size);
+	_stream.write(reinterpret_cast<const char *>(buffer), size);
 }
 
 void FStreamFile::flush() {
-	m_stream.flush();
+	_stream.flush();
 }

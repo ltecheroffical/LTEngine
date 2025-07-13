@@ -12,12 +12,12 @@ namespace LTEngine {
 		Engine(std::unique_ptr<Object::EngineStructure> structure);
 		~Engine() = default;
 
-		Event<f32> onUpdate;
-		Event<f32> onUpdatePost;
-		Event<> onRender;
-		Event<> onRenderPost;
+		Event<f32> on_update;
+		Event<f32> on_update_post;
+		Event<> on_render;
+		Event<> on_render_post;
 
-		f32 timeScale = 1.f;
+		f32 time_scale = 1.f;
 
 		/**
 		 * @brief Initializes the display with the specified renderer.
@@ -26,15 +26,15 @@ namespace LTEngine {
 		 * This function is used to initialize the display. Until this is called, there is no rendering, meaning that the
 		 * `render()` function will return immediately. The renderer passed in will be used until the Engine is destroyed.
 		 */
-		void initDisplay();
+		void init_display();
 
-		void setObjectStructure(std::unique_ptr<Object::EngineStructure> structure) {
-			m_objectStructure = std::move(structure);
+		void set_object_structure(std::unique_ptr<Object::EngineStructure> structure) {
+			_object_structure = std::move(structure);
 		}
-		Object::EngineStructure *getObjectStructure() {
-			return m_objectStructure.get();
+		Object::EngineStructure *get_object_structure() {
+			return _object_structure.get();
 		}
-		void clearObjects();
+		void clear_objects();
 
 		/**
 		 * @brief Captures the current scene and returns its ID to load it later.
@@ -47,20 +47,20 @@ namespace LTEngine {
 		 *
 		 * Whats powering the scene capturing? It's the clone function specified by the engine structure.
 		 */
-		u32 captureScene();
-		void loadScene(u32 id);
-		void deleteScene(u32 id);
+		u32 capture_scene();
+		void load_scene(u32 id);
+		void delete_scene(u32 id);
 
 		void update(f32 delta);
 		void render();
 
 	private:
-		bool m_displayInitialized : 1 = false;
-		u32 m_nextSceneId = 0;
+		bool _display_initialized : 1 = false;
+		u32 _next_scene_id = 0;
 
-		std::unique_ptr<Object::EngineStructure> m_objectStructure = nullptr;
+		std::unique_ptr<Object::EngineStructure> _object_structure = nullptr;
 
-		std::unordered_map<u32, std::unique_ptr<Object::EngineStructure::EngineStructureData>> m_scenes;
+		std::unordered_map<u32, std::unique_ptr<Object::EngineStructure::EngineStructureData>> _scenes;
 	};
 } // namespace LTEngine
 

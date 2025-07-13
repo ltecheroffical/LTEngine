@@ -27,7 +27,7 @@ namespace LTEngine {
 		 * This function should be called at the end of frame processing to erase anything leftover.
 		 * This serves as a garbage collector.
 		 */
-		void endFrame();
+		void end_frame();
 
 		/**
 		 * @brief Allocates memory on the frame heap.
@@ -44,8 +44,8 @@ namespace LTEngine {
 		void *alloc(size_t size);
 
 	private:
-		size_t m_nextHeapIndex = 0;
-		std::vector<u8> m_heap;
+		size_t _next_heap_index = 0;
+		std::vector<u8> _heap;
 	};
 } // namespace LTEngine
 

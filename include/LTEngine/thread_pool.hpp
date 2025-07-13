@@ -19,12 +19,12 @@ namespace LTEngine {
 		void enqueue(std::function<void()> task);
 
 	private:
-		std::vector<std::thread> m_workers;
-		std::queue<std::function<void()>> m_tasks;
+		std::vector<std::thread> _workers;
+		std::queue<std::function<void()>> _tasks;
 
-		std::mutex m_queueMutex;
-		std::condition_variable m_condition;
-		std::atomic<bool> m_isShuttingDown;
+		std::mutex _queue_mutex;
+		std::condition_variable _condition;
+		std::atomic<bool> _is_shutting_down;
 	};
 } // namespace LTEngine
 

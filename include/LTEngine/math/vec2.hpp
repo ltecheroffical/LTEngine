@@ -10,12 +10,12 @@ namespace LTEngine::Math {
 	LTENGINE_PACK_START() struct Vec2 {
 		f32 x, y;
 
-		static const Vec2 Zero;
-		static const Vec2 One;
-		static const Vec2 Up;
-		static const Vec2 Down;
-		static const Vec2 Left;
-		static const Vec2 Right;
+		static const Vec2 ZERO;
+		static const Vec2 ONE;
+		static const Vec2 UP;
+		static const Vec2 DOWN;
+		static const Vec2 LEFT;
+		static const Vec2 RIGHT;
 
 		Vec2() : x(0), y(0) {
 		}
@@ -25,7 +25,7 @@ namespace LTEngine::Math {
 		Vec2 normalize() {
 			f32 magnitude = std::sqrt(x * x + y * y);
 			if (magnitude == 0.f) {
-				return Zero;
+				return ZERO;
 			}
 			return Vec2(x / magnitude, y / magnitude);
 		}
@@ -49,7 +49,7 @@ namespace LTEngine::Math {
 		bool operator>(const Vec2 &other) const { return x > other.x || (x == other.x && y > other.y); }
 		bool operator<=(const Vec2 &other) const { return x <= other.x || (x == other.x && y <= other.y); }
 		bool operator>=(const Vec2 &other) const { return x >= other.x || (x == other.x && y >= other.y); }
-		bool operator==(const Vec2 &other) const { return LTENGINE_F32_EQ(x, other.x) && LTENGINE_F32_EQ(y, other.y); }
+		bool operator==(const Vec2 &other) const { return LTEngine_f32_eq(x, other.x) && LTEngine_f32_eq(y, other.y); }
 		bool operator!=(const Vec2 &other) const { return x != other.x && y != other.y; }
 
 
@@ -99,12 +99,12 @@ namespace LTEngine::Math {
 	LTENGINE_PACK_START() struct Vec2i {
 		i32 x, y;
 
-		static const Vec2i Zero;
-		static const Vec2i One;
-		static const Vec2i Up;
-		static const Vec2i Down;
-		static const Vec2i Left;
-		static const Vec2i Right;
+		static const Vec2i ZERO;
+		static const Vec2i ONE;
+		static const Vec2i UP;
+		static const Vec2i DOWN;
+		static const Vec2i LEFT;
+		static const Vec2i RIGHT;
 
 		Vec2i() : x(0), y(0) {
 		}
@@ -114,7 +114,7 @@ namespace LTEngine::Math {
 		Vec2i normalize() {
 			f32 magnitude = std::sqrt(x * x + y * y);
 			if (magnitude == 0.f) {
-				return Zero;
+				return ZERO;
 			}
 			return Vec2i(x / magnitude, y / magnitude);
 		}
@@ -184,8 +184,8 @@ namespace LTEngine::Math {
 	LTENGINE_PACK_START() struct Vec2u {
 		u32 x, y;
 
-		static const Vec2u Zero;
-		static const Vec2u One;
+		static const Vec2u ZERO;
+		static const Vec2u ONE;
 
 		Vec2u() : x(0), y(0) {
 		}
@@ -249,22 +249,22 @@ namespace LTEngine::Math {
 		}
 	} LTENGINE_PACK_END();
 
-	inline const Vec2 Vec2::Zero = Vec2(0, 0);
-	inline const Vec2 Vec2::One = Vec2(1, 1);
-	inline const Vec2 Vec2::Up = Vec2(0, 1);
-	inline const Vec2 Vec2::Down = Vec2(0, -1);
-	inline const Vec2 Vec2::Left = Vec2(-1, 0);
-	inline const Vec2 Vec2::Right = Vec2(1, 0);
+	inline const Vec2 Vec2::ZERO = Vec2(0, 0);
+	inline const Vec2 Vec2::ONE = Vec2(1, 1);
+	inline const Vec2 Vec2::UP = Vec2(0, 1);
+	inline const Vec2 Vec2::DOWN = Vec2(0, -1);
+	inline const Vec2 Vec2::LEFT = Vec2(-1, 0);
+	inline const Vec2 Vec2::RIGHT = Vec2(1, 0);
 
-	inline const Vec2i Vec2i::Zero = Vec2i(0, 0);
-	inline const Vec2i Vec2i::One = Vec2i(1, 1);
-	inline const Vec2i Vec2i::Up = Vec2i(0, 1);
-	inline const Vec2i Vec2i::Down = Vec2i(0, -1);
-	inline const Vec2i Vec2i::Left = Vec2i(-1, 0);
-	inline const Vec2i Vec2i::Right = Vec2i(1, 0);
+	inline const Vec2i Vec2i::ZERO = Vec2i(0, 0);
+	inline const Vec2i Vec2i::ONE = Vec2i(1, 1);
+	inline const Vec2i Vec2i::UP = Vec2i(0, 1);
+	inline const Vec2i Vec2i::DOWN = Vec2i(0, -1);
+	inline const Vec2i Vec2i::LEFT = Vec2i(-1, 0);
+	inline const Vec2i Vec2i::RIGHT = Vec2i(1, 0);
 
-	inline const Vec2u Vec2u::Zero = Vec2u(0, 0);
-	inline const Vec2u Vec2u::One = Vec2u(1, 1);
+	inline const Vec2u Vec2u::ZERO = Vec2u(0, 0);
+	inline const Vec2u Vec2u::ONE = Vec2u(1, 1);
 } // namespace LTEngine::Math
 
 #endif

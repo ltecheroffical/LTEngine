@@ -7,12 +7,12 @@ using namespace LTEngine;
 using namespace LTEngine::Random;
 
 
-LTEngine_HUnixRandom LTENGINE_API LTEngine_UnixRandom() {
+LTEngine_HUnixRandom LTENGINE_API lt_engine_unix_random() {
 	return {{ new UnixRandom() }};
 }
 
-LTEngine_HUnixRandom LTENGINE_API LTEngine_UnixRandom_bufSize(size_t bufferSize) {
-	return {{ new UnixRandom(bufferSize) }};
+LTEngine_HUnixRandom LTENGINE_API lt_engine_unix_random_buf_size(size_t buffer_size) {
+	return {{ new UnixRandom(buffer_size) }};
 }
 
 #endif

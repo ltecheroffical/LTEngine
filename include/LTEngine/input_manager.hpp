@@ -14,73 +14,73 @@ class InputManager {
 	InputManager() = default;
 	~InputManager() = default;
 
-	using IsKeyDownCallback = std::function<bool(ScanCode key)>;
-	using IsMouseButtonDownCallback = std::function<bool(MouseButton button)>;
-	using IsControllerButtonDownCallback = std::function<bool(ControllerButton button)>;
+	using is_key_down_callback = std::function<bool(ScanCode key)>;
+	using is_mouse_button_down_callback = std::function<bool(MouseButton button)>;
+	using is_controller_button_down_callback = std::function<bool(ControllerButton button)>;
 	// Expects returned normalized value between 0.0..1.0
-	using GetControllerAnalogStickCallback = std::function<Math::Vec2(ControllerAnalogStick stick)>;
+	using get_controller_analog_stick_callback = std::function<Math::Vec2(ControllerAnalogStick stick)>;
 
 	// May throw AlreadyExistsException
-	void addAction(const std::string &action);
+	void add_action(const std::string &action);
 	// May throw NotFoundException
-	void removeAction(const std::string &action);
+	void remove_action(const std::string &action);
 
 	// May throw NotFoundException
-	void addActionKey(const std::string &action, ScanCode code);
+	void add_action_key(const std::string &action, ScanCode code);
 	// May throw NotFoundException
-	void removeActionKey(const std::string &action, ScanCode code);
+	void remove_action_key(const std::string &action, ScanCode code);
 
 	// May throw NotFoundException
-	void addActionMouseButton(const std::string &action, MouseButton button);
+	void add_action_mouse_button(const std::string &action, MouseButton button);
 	// May throw NotFoundException
-	void removeActionMouseButton(const std::string &action, MouseButton button);
+	void remove_action_mouse_button(const std::string &action, MouseButton button);
 
 	// May throw NotFoundException
-	void addActionControllerButton(const std::string &action, ControllerButton button);
+	void add_action_controller_button(const std::string &action, ControllerButton button);
 	// May throw NotFoundException
-	void removeActionControllerButton(const std::string &action, ControllerButton button);
+	void remove_action_controller_button(const std::string &action, ControllerButton button);
 
 	// May throw NotFoundException
-	void addActionControllerAnalogStick(const std::string &action, ControllerAnalogStick stick, Math::Vec2 direction, f32 deadzone);
+	void add_action_controller_analog_stick(const std::string &action, ControllerAnalogStick stick, Math::Vec2 direction, f32 deadzone);
 	// May throw NotFoundException
-	void removeActionControllerAnalogStick(const std::string &action, ControllerAnalogStick stick, Math::Vec2 direction);
+	void remove_action_controller_analog_stick(const std::string &action, ControllerAnalogStick stick, Math::Vec2 direction);
 
 	// May throw NotFoundException
-	bool isActionTriggered(const std::string &action);
+	bool is_action_triggered(const std::string &action);
 
-	void setKeyDownCallback(IsKeyDownCallback callback);
-	void setMouseButtonDownCallback(IsMouseButtonDownCallback callback);
-	void setControllerButtonDownCallback(IsControllerButtonDownCallback callback);
-	void setControllerAnalogStickCallback(GetControllerAnalogStickCallback callback);
+	void set_key_down_callback(is_key_down_callback callback);
+	void set_mouse_button_down_callback(is_mouse_button_down_callback callback);
+	void set_controller_button_down_callback(is_controller_button_down_callback callback);
+	void set_controller_analog_stick_callback(get_controller_analog_stick_callback callback);
 
   private:
 	struct ActionInput {
 		union {
 			ScanCode key;
 			MouseButton mouse;
-			ControllerButton controllerButton;
+			ControllerButton controller_button;
 
 			struct {
-				ControllerAnalogStick analogStick;
+				ControllerAnalogStick analog_stick;
 				Math::Vec2 direction;
 				f32 deadzone;
-			} controllerAnalogStick;
+			} controller_analog_stick;
 		};
 
 		enum ActionInputType {
-			KeyboardInput = 0,
-			MouseInput,
-			ControllerInputButton,
-			ControllerInputAnalogStick
+			KEYBOARD_INPUT = 0,
+			MOUSE_INPUT,
+			CONTROLLER_INPUT_BUTTON,
+			CONTROLLER_INPUT_ANALOG_STICK
 		} type;
 	};
 
-	IsKeyDownCallback m_isKeyDownCallback;
-	IsMouseButtonDownCallback m_isMouseButtonDownCallback;
-	IsControllerButtonDownCallback m_isControllerButtonDownCallback;
-	GetControllerAnalogStickCallback m_getControllerAnalogStickCallback;
+	is_key_down_callback _is_key_down_callback;
+	is_mouse_button_down_callback _is_mouse_button_down_callback;
+	is_controller_button_down_callback _is_controller_button_down_callback;
+	get_controller_analog_stick_callback _get_controller_analog_stick_callback;
 
-	std::unordered_map<std::string, std::vector<ActionInput>> m_actions;
+	std::unordered_map<std::string, std::vector<ActionInput>> _actions;
 };
 } // namespace LTEngine
 

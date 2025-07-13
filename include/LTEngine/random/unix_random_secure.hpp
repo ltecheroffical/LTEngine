@@ -10,7 +10,7 @@
 namespace LTEngine::Random {
 	class LTENGINE_API UnixRandomSecure : public Random {
 	public:
-		UnixRandomSecure(size_t bufferSize = 512);
+		UnixRandomSecure(size_t buffer_size = 512);
 		~UnixRandomSecure() override;
 
 		u8 next_u8() override;
@@ -26,13 +26,13 @@ namespace LTEngine::Random {
 		f32 next_f32() override;
 		f64 next_f64() override;
 
-		void nextBytes(void *data, size_t size) override;
+		void next_bytes(void *data, size_t size) ;
 
 	private:
-		u32 m_bufferSize;
-		std::vector<u8> m_buffer;
+		u32 _buffer_size;
+		std::vector<u8> _buffer;
 
-		std::ifstream m_random;
+		std::ifstream _random;
 	};
 } // namespace LTEngine::Random
 

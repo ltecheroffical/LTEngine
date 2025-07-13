@@ -82,6 +82,6 @@ f64 OpenSSLRandom::next_f64() {
 }
 
 
-void OpenSSLRandom::nextBytes(void *data, size_t size) {
+void OpenSSLRandom::next_bytes(void *data, size_t size) {
 	RAND_bytes((unsigned char *)data, size);
 }

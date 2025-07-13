@@ -10,83 +10,83 @@ MemFile::MemFile(u8 mode)
 
 MemFile::MemFile(const void *data, size_t size, u8 mode)
     : File(mode) {
-	m_buffer.insert(m_buffer.end(), reinterpret_cast<const u8 *>(data), reinterpret_cast<const u8 *>(data) + size);
+	_buffer.insert(_buffer.end(), reinterpret_cast<const u8 *>(data), reinterpret_cast<const u8 *>(data) + size);
 }
 
 void MemFile::clear() {
-	m_buffer.clear();
+	_buffer.clear();
 }
 
 void MemFile::seekp(size_t offset, Seek origin) {
 	switch (origin) {
-		case Seek::Begin:
-			m_offset = offset;
+		case Seek::BEGIN:
+			_offset = offset;
 			break;
-		case Seek::Current:
-			m_offset += offset;
+		case Seek::CURRENT:
+			_offset += offset;
 			break;
-		case Seek::End:
-			m_offset = m_buffer.size() - offset;
+		case Seek::END:
+			_offset = _buffer.size() - offset;
 			break;
 	}
-	m_offset = std::min(m_offset, m_buffer.size());
+	_offset = std::min(_offset, _buffer.size());
 }
 
 size_t MemFile::tellp() {
-	return m_offset;
+	return _offset;
 }
 
 void MemFile::seekg(size_t offset, Seek origin) {
 	switch (origin) {
-		case Seek::Begin:
-			m_offset = offset;
+		case Seek::BEGIN:
+			_offset = offset;
 			break;
-		case Seek::Current:
-			m_offset += offset;
+		case Seek::CURRENT:
+			_offset += offset;
 			break;
-		case Seek::End:
-			m_offset = m_buffer.size() - offset;
+		case Seek::END:
+			_offset = _buffer.size() - offset;
 			break;
 	}
-	m_offset = std::min(m_offset, m_buffer.size());
+	_offset = std::min(_offset, _buffer.size());
 }
 
 size_t MemFile::tellg() {
-	return m_offset;
+	return _offset;
 }
 
 size_t MemFile::size() {
-	return m_buffer.size();
+	return _buffer.size();
 }
 
 bool MemFile::eof() const {
-	return m_offset >= m_buffer.size();
+	return _offset >= _buffer.size();
 }
 
 size_t MemFile::read(void *buffer, size_t size) {
 	if (size == 0) {
 		return 0;
 	}
-	if (m_offset + size > m_buffer.size()) {
-		size = m_buffer.size() - m_offset;
+	if (_offset + size > _buffer.size()) {
+		size = _buffer.size() - _offset;
 	}
-	memcpy(buffer, m_buffer.data() + m_offset, size);
-	m_offset += size;
+	memcpy(buffer, _buffer.data() + _offset, size);
+	_offset += size;
 	return size;
 }
 
 void MemFile::write(const void *buffer, size_t size) {
-	if (getMode() & FLAG_FILE_APPEND) {
-		m_buffer.insert(m_buffer.begin() + m_offset, reinterpret_cast<const u8 *>(buffer),
+	if (get_mode() & FLAG_FILE_APPEND) {
+		_buffer.insert(_buffer.begin() + _offset, reinterpret_cast<const u8 *>(buffer),
 		                reinterpret_cast<const u8 *>(buffer) + size);
-	} else if (getMode() & FLAG_FILE_WRITE) {
+	} else if (get_mode() & FLAG_FILE_WRITE) {
 		// Ensure we have enough space
-		if (m_offset + size > m_buffer.size()) {
-			m_buffer.resize(m_buffer.size() + (size - (m_buffer.size() - m_offset)));
+		if (_offset + size > _buffer.size()) {
+			_buffer.resize(_buffer.size() + (size - (_buffer.size() - _offset)));
 		}
-		memcpy(m_buffer.data() + m_offset, buffer, size);
+		memcpy(_buffer.data() + _offset, buffer, size);
 	}
-	m_offset += size;
+	_offset += size;
 }
 
 void MemFile::flush() {

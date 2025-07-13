@@ -26,23 +26,23 @@ class LTENGINE_API Renderer {
 	virtual ~Renderer() = default;
 
 	struct Material {
-		ColorA baseColor;
+		ColorA base_color;
 		f32 smoothness;
 
-		Math::Vec2 textureTiling;
-		Math::Vec2 textureOffset;
+		Math::Vec2 texture_tiling;
+		Math::Vec2 texture_offset;
 
-		std::optional<Image> diffuseTexture;
-		std::optional<Image> normalTexture;
-		std::optional<Image> specularTexture;
-		std::optional<Image> emissiveTexture;
+		std::optional<Image> diffuse_texture;
+		std::optional<Image> normal_texture;
+		std::optional<Image> specular_texture;
+		std::optional<Image> emissive_texture;
 	};
 
 	void clear(Color color);
 	virtual void clear(ColorA color) = 0;
 
-	void setPixel(Color pixel, Math::Vec2 position);
-	virtual void setPixel(ColorA pixel, Math::Vec2 position) = 0;
+	void set_pixel(Color pixel, Math::Vec2 position);
+	virtual void set_pixel(ColorA pixel, Math::Vec2 position) = 0;
 
 	virtual void draw(Shapes::Cube cube, Math::Vec3 scale, Material &material) = 0;
 	virtual void draw(Shapes::Sphere sphere, Math::Vec3 scale, Material &material) = 0;
@@ -53,21 +53,21 @@ class LTENGINE_API Renderer {
 
 	virtual void draw(Model3D model, Math::Vec3 position, Math::Vec3 rotation, Math::Vec3 scale, Material &material) = 0;
 
-	void setHudMode() {
-		m_hudMode = true;
+	void set_hud_mode() {
+		_hud_mode = true;
 	}
 
-	void clearHudMode() {
-		m_hudMode = false;
+	void clear_hud_mode() {
+		_hud_mode = false;
 	}
 
   protected:
-	bool isHudMode() {
-		return m_hudMode;
+	bool is_hud_mode() {
+		return _hud_mode;
 	}
 
   private:
-	bool m_hudMode = false;
+	bool _hud_mode = false;
 };
 
 class IRendererProgrammable {
@@ -75,25 +75,25 @@ class IRendererProgrammable {
 	~IRendererProgrammable() = default;
 
 	enum class ShaderType {
-		Vertex = 0,
-		Fragment
+		VERTEX = 0,
+		FRAGMENT
 	};
 
-	virtual u32 createShader(const char *hlslSource, ShaderType type) = 0;
+	virtual u32 create_shader(const char *hlsl_source, ShaderType type) = 0;
 	// May throw NotFoundException, InvalidArgumentException
-	virtual void deleteShader(u32 shader) = 0;
+	virtual void delete_shader(u32 shader) = 0;
 
-	virtual u32 createProgram() = 0;
+	virtual u32 create_program() = 0;
 	// May throw NotFoundException, InvalidArgumentException
-	virtual void addProgramShader(u32 program, u32 shader) = 0;
+	virtual void add_program_shader(u32 program, u32 shader) = 0;
 	// May throw NotFoundException, InvalidArgumentException
-	virtual void removeProgramShader(u32 program, u32 shader) = 0;
+	virtual void remove_program_shader(u32 program, u32 shader) = 0;
 	// May throw NotFoundException, InvalidArgumentException
-	virtual void deleteProgram(u32 program) = 0;
+	virtual void delete_program(u32 program) = 0;
 
 	// May throw NotFoundException, InvalidArgumentException
-	virtual void useProgram(u32 program) = 0;
-	virtual void resetProgram() = 0;
+	virtual void use_program(u32 program) = 0;
+	virtual void reset_program() = 0;
 };
 
 class IRendererFramebufferOutput {

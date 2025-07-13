@@ -13,9 +13,9 @@ extern "C" {
 typedef LTEngine_HRandom LTEngine_HUnsecureRandom;
 
 
-LTEngine_HUnsecureRandom LTENGINE_API LTEngine_UnsecureRandom();
+LTEngine_HUnsecureRandom LTENGINE_API lt_engine_unsecure_random();
 
-void LTENGINE_API LTEngine_UnsecureRandom_seed(LTEngine_HUnsecureRandom handle, LTEngine_u64 seed);
+void LTENGINE_API lt_engine_unsecure_random_seed(LTEngine_HUnsecureRandom handle, LTEngine_u64 seed);
 
 #ifndef __cplusplus
 }

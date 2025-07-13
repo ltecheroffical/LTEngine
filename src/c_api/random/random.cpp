@@ -9,122 +9,122 @@ using namespace LTEngine;
 class CRandom : public Random::Random {
 public:
 	CRandom(LTEngine_CustomRandomFuncs funcs) {
-		m_ctx = funcs.init();
-		m_funcs = funcs;
+		_ctx = funcs.init();
+		_funcs = funcs;
 	}
 
 	~CRandom() override {
-		m_funcs.free(m_ctx);
+		_funcs.free(_ctx);
 	}
 
 
 	u8 next_u8() override {
-		return m_funcs.next_u8(m_ctx);
+		return _funcs.next_u8(_ctx);
 	}
 
 	u16 next_u16() override {
-		return m_funcs.next_u16(m_ctx);
+		return _funcs.next_u16(_ctx);
 	}
 
 	u32 next_u32() override {
-		return m_funcs.next_u32(m_ctx);
+		return _funcs.next_u32(_ctx);
 	}
 
 	u64 next_u64() override {
-		return m_funcs.next_u64(m_ctx);
+		return _funcs.next_u64(_ctx);
 	}
 
 
 	i8 next_i8() override {
-		return m_funcs.next_i8(m_ctx);
+		return _funcs.next_i8(_ctx);
 	}
 
 	i16 next_i16() override {
-		return m_funcs.next_i16(m_ctx);
+		return _funcs.next_i16(_ctx);
 	}
 
 	i32 next_i32() override {
-		return m_funcs.next_i32(m_ctx);
+		return _funcs.next_i32(_ctx);
 	}
 
 	i64 next_i64() override {
-		return m_funcs.next_i64(m_ctx);
+		return _funcs.next_i64(_ctx);
 	}
 
 
 	f32 next_f32() override {
-		return m_funcs.next_f32(m_ctx);
+		return _funcs.next_f32(_ctx);
 	}
 
 	f64 next_f64() override {
-		return m_funcs.next_f64(m_ctx);
+		return _funcs.next_f64(_ctx);
 	}
 
 
-	void nextBytes(void *data, size_t size) override {
-		m_funcs.nextBytes(m_ctx, data, size);
+	void next_bytes(void *data, size_t size) {
+		_funcs.next_bytes(_ctx, data, size);
 	}
 
 private:
-	void *m_ctx;
-	LTEngine_CustomRandomFuncs m_funcs;
+	void *_ctx;
+	LTEngine_CustomRandomFuncs _funcs;
 };
 
 
-LTEngine_HRandom LTEngine_CustomRandom(LTEngine_CustomRandomFuncs funcs) {
+LTEngine_HRandom lt_engine_custom_random(LTEngine_CustomRandomFuncs funcs) {
 	return {{ new CRandom(funcs) }};
 }
 
-void LTEngine_CustomRandom_free(LTEngine_HRandom handle) {
+void lt_engine_custom_random_free(LTEngine_HRandom handle) {
 	delete (Random::Random *)handle.handle.ptr;
 }
 
 
-LTEngine_u8 LTEngine_Random_next_u8(LTEngine_HRandom handle) {
+LTEngine_u8 lt_engine_random_next_u8(LTEngine_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_u8();
 }
 
-LTEngine_u16 LTEngine_Random_next_u16(LTEngine_HRandom handle) {
+LTEngine_u16 lt_engine_random_next_u16(LTEngine_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_u16();
 }
 
-LTEngine_u32 LTEngine_Random_next_u32(LTEngine_HRandom handle) {
+LTEngine_u32 lt_engine_random_next_u32(LTEngine_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_u32();
 }
 
-LTEngine_u64 LTEngine_Random_next_u64(LTEngine_HRandom handle) {
+LTEngine_u64 lt_engine_random_next_u64(LTEngine_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_u64();
 }
 
 
-LTEngine_i8 LTEngine_Random_next_i8(LTEngine_HRandom handle) {
+LTEngine_i8 lt_engine_random_next_i8(LTEngine_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_i8();
 }
 
-LTEngine_i16 LTEngine_Random_next_i16(LTEngine_HRandom handle) {
+LTEngine_i16 lt_engine_random_next_i16(LTEngine_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_i16();
 }
 
-LTEngine_i32 LTEngine_Random_next_i32(LTEngine_HRandom handle) {
+LTEngine_i32 lt_engine_random_next_i32(LTEngine_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_i32();
 }
 
-LTEngine_i64 LTEngine_Random_next_i64(LTEngine_HRandom handle) {
+LTEngine_i64 lt_engine_random_next_i64(LTEngine_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_i64();
 }
 
 
-LTEngine_f32 LTEngine_Random_next_f32(LTEngine_HRandom handle) {
+LTEngine_f32 lt_engine_random_next_f32(LTEngine_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_f32();
 }
 
-LTEngine_f64 LTEngine_Random_next_f64(LTEngine_HRandom handle) {
+LTEngine_f64 lt_engine_random_next_f64(LTEngine_HRandom handle) {
 	return ((Random::Random *)handle.handle.ptr)->next_f64();
 }
 
 
-void LTEngine_Random_nextBytes(LTEngine_HRandom handle, void *data, size_t size) {
-	((Random::Random *)handle.handle.ptr)->nextBytes(data, size);
+void lt_engine_random_next_bytes(LTEngine_HRandom handle, void *data, size_t size) {
+	((Random::Random *)handle.handle.ptr)->next_bytes(data, size);
 }
 
 #endif

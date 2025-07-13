@@ -11,11 +11,11 @@ class LTENGINE_API LTBundleAssetManager : public AssetManager {
 	LTBundleAssetManager(LTEngine::OS::File *file);
 	~LTBundleAssetManager() = default;
 
-	const std::vector<u8> loadAssetPure(std::string path) override;
-	void saveAssetPure(std::string path, const u8 *data, size_t size, bool correctErrors) override;
+	const std::vector<u8> load_asset_pure(std::string path) ;
+	void save_asset_pure(std::string path, const u8 *data, size_t size, bool correct_errors) ;
 
   private:
-	LTEngine::OS::File *m_file;
+	LTEngine::OS::File *_file;
 };
 } // namespace LTEngine
 

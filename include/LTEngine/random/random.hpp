@@ -24,7 +24,7 @@ namespace LTEngine::Random {
 		// The value returned is from 0 to 1
 		virtual f64 next_f64() = 0;
 
-		virtual void nextBytes(void *data, size_t size) = 0;
+		virtual void next_bytes(void *data, size_t size) = 0;
 	};
 } // namespace LTEngine::Random
 

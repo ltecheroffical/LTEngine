@@ -6,54 +6,54 @@ using namespace LTEngine;
 
 
 Engine::Engine(std::unique_ptr<Object::EngineStructure> structure) {
-	m_objectStructure = std::move(structure);
+	_object_structure = std::move(structure);
 }
 
 
-void Engine::initDisplay() {
-	m_displayInitialized = true;
+void Engine::init_display() {
+	_display_initialized = true;
 }
 
 
-void Engine::clearObjects() {
-	m_objectStructure->clear();
+void Engine::clear_objects() {
+	_object_structure->clear();
 }
 
 
-u32 Engine::captureScene() {
-	u32 id = m_nextSceneId++;
-	m_scenes[id] = m_objectStructure->save();
+u32 Engine::capture_scene() {
+	u32 id = _next_scene_id++;
+	_scenes[id] = _object_structure->save();
 	return id;
 }
 
-void Engine::loadScene(u32 id) {
-	m_objectStructure->load(m_scenes.at(id).get());
+void Engine::load_scene(u32 id) {
+	_object_structure->load(_scenes.at(id).get());
 }
 
-void Engine::deleteScene(u32 id) {
-	m_scenes.erase(id);
+void Engine::delete_scene(u32 id) {
+	_scenes.erase(id);
 }
 
 
 void Engine::update(f32 delta) {
-	onUpdate(delta * timeScale);
-	if (m_objectStructure != nullptr) {
-		m_objectStructure->update(delta * timeScale);
+	on_update(delta * time_scale);
+	if (_object_structure != nullptr) {
+		_object_structure->update(delta * time_scale);
 	}
-	onUpdatePost(delta * timeScale);
+	on_update_post(delta * time_scale);
 }
 
 void Engine::render() {
-	if (!m_displayInitialized) {
+	if (!_display_initialized) {
 		return;
 	}
 
 
-	onRender();
-	if (m_objectStructure != nullptr) {
-		m_objectStructure->render();
+	on_render();
+	if (_object_structure != nullptr) {
+		_object_structure->render();
 	}
-	onRenderPost();
+	on_render_post();
 }
 
 #endif

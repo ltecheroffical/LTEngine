@@ -33,55 +33,55 @@ class LTENGINE_API AssetManager {
 	struct CachedAsset {
 		std::string path;
 		std::vector<u8> data;
-		u64 lastAccessed;
+		u64 last_accessed;
 	};
 
 	typedef std::function<bool(std::string path, const u8 *data, size_t size)> CacheControllerFunction;
-	typedef std::function<bool(const CachedAsset *asset, size_t usedCacheMemory)> CacheEvictorFunction;
+	typedef std::function<bool(const CachedAsset *asset, size_t used_cache_memory)> CacheEvictorFunction;
 
 	// May throw InvalidDataException, NotFoundException, or std::runtime_error
-	const std::vector<u8> loadAsset(std::string path);
+	const std::vector<u8> load_asset(std::string path);
 	// May throw InvalidDataException, NotFoundException, or std::runtime_error
-	const std::vector<u8> loadAssetUncached(std::string path);
+	const std::vector<u8> load_asset_uncached(std::string path);
 	/* Loads an asset without caching or processing.
 	 * May throw InvalidDataException, NotFoundException, or std::runtime_error
 	 */
-	virtual const std::vector<u8> loadAssetPure(std::string path) = 0;
+	virtual const std::vector<u8> load_asset_pure(std::string path) = 0;
 	// May throw InvalidDataException, ConflictException, or std::runtime_error
-	void saveAsset(std::string path, const u8 *data, size_t size);
+	void save_asset(std::string path, const u8 *data, size_t size);
 	/* Saves an asset without caching or processing.
 	 * May throw InvalidDataException, or std::runtime_error
 	 * On path conflict, replace asset. (In place not required)
 	 */
-	virtual void saveAssetPure(std::string path, const u8 *data, size_t size, bool correctErrors = false) = 0;
+	virtual void save_asset_pure(std::string path, const u8 *data, size_t size, bool correct_errors = false) = 0;
 
 	// The controller decides if to cache
-	void setCacheController(CacheControllerFunction controller) {
-		m_controller = controller;
+	void set_cache_controller(CacheControllerFunction controller) {
+		_controller = controller;
 	}
 
 	// Cache eviction called every load and save
-	void setCacheEvictor(CacheEvictorFunction evictor) {
-		m_evictor = evictor;
+	void set_cache_evictor(CacheEvictorFunction evictor) {
+		_evictor = evictor;
 	}
 
 	// Evicts cache when older than 10 seconds
-	void resetCacheEvictor() {
-		m_evictor = DEFAULT_EVICTOR;
+	void reset_cache_evictor() {
+		_evictor = _default_evictor;
 	}
 
 	// Default controller caches if asset is less than 16KB
-	void resetCacheController() {
-		m_controller = DEFAULT_CONTROLLER;
+	void reset_cache_controller() {
+		_controller = _default_controller;
 	}
 
-	void clearCache() {
-		m_cache.clear();
+	void clear_cache() {
+		_cache.clear();
 	}
 
 	// Removes an asset from the cache
-	void removeCachedAsset(std::string path) {
-		m_cache.erase(path);
+	void remove_cached_asset(std::string path) {
+		_cache.erase(path);
 	}
 
 	/**
@@ -90,29 +90,29 @@ class LTENGINE_API AssetManager {
 	 * @details
 	 * The asset manager post processor is used to process assets before saved. See `AssetManagerPostProcessor` for uses.
 	 */
-	void setPostProcessor(AssetManagerPostProcessor *postProcessor) {
-		m_postProcessor = postProcessor;
+	void set_post_processor(AssetManagerPostProcessor *post_processor) {
+		_post_processor = post_processor;
 	}
 
 
   private:
-	void cacheEvictor();
+	void _cache_evictor();
 
-	const CacheControllerFunction DEFAULT_CONTROLLER = [](std::string path, const u8 *data, size_t size) {
+	const CacheControllerFunction _default_controller = [](std::string path, const u8 *data, size_t size) {
 		return size < LTENGINE_KB(16);
 	};
 
-	const CacheEvictorFunction DEFAULT_EVICTOR = [](const CachedAsset *asset, size_t usedCacheMemory) {
-		return asset->lastAccessed > (std::chrono::steady_clock::now().time_since_epoch().count() + std::chrono::seconds(10).count()) || usedCacheMemory > LTENGINE_MB(256);
+	const CacheEvictorFunction _default_evictor = [](const CachedAsset *asset, size_t used_cache_memory) {
+		return asset->last_accessed > (std::chrono::steady_clock::now().time_since_epoch().count() + std::chrono::seconds(10).count()) || used_cache_memory > LTENGINE_MB(256);
 	};
 
-	AssetManagerPostProcessor *m_postProcessor = nullptr;
+	AssetManagerPostProcessor *_post_processor = nullptr;
 
-	std::function<bool(std::string path, const u8 *data, size_t size)> m_controller = DEFAULT_CONTROLLER;
-	std::function<bool(const CachedAsset *asset, size_t usedCacheMemory)> m_evictor = DEFAULT_EVICTOR;
-	size_t m_usedCacheMemory = 0;
+	std::function<bool(std::string path, const u8 *data, size_t size)> _controller = _default_controller;
+	std::function<bool(const CachedAsset *asset, size_t used_cache_memory)> _evictor = _default_evictor;
+	size_t _used_cache_memory = 0;
 
-	std::unordered_map<std::string, CachedAsset> m_cache;
+	std::unordered_map<std::string, CachedAsset> _cache;
 };
 } // namespace LTEngine
 

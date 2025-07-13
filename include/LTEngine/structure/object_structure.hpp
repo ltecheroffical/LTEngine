@@ -22,9 +22,9 @@ namespace LTEngine::Object {
 		class LTENGINE_API Object {
 		public:
 			struct ObjectData {
-				Math::Vec3 position = Math::Vec3::Zero;
-				Math::Vec3 rotation = Math::Vec3::Zero;
-				Math::Vec3 scale = Math::Vec3::One;
+				Math::Vec3 position = Math::Vec3::ZERO;
+				Math::Vec3 rotation = Math::Vec3::ZERO;
+				Math::Vec3 scale = Math::Vec3::ONE;
 			};
 			virtual ~Object() = default;
 
@@ -33,66 +33,66 @@ namespace LTEngine::Object {
 
 			virtual std::unique_ptr<ObjectData> save() {
 				return std::make_unique<ObjectData>(ObjectData{
-					.position = getPosition(),
-					.rotation = getRotation(),
-					.scale = getScale(),
+					.position = get_position(),
+					.rotation = get_rotation(),
+					.scale = get_scale(),
 				});
 			}
 			virtual void load(const ObjectData *data) {
-				setPosition(data->position);
-				setScale(data->scale);
-				setRotation(data->rotation);
+				set_position(data->position);
+				set_scale(data->scale);
+				set_rotation(data->rotation);
 			}
 
-			virtual Math::Vec3 getPosition() const {
+			virtual Math::Vec3 get_position() const {
 				return position;
 			}
-			virtual Math::Vec3 getScale() const {
+			virtual Math::Vec3 get_scale() const {
 				return scale;
 			}
-			virtual Math::Vec3 getRotation() const {
+			virtual Math::Vec3 get_rotation() const {
 				return rotation;
 			}
-			virtual void setPosition(Math::Vec3 position) {
+			virtual void set_position(Math::Vec3 position) {
 				this->position = position;
 			}
-			virtual void setScale(Math::Vec3 scale) {
+			virtual void set_scale(Math::Vec3 scale) {
 				this->scale = scale;
 			}
-			virtual void setRotation(Math::Vec3 rotation) {
+			virtual void set_rotation(Math::Vec3 rotation) {
 				this->rotation = rotation;
 			}
 			void translate(Math::Vec3 translation) {
-				setPosition(position + translation);
+				set_position(position + translation);
 			}
 
-			bool isActive() const;
-			bool isVisible() const;
+			bool is_active() const;
+			bool is_visible() const;
 
-			void setActive(bool active);
-			void setVisible(bool visible);
+			void set_active(bool active);
+			void set_visible(bool visible);
 
-			ObjectStructure *getObjectStructure() {
-				return m_structure;
+			ObjectStructure *get_object_structure() {
+				return _structure;
 			}
-			void setObjectStructure(ObjectStructure *structure);
+			void set_object_structure(ObjectStructure *structure);
 
-			u32 getId() const;
-			void setId(u32 id);
+			u32 get_id() const;
+			void set_id(u32 id);
 
 		protected:
-			Math::Vec3 position = Math::Vec3::Zero;
-			Math::Vec3 rotation = Math::Vec3::Zero;
-			Math::Vec3 scale = Math::Vec3::One;
+			Math::Vec3 position = Math::Vec3::ZERO;
+			Math::Vec3 rotation = Math::Vec3::ZERO;
+			Math::Vec3 scale = Math::Vec3::ONE;
 
 		private:
-			bool m_active = true;
-			bool m_visible = true;
+			bool _active = true;
+			bool _visible = true;
 
-			u32 m_id = 0;
-			bool m_idSet = false;
+			u32 _id = 0;
+			bool _id_set = false;
 
-			ObjectStructure *m_structure = nullptr;
+			ObjectStructure *_structure = nullptr;
 		};
 
 		struct ObjectIterator {
@@ -102,38 +102,38 @@ namespace LTEngine::Object {
 			using pointer = Object *;
 			using reference = Object &;
 
-			ObjectIterator(std::vector<std::shared_ptr<Object>>::iterator it) : m_it(it) {
+			ObjectIterator(std::vector<std::shared_ptr<Object>>::iterator it) : _it(it) {
 			}
 
 			Object *operator*() {
-				return m_it->get();
+				return _it->get();
 			}
 			Object *operator->() {
-				return m_it->get();
+				return _it->get();
 			}
 
 			ObjectIterator &operator++() {
-				++m_it;
+				++_it;
 				return *this;
 			}
 
 			friend bool operator==(const ObjectIterator &a, const ObjectIterator &b) {
-				return a.m_it == b.m_it;
+				return a._it == b._it;
 			}
 			friend bool operator!=(const ObjectIterator &a, const ObjectIterator &b) {
-				return a.m_it != b.m_it;
+				return a._it != b._it;
 			}
 
 		private:
-			std::vector<std::shared_ptr<Object>>::iterator m_it;
+			std::vector<std::shared_ptr<Object>>::iterator _it;
 		};
 
 
 		ObjectIterator begin() {
-			return ObjectIterator(m_objects.begin());
+			return ObjectIterator(_objects.begin());
 		}
 		ObjectIterator end() {
-			return ObjectIterator(m_objects.end());
+			return ObjectIterator(_objects.end());
 		}
 
 		void update(f32 delta) override;
@@ -144,22 +144,22 @@ namespace LTEngine::Object {
 
 		void clear() override;
 
-		u32 addObject(std::unique_ptr<Object> object);
-		u32 addObject(std::unique_ptr<Object> object, Math::Vec3 position);
-		u32 addObject(std::unique_ptr<Object> object, Math::Vec3 position, Math::Vec3 scale);
-		u32 addObject(std::unique_ptr<Object> object, Math::Vec3 position, Math::Vec3 rotation, Math::Vec3 scale);
-		void removeObject(u32 id);
-		Object *getObject(u32 id);
+		u32 add_object(std::unique_ptr<Object> object);
+		u32 add_object(std::unique_ptr<Object> object, Math::Vec3 position);
+		u32 add_object(std::unique_ptr<Object> object, Math::Vec3 position, Math::Vec3 scale);
+		u32 add_object(std::unique_ptr<Object> object, Math::Vec3 position, Math::Vec3 rotation, Math::Vec3 scale);
+		void remove_object(u32 id);
+		Object *get_object(u32 id);
 
-		void addTag(u32 id, const std::string &tag);
-		void removeTag(u32 id, const std::string &tag);
-		bool hasTag(u32 id, const std::string &tag);
+		void add_tag(u32 id, const std::string &tag);
+		void remove_tag(u32 id, const std::string &tag);
+		bool has_tag(u32 id, const std::string &tag);
 
 	private:
-		std::vector<std::shared_ptr<Object>> m_objects;
-		std::unordered_map<std::string, std::vector<u32>> m_objectTags;
+		std::vector<std::shared_ptr<Object>> _objects;
+		std::unordered_map<std::string, std::vector<u32>> _object_tags;
 
-		u32 m_nextId;
+		u32 _next_id;
 	};
 } // namespace LTEngine::Object
 

@@ -5,8 +5,8 @@
 
 namespace LTEngine::Shapes {
     struct Torus : public Shape {
-        f32 innerRadius;
-        f32 tubeRadius;
+        f32 inner_radius;
+        f32 tube_radius;
     };
 }
 

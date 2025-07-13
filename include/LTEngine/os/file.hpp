@@ -14,19 +14,19 @@ class File {
 	static const u8 FLAG_FILE_CREATE;
 
 	enum class Seek {
-		Begin,
-		Current,
-		End
+		BEGIN,
+		CURRENT,
+		END
 	};
 
 	File(u8 mode)
-	    : m_mode(mode) {
+	    : _mode(mode) {
 	}
 
 	virtual ~File() = default;
 
-	u8 getMode() const {
-		return m_mode;
+	u8 get_mode() const {
+		return _mode;
 	}
 
 	// Clears the file contents
@@ -42,11 +42,11 @@ class File {
 
 	virtual size_t read(void *buffer, size_t size) = 0;
 
-	void readAll(void *buffer) {
+	void read_all(void *buffer) {
 		size_t pos = tellg();
-		seekg(0, Seek::Begin);
+		seekg(0, Seek::BEGIN);
 		read(buffer, size());
-		seekg(pos, Seek::Begin);
+		seekg(pos, Seek::BEGIN);
 	}
 
 	virtual void write(const void *buffer, size_t size) = 0;
@@ -54,12 +54,12 @@ class File {
 	virtual void flush() = 0;
 
   protected:
-	void setMode(u8 mode) {
-		m_mode = mode;
+	void set_mode(u8 mode) {
+		_mode = mode;
 	}
 
   private:
-	u8 m_mode;
+	u8 _mode;
 };
 
 inline const u8 File::FLAG_FILE_READ = (u8)(1 << 0);

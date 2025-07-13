@@ -6,28 +6,28 @@ using namespace LTEngine::Random;
 
 
 MT19937::MT19937() {
-	m_generator.seed(std::random_device{}());
+	_generator.seed(std::random_device{}());
 }
 
 
 u8 MT19937::next_u8() {
 	std::uniform_int_distribution<u8> distribution;
-	return distribution(m_generator);
+	return distribution(_generator);
 }
 
 u16 MT19937::next_u16() {
 	std::uniform_int_distribution<u16> distribution;
-	return distribution(m_generator);
+	return distribution(_generator);
 }
 
 u32 MT19937::next_u32() {
 	std::uniform_int_distribution<u32> distribution;
-	return distribution(m_generator);
+	return distribution(_generator);
 }
 
 u64 MT19937::next_u64() {
 	std::uniform_int_distribution<u64> distribution;
-	return distribution(m_generator);
+	return distribution(_generator);
 }
 
 
@@ -61,9 +61,9 @@ f64 MT19937::next_f64() {
 }
 
 
-void MT19937::nextBytes(void *data, size_t size) {
+void MT19937::next_bytes(void *data, size_t size) {
 	std::uniform_int_distribution<u8> distribution;
 	for (size_t i = 0; i < size; i++) {
-		*reinterpret_cast<u8 *>(&((u8 *)data)[i]) = distribution(m_generator);
+		*reinterpret_cast<u8 *>(&((u8 *)data)[i]) = distribution(_generator);
 	}
 }

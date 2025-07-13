@@ -29,13 +29,13 @@ namespace LTEngine {
 		 *
 		 * @param data The data of the asset as a pointer.
 		 */
-		virtual void postProcess(std::string path, std::vector<u8> *data) = 0;
+		virtual void post_process(std::string path, std::vector<u8> *data) = 0;
 		/**
 		 * @brief Process asset before it is given to the user.
 		 *
 		 * @param data The data of the asset as a pointer.
 		 */
-		virtual void preProcess(std::string path, std::vector<u8> *data) = 0;
+		virtual void pre_process(std::string path, std::vector<u8> *data) = 0;
 
 		/**
 		 * @brief Handle if loading an asset failed.
@@ -44,7 +44,7 @@ namespace LTEngine {
 		 * @returns If the asset loading should continue with the current data. If this is false, an exception will be thrown at the
 		 * asset manager.
 		 */
-		virtual bool assetLoadFailed(std::string path, std::vector<u8> *data) {
+		virtual bool asset_load_failed(std::string path, std::vector<u8> *data) {
 			return false;
 		}
 	};

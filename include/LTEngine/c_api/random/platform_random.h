@@ -18,9 +18,9 @@ typedef struct LTENGINE_API {
 typedef LTEngine_HRandom LTEngine_HPlatformRandom;
 
 
-LTEngine_PlatformRandom_RandomSettings LTENGINE_API LTEngine_PlatformRandom_RandomSettings_createDefault();
+LTEngine_PlatformRandom_RandomSettings LTENGINE_API lt_engine_platform_random_random_settings_create_default();
 
-LTEngine_HPlatformRandom LTENGINE_API LTEngine_PlatformRandom(LTEngine_PlatformRandom_RandomSettings settings);
+LTEngine_HPlatformRandom LTENGINE_API lt_engine_platform_random(LTEngine_PlatformRandom_RandomSettings settings);
 
 #ifdef __cplusplus
 }

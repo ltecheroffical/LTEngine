@@ -14,8 +14,8 @@ extern "C" {
 typedef LTEngine_HRandom LTEngine_HUnixRandom;
 
 
-LTEngine_HUnixRandom LTENGINE_API LTEngine_UnixRandom();
-LTEngine_HUnixRandom LTENGINE_API LTEngine_UnixRandom_bufSize(size_t bufferSize);
+LTEngine_HUnixRandom LTENGINE_API lt_engine_unix_random();
+LTEngine_HUnixRandom LTENGINE_API lt_engine_unix_random_buf_size(size_t buffer_size);
 
 #ifndef __cplusplus
 }

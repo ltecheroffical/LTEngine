@@ -12,7 +12,7 @@ namespace LTEngine::Shapes {
         std::vector<Math::Vec3> vertices;
 		std::vector<u32> indices;
 
-		void addPoint(Math::Vec3 point) {
+		void add_point(Math::Vec3 point) {
 			auto it = std::find(vertices.begin(), vertices.end(), point);
 			if (it == vertices.end()) {
 				vertices.push_back(point);
@@ -22,7 +22,7 @@ namespace LTEngine::Shapes {
 			}
 		}
 
-		void removePoint(Math::Vec3 point) {
+		void remove_point(Math::Vec3 point) {
 			auto vertex_it = std::find(vertices.begin(), vertices.end(), point);
 			if (vertex_it == vertices.end()) {
 				return;
@@ -40,7 +40,7 @@ namespace LTEngine::Shapes {
 			}
 		}
 
-		std::vector<Math::Vec3> getPoints() {
+		std::vector<Math::Vec3> get_points() {
 			std::vector<Math::Vec3> points;
 			for (u32 index : indices) {
 				points.push_back(vertices[index]);

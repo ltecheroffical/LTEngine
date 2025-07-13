@@ -8,6 +8,6 @@ void Renderer::clear(Color color) {
 	clear({color.r, color.g, color.b, 255});
 }
 
-void Renderer::setPixel(Color color, Math::Vec2 position) {
-	setPixel({color.r, color.g, color.b, 255}, position);
+void Renderer::set_pixel(Color color, Math::Vec2 position) {
+	set_pixel({color.r, color.g, color.b, 255}, position);
 }

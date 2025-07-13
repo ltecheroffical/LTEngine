@@ -32,13 +32,13 @@ class LTENGINE_API FStreamFile : public File {
 
 	void flush() override;
 
-	std::fstream *getStream() {
-		return &m_stream;
+	std::fstream *get_stream() {
+		return &_stream;
 	}
 
   private:
-	std::fstream m_stream;
-	std::string m_path;
+	std::fstream _stream;
+	std::string _path;
 };
 } // namespace LTEngine::OS
 

@@ -6,49 +6,49 @@ using namespace LTEngine::Object;
 
 
 ObjectStructure::ObjectStructure() {
-	m_nextId = 0;
+	_next_id = 0;
 }
 
 
-void ObjectStructure::Object::setActive(bool active) {
-	m_active = active;
+void ObjectStructure::Object::set_active(bool active) {
+	_active = active;
 }
 
-void ObjectStructure::Object::setVisible(bool visible) {
-	m_visible = visible;
-}
-
-
-bool ObjectStructure::Object::isActive() const {
-	return m_active;
-}
-
-bool ObjectStructure::Object::isVisible() const {
-	return m_visible;
+void ObjectStructure::Object::set_visible(bool visible) {
+	_visible = visible;
 }
 
 
-void ObjectStructure::Object::setId(u32 id) {
-	if (m_idSet) { return; }
-	m_id = id;
-	m_idSet = true;
+bool ObjectStructure::Object::is_active() const {
+	return _active;
 }
 
-u32 ObjectStructure::Object::getId() const {
-	return m_id;
+bool ObjectStructure::Object::is_visible() const {
+	return _visible;
 }
 
-void ObjectStructure::Object::setObjectStructure(ObjectStructure *objectStructure) {
-	if (m_structure == nullptr) { m_structure = objectStructure; }
+
+void ObjectStructure::Object::set_id(u32 id) {
+	if (_id_set) { return; }
+	_id = id;
+	_id_set = true;
+}
+
+u32 ObjectStructure::Object::get_id() const {
+	return _id;
+}
+
+void ObjectStructure::Object::set_object_structure(ObjectStructure *object_structure) {
+	if (_structure == nullptr) { _structure = object_structure; }
 }
 
 
 void ObjectStructure::update(f32 delta) {
-	for (u32 i = 0; i < m_objects.size(); i++) { m_objects[i]->update(delta); }
+	for (u32 i = 0; i < _objects.size(); i++) { _objects[i]->update(delta); }
 }
 
 void ObjectStructure::render() {
-	for (auto &object : m_objects) {
+	for (auto &object : _objects) {
 		object->render();
 	}
 }
@@ -56,77 +56,77 @@ void ObjectStructure::render() {
 
 std::unique_ptr<EngineStructure::EngineStructureData> ObjectStructure::save() {
 	return std::make_unique<ObjectStructureData>(ObjectStructureData{
-		.objects = m_objects
+		.objects = _objects
 	});
 }
 
 void ObjectStructure::load(const EngineStructure::EngineStructureData *data) {
-	m_objects = ((ObjectStructureData*)data)->objects;
+	_objects = ((ObjectStructureData*)data)->objects;
 }
 
 
 void ObjectStructure::clear() {
-	m_objects.clear();
+	_objects.clear();
 }
 
 
-u32 ObjectStructure::addObject(std::unique_ptr<Object> object) {
-	u32 id = m_nextId++;
-	object->setId(id);
-	object->setObjectStructure(this);
-	m_objects.push_back(std::move(object));
+u32 ObjectStructure::add_object(std::unique_ptr<Object> object) {
+	u32 id = _next_id++;
+	object->set_id(id);
+	object->set_object_structure(this);
+	_objects.push_back(std::move(object));
 	return id;
 }
 
-u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec3 position) {
-	object->setPosition(position);
-	return addObject(std::move(object));
+u32 ObjectStructure::add_object(std::unique_ptr<Object> object, Math::Vec3 position) {
+	object->set_position(position);
+	return add_object(std::move(object));
 }
 
-u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec3 position, Math::Vec3 rotation) {
-	object->setPosition(position);
-	object->setRotation(rotation);
-	return addObject(std::move(object));
+u32 ObjectStructure::add_object(std::unique_ptr<Object> object, Math::Vec3 position, Math::Vec3 rotation) {
+	object->set_position(position);
+	object->set_rotation(rotation);
+	return add_object(std::move(object));
 }
 
-u32 ObjectStructure::addObject(std::unique_ptr<Object> object, Math::Vec3 position, Math::Vec3 rotation, Math::Vec3 scale) {
-	object->setPosition(position);
-	object->setRotation(rotation);
-	object->setScale(scale);
-	return addObject(std::move(object));
+u32 ObjectStructure::add_object(std::unique_ptr<Object> object, Math::Vec3 position, Math::Vec3 rotation, Math::Vec3 scale) {
+	object->set_position(position);
+	object->set_rotation(rotation);
+	object->set_scale(scale);
+	return add_object(std::move(object));
 }
 
-void ObjectStructure::removeObject(u32 id) {
-	auto it = std::find_if(m_objects.begin(), m_objects.end(), [id](const std::shared_ptr<Object> &x) {
+void ObjectStructure::remove_object(u32 id) {
+	auto it = std::find_if(_objects.begin(), _objects.end(), [id](const std::shared_ptr<Object> &x) {
 		if (x == nullptr) { return false; }
-		return x->getId() == id;
+		return x->get_id() == id;
 	});
 
-	if (it != m_objects.end()) { m_objects.erase(it); }
+	if (it != _objects.end()) { _objects.erase(it); }
 }
 
-ObjectStructure::Object *ObjectStructure::getObject(u32 id) {
+ObjectStructure::Object *ObjectStructure::get_object(u32 id) {
 	auto it = std::find_if(begin(), end(), [id](const Object *x) {
 		if (x == nullptr) { return false; }
-		return x->getId() == id;
+		return x->get_id() == id;
 	});
 
-	if (it != m_objects.end()) { return *it; }
+	if (it != _objects.end()) { return *it; }
 
 	return nullptr;
 }
 
 
-void ObjectStructure::addTag(u32 id, const std::string &tag) {
-	m_objectTags[tag].push_back(id);
+void ObjectStructure::add_tag(u32 id, const std::string &tag) {
+	_object_tags[tag].push_back(id);
 }
 
-void ObjectStructure::removeTag(u32 id, const std::string &tag) {
-	if (!m_objectTags.contains(tag)) { return; }
-	m_objectTags[tag].erase(std::remove(m_objectTags[tag].begin(), m_objectTags[tag].end(), id), m_objectTags[tag].end());
+void ObjectStructure::remove_tag(u32 id, const std::string &tag) {
+	if (!_object_tags.contains(tag)) { return; }
+	_object_tags[tag].erase(std::remove(_object_tags[tag].begin(), _object_tags[tag].end(), id), _object_tags[tag].end());
 }
 
-bool ObjectStructure::hasTag(u32 id, const std::string &tag) {
-	if (!m_objectTags.contains(tag)) { return false; }
-	return std::find(m_objectTags[tag].begin(), m_objectTags[tag].end(), id) != m_objectTags[tag].end();
+bool ObjectStructure::has_tag(u32 id, const std::string &tag) {
+	if (!_object_tags.contains(tag)) { return false; }
+	return std::find(_object_tags[tag].begin(), _object_tags[tag].end(), id) != _object_tags[tag].end();
 }

@@ -5,53 +5,53 @@ using namespace LTEngine;
 using namespace LTEngine::Graphics;
 
 
-void Model3D::addVertex(Vertex vertex) {
-    auto vertex_it = std::find(m_vertices.begin(), m_vertices.end(), vertex);
-    if (vertex_it != m_vertices.end()) {
-        m_indices.push_back(std::distance(m_vertices.begin(), vertex_it));
+void Model3D::add_vertex(Vertex vertex) {
+    auto vertex_it = std::find(_vertices.begin(), _vertices.end(), vertex);
+    if (vertex_it != _vertices.end()) {
+        _indices.push_back(std::distance(_vertices.begin(), vertex_it));
         return;
     }
-    m_vertices.push_back(vertex);
-    m_indices.push_back(m_vertices.size() - 1);
+    _vertices.push_back(vertex);
+    _indices.push_back(_vertices.size() - 1);
 }
 
-void Model3D::removeVertex(Vertex vertex) {
-    auto vertex_it = std::find(m_vertices.begin(), m_vertices.end(), vertex);
-    if (vertex_it == m_vertices.end()) {
+void Model3D::remove_vertex(Vertex vertex) {
+    auto vertex_it = std::find(_vertices.begin(), _vertices.end(), vertex);
+    if (vertex_it == _vertices.end()) {
         return;
     }
-    u32 vertex_index = std::distance(m_vertices.begin(), vertex_it);
+    u32 vertex_index = std::distance(_vertices.begin(), vertex_it);
 
-    auto index_it = std::find(m_indices.begin(), m_indices.end(), vertex_index);
-    if (index_it == m_indices.end()) {
+    auto index_it = std::find(_indices.begin(), _indices.end(), vertex_index);
+    if (index_it == _indices.end()) {
         return;
     }
-    m_indices.erase(index_it);
-    if (std::find(m_indices.begin(), m_indices.end(), vertex_index) == m_indices.end()) {
-        m_vertices.erase(vertex_it);
+    _indices.erase(index_it);
+    if (std::find(_indices.begin(), _indices.end(), vertex_index) == _indices.end()) {
+        _vertices.erase(vertex_it);
     }
 }
 
 
-Model3D::Vertex Model3D::getVertex(u32 index) {
-    return m_vertices[index];
+Model3D::Vertex Model3D::get_vertex(u32 index) {
+    return _vertices[index];
 }
 
-std::vector<Model3D::Vertex> Model3D::getVertices() {
+std::vector<Model3D::Vertex> Model3D::get_vertices() {
     std::vector<Vertex> vertices;
-    for (u32 index : m_indices) {
-        vertices.push_back(m_vertices[index]);
+    for (u32 index : _indices) {
+        vertices.push_back(_vertices[index]);
     }
     return vertices;
 }
 
-std::vector<Model3D::Face> Model3D::getFaces() {
+std::vector<Model3D::Face> Model3D::get_faces() {
     std::vector<Face> faces;
-    for (size_t i = 0; i < m_indices.size(); i += 3) {
+    for (size_t i = 0; i < _indices.size(); i += 3) {
         faces.push_back(Face{
-            m_indices[i + 0],
-            m_indices[i + 1],
-            m_indices[i + 2]
+            _indices[i + 0],
+            _indices[i + 1],
+            _indices[i + 2]
         });
     }
     return faces;

@@ -9,34 +9,34 @@ using namespace LTEngine;
 
 
 void Timer::start(f32 time) {
-	m_running = true;
-	m_timeLeft = time;
-	m_time = time;
+	_running = true;
+	_time_left = time;
+	_time = time;
 }
 
 void Timer::stop() {
-	m_running = false;
-	m_timeLeft = 0.f;
-	m_time = 0.f;
+	_running = false;
+	_time_left = 0.f;
+	_time = 0.f;
 }
 
 
-void Timer::step(f32 timeStep) {
-	if (!m_running) { return; }
+void Timer::step(f32 time_step) {
+	if (!_running) { return; }
 
-	if (m_timeLeft > timeStep) {
-		m_timeLeft -= timeStep;
+	if (_time_left > time_step) {
+		_time_left -= time_step;
 		return;
 	}
 
-	if (!m_repeat) {
-		m_timeLeft = 0.f;
-		onEnd();
+	if (!_repeat) {
+		_time_left = 0.f;
+		on_end();
 	} else {
 		// Lag compensation -- trigger multiple times if needed
-		u32 triggerCount = (u32)(timeStep / m_timeLeft);
+		u32 trigger_count = (u32)(time_step / _time_left);
 
-		for (u32 i = 0; i < triggerCount; i++) { onEnd(); }
-		m_timeLeft = m_time - fmodf(timeStep, m_timeLeft);
+		for (u32 i = 0; i < trigger_count; i++) { on_end(); }
+		_time_left = _time - fmodf(time_step, _time_left);
 	}
 }

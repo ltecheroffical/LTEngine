@@ -10,194 +10,194 @@ using namespace LTEngine::AI;
 
 
 AStarPathfinding::AStarPathfinding() {
-	resetCalculateHeristic();
+	reset_calculate_heristic();
 }
 
 
-void AStarPathfinding::setPath(Math::Vec2i start, Math::Vec2i end) {
-	m_start = start;
-	m_end = end;
+void AStarPathfinding::set_path(Math::Vec2i start, Math::Vec2i end) {
+	_start = start;
+	_end = end;
 
 	// Initialize grid dimensions and offsets
-	m_offsetX = 0;
-	m_offsetY = 0;
+	_offset_x = 0;
+	_offset_y = 0;
 
 	// Determine minimum and maximum coordinates
-	int minX = std::min(m_start.x, m_end.x);
-	int minY = std::min(m_start.y, m_end.y);
-	int maxX = std::max(m_start.x, m_end.x);
-	int maxY = std::max(m_start.y, m_end.y);
+	int min_x = std::min(_start.x, _end.x);
+	int min_y = std::min(_start.y, _end.y);
+	int max_x = std::max(_start.x, _end.x);
+	int max_y = std::max(_start.y, _end.y);
 
 	// Check for negative coordinates and adjust grid size
-	if (minX < 0) {
-		m_offsetX = -minX;               // Offset for negative X
-		m_gridWidth = (maxX - minX) * 2; // Double grid size on X-axis
+	if (min_x < 0) {
+		_offset_x = -min_x;               // Offset for negative X
+		_grid_width = (max_x - min_x) * 2; // Double grid size on X-axis
 	} else {
-		m_gridWidth = maxX - minX + 1; // Normal size
+		_grid_width = max_x - min_x + 1; // Normal size
 	}
 
-	if (minY < 0) {
-		m_offsetY = -minY;                // Offset for negative Y
-		m_gridHeight = (maxY - minY) * 2; // Double grid size on Y-axis
+	if (min_y < 0) {
+		_offset_y = -min_y;                // Offset for negative Y
+		_grid_height = (max_y - min_y) * 2; // Double grid size on Y-axis
 	} else {
-		m_gridHeight = maxY - minY + 1; // Normal size
+		_grid_height = max_y - min_y + 1; // Normal size
 	}
 }
 
-bool AStarPathfinding::isPossibleToReachInTheory() {
-	if (!isValid(m_start) || !isValid(m_end)) {
+bool AStarPathfinding::is_possible_to_reach_in_theory() {
+	if (!_is_valid(_start) || !_is_valid(_end)) {
 		return false;
 	}
-	if (isBlocked(m_end)) {
+	if (_is_blocked(_end)) {
 		return false;
 	}
 	return true;
 }
 
 
-void AStarPathfinding::setWalkablePath(std::vector<Math::Vec2i> path) {
-	m_walkableTiles = path;
+void AStarPathfinding::set_walkable_path(std::vector<Math::Vec2i> path) {
+	_walkable_tiles = path;
 }
 
 
-u32 AStarPathfinding::addObstacle(Math::Vec2i pos) {
-	u32 id = m_nextObstacleId++;
-	m_obstacles[id] = pos;
+u32 AStarPathfinding::add_obstacle(Math::Vec2i pos) {
+	u32 id = _next_obstacle_id++;
+	_obstacles[id] = pos;
 	return id;
 }
 
-void AStarPathfinding::removeObstacle(u32 id) {
-	m_obstacles.erase(id);
+void AStarPathfinding::remove_obstacle(u32 id) {
+	_obstacles.erase(id);
 }
 
 
-std::vector<Math::Vec2i> AStarPathfinding::calculatePath() {
-	if (!isValid(m_start) || !isValid(m_end)) {
+std::vector<Math::Vec2i> AStarPathfinding::calculate_path() {
+	if (!_is_valid(_start) || !_is_valid(_end)) {
 		return {};
 	}
-	if (isBlocked(m_end)) {
+	if (_is_blocked(_end)) {
 		return {};
 	}
 
-	std::vector<std::vector<bool>> closedList(m_gridHeight, std::vector<bool>(m_gridWidth, false));
-	std::vector<std::vector<Cell>> cellDetails(m_gridHeight, std::vector<Cell>(m_gridWidth));
+	std::vector<std::vector<bool>> closed_list(_grid_height, std::vector<bool>(_grid_width, false));
+	std::vector<std::vector<Cell>> cell_details(_grid_height, std::vector<Cell>(_grid_width));
 
-	for (u32 i = 0; i < m_gridWidth; ++i) {
-		for (u32 j = 0; j < m_gridHeight; ++j) {
-			cellDetails[j][i].f = std::numeric_limits<i32>().max();
-			cellDetails[j][i].g = std::numeric_limits<i32>().max();
-			cellDetails[j][i].h = std::numeric_limits<i32>().max();
-			cellDetails[j][i].parent_i = i;
-			cellDetails[j][i].parent_j = j;
+	for (u32 i = 0; i < _grid_width; ++i) {
+		for (u32 j = 0; j < _grid_height; ++j) {
+			cell_details[j][i].f = std::numeric_limits<i32>().max();
+			cell_details[j][i].g = std::numeric_limits<i32>().max();
+			cell_details[j][i].h = std::numeric_limits<i32>().max();
+			cell_details[j][i].parent_i = i;
+			cell_details[j][i].parent_j = j;
 		}
 	}
 
-	u32 i = m_start.x + m_offsetX, j = m_start.y + m_offsetY;
-	cellDetails[j][i].f = 0;
-	cellDetails[j][i].g = 0;
-	cellDetails[j][i].h = 0;
-	cellDetails[j][i].parent_i = i;
-	cellDetails[j][i].parent_j = j;
+	u32 i = _start.x + _offset_x, j = _start.y + _offset_y;
+	cell_details[j][i].f = 0;
+	cell_details[j][i].g = 0;
+	cell_details[j][i].h = 0;
+	cell_details[j][i].parent_i = i;
+	cell_details[j][i].parent_j = j;
 
 
-	std::set<std::pair<f32, Math::Vec2i>> openList;
+	std::set<std::pair<f32, Math::Vec2i>> open_list;
 
-	openList.insert(std::make_pair(0.0, Math::Vec2i(m_start.x, m_start.y)));
+	open_list.insert(std::make_pair(0.0, Math::Vec2i(_start.x, _start.y)));
 
-	while (!openList.empty()) {
-		std::pair<f32, Math::Vec2i> p = *openList.begin();
-		openList.erase(openList.begin());
+	while (!open_list.empty()) {
+		std::pair<f32, Math::Vec2i> p = *open_list.begin();
+		open_list.erase(open_list.begin());
 
-		i = p.second.x + m_offsetX;
-		j = p.second.y + m_offsetY;
-		closedList[j][i] = true;
+		i = p.second.x + _offset_x;
+		j = p.second.y + _offset_y;
+		closed_list[j][i] = true;
 
-		f64 gNew, hNew, fNew;
+		f64 g_new, h_new, f_new;
 
 		// Successor 1 (Right)
-		if (isValid(Math::Vec2i(i - 1 - m_offsetX, j - m_offsetY))) {
-			if ((i - 1 - m_offsetX) == m_end.x && j - m_offsetY == m_end.y) {
-				cellDetails[j][i - 1].parent_i = i;
-				cellDetails[j][i - 1].parent_j = j;
-				return tracePath(cellDetails);
-			} else if (!closedList[j][i - 1] && !isBlocked(Math::Vec2i(i - 1 - m_offsetX, j - m_offsetY))) {
-				gNew = cellDetails[j][i].g + 1.f;
-				hNew = m_heristicFunc(Math::Vec2i(i - 1, j), m_end);
-				fNew = gNew + hNew;
+		if (_is_valid(Math::Vec2i(i - 1 - _offset_x, j - _offset_y))) {
+			if ((i - 1 - _offset_x) == _end.x && j - _offset_y == _end.y) {
+				cell_details[j][i - 1].parent_i = i;
+				cell_details[j][i - 1].parent_j = j;
+				return _trace_path(cell_details);
+			} else if (!closed_list[j][i - 1] && !_is_blocked(Math::Vec2i(i - 1 - _offset_x, j - _offset_y))) {
+				g_new = cell_details[j][i].g + 1.f;
+				h_new = _heristic_func(Math::Vec2i(i - 1, j), _end);
+				f_new = g_new + h_new;
 
-				if (cellDetails[j][i - 1].f == std::numeric_limits<i32>().max() || cellDetails[j][i - 1].f > fNew) {
-					openList.insert(std::make_pair(fNew, Math::Vec2i(i - 1 - m_offsetX, j - m_offsetY)));
-					cellDetails[j][i - 1].f = fNew;
-					cellDetails[j][i - 1].g = gNew;
-					cellDetails[j][i - 1].h = hNew;
-					cellDetails[j][i - 1].parent_i = i;
-					cellDetails[j][i - 1].parent_j = j;
+				if (cell_details[j][i - 1].f == std::numeric_limits<i32>().max() || cell_details[j][i - 1].f > f_new) {
+					open_list.insert(std::make_pair(f_new, Math::Vec2i(i - 1 - _offset_x, j - _offset_y)));
+					cell_details[j][i - 1].f = f_new;
+					cell_details[j][i - 1].g = g_new;
+					cell_details[j][i - 1].h = h_new;
+					cell_details[j][i - 1].parent_i = i;
+					cell_details[j][i - 1].parent_j = j;
 				}
 			}
 		}
 
 		// Successor 2 (Left)
-		if (isValid(Math::Vec2i(i + 1 - m_offsetX, j - m_offsetY))) {
-			if ((i + 1 - m_offsetX) == m_end.x && j - m_offsetY == m_end.y) {
-				cellDetails[j][i + 1].parent_i = i;
-				cellDetails[j][i + 1].parent_j = j;
-				return tracePath(cellDetails);
-			} else if (!closedList[j][i + 1] && !isBlocked(Math::Vec2i(i + 1 - m_offsetX, j - m_offsetY))) {
-				gNew = cellDetails[j][i].g + 1.f;
-				hNew = m_heristicFunc(Math::Vec2i(i + 1, j), m_end);
-				fNew = gNew + hNew;
+		if (_is_valid(Math::Vec2i(i + 1 - _offset_x, j - _offset_y))) {
+			if ((i + 1 - _offset_x) == _end.x && j - _offset_y == _end.y) {
+				cell_details[j][i + 1].parent_i = i;
+				cell_details[j][i + 1].parent_j = j;
+				return _trace_path(cell_details);
+			} else if (!closed_list[j][i + 1] && !_is_blocked(Math::Vec2i(i + 1 - _offset_x, j - _offset_y))) {
+				g_new = cell_details[j][i].g + 1.f;
+				h_new = _heristic_func(Math::Vec2i(i + 1, j), _end);
+				f_new = g_new + h_new;
 
-				if (cellDetails[j][i + 1].f == std::numeric_limits<i32>().max() || cellDetails[j][i + 1].f > fNew) {
-					openList.insert(std::make_pair(fNew, Math::Vec2i(i + 1 - m_offsetX, j - m_offsetY)));
-					cellDetails[j][i + 1].f = fNew;
-					cellDetails[j][i + 1].g = gNew;
-					cellDetails[j][i + 1].h = hNew;
-					cellDetails[j][i + 1].parent_i = i;
-					cellDetails[j][i + 1].parent_j = j;
+				if (cell_details[j][i + 1].f == std::numeric_limits<i32>().max() || cell_details[j][i + 1].f > f_new) {
+					open_list.insert(std::make_pair(f_new, Math::Vec2i(i + 1 - _offset_x, j - _offset_y)));
+					cell_details[j][i + 1].f = f_new;
+					cell_details[j][i + 1].g = g_new;
+					cell_details[j][i + 1].h = h_new;
+					cell_details[j][i + 1].parent_i = i;
+					cell_details[j][i + 1].parent_j = j;
 				}
 			}
 		}
 
 		// Successor 3 (Down)
-		if (isValid(Math::Vec2i(i - m_offsetX, j + 1 - m_offsetY))) {
-			if (i - m_offsetX == m_end.x && (j + 1 - m_offsetY) == m_end.y) {
-				cellDetails[j + 1][i].parent_i = i;
-				cellDetails[j + 1][i].parent_j = j;
-				return tracePath(cellDetails);
-			} else if (!closedList[j + 1][i] && !isBlocked(Math::Vec2i(i - m_offsetX, j + 1 - m_offsetY))) {
-				gNew = cellDetails[j][i].g + 1.f;
-				hNew = m_heristicFunc(Math::Vec2i(i, j + 1), m_end);
-				fNew = gNew + hNew;
+		if (_is_valid(Math::Vec2i(i - _offset_x, j + 1 - _offset_y))) {
+			if (i - _offset_x == _end.x && (j + 1 - _offset_y) == _end.y) {
+				cell_details[j + 1][i].parent_i = i;
+				cell_details[j + 1][i].parent_j = j;
+				return _trace_path(cell_details);
+			} else if (!closed_list[j + 1][i] && !_is_blocked(Math::Vec2i(i - _offset_x, j + 1 - _offset_y))) {
+				g_new = cell_details[j][i].g + 1.f;
+				h_new = _heristic_func(Math::Vec2i(i, j + 1), _end);
+				f_new = g_new + h_new;
 
-				if (cellDetails[j + 1][i].f == std::numeric_limits<i32>().max() || cellDetails[j + 1][i].f > fNew) {
-					openList.insert(std::make_pair(fNew, Math::Vec2i(i - m_offsetX, j + 1 - m_offsetY)));
-					cellDetails[j + 1][i].f = fNew;
-					cellDetails[j + 1][i].g = gNew;
-					cellDetails[j + 1][i].h = hNew;
-					cellDetails[j + 1][i].parent_i = i;
-					cellDetails[j + 1][i].parent_j = j;
+				if (cell_details[j + 1][i].f == std::numeric_limits<i32>().max() || cell_details[j + 1][i].f > f_new) {
+					open_list.insert(std::make_pair(f_new, Math::Vec2i(i - _offset_x, j + 1 - _offset_y)));
+					cell_details[j + 1][i].f = f_new;
+					cell_details[j + 1][i].g = g_new;
+					cell_details[j + 1][i].h = h_new;
+					cell_details[j + 1][i].parent_i = i;
+					cell_details[j + 1][i].parent_j = j;
 				}
 			}
 		}
 
 		// Successor 4 (Up)
-		if (isValid(Math::Vec2i(i - m_offsetX, j - 1 - m_offsetY))) {
-			if (i - m_offsetX == m_end.x && (j - 1 - m_offsetY) == m_end.y) {
-				cellDetails[j - 1][i].parent_i = i;
-				cellDetails[j - 1][i].parent_j = j;
-				return tracePath(cellDetails);
-			} else if (!closedList[j - 1][i] && !isBlocked(Math::Vec2i(i - m_offsetX, j - 1 - m_offsetY))) {
-				gNew = cellDetails[j][i].g + 1.f;
-				hNew = m_heristicFunc(Math::Vec2i(i - m_offsetX, j - 1 - m_offsetY), m_end);
-				fNew = gNew + hNew;
+		if (_is_valid(Math::Vec2i(i - _offset_x, j - 1 - _offset_y))) {
+			if (i - _offset_x == _end.x && (j - 1 - _offset_y) == _end.y) {
+				cell_details[j - 1][i].parent_i = i;
+				cell_details[j - 1][i].parent_j = j;
+				return _trace_path(cell_details);
+			} else if (!closed_list[j - 1][i] && !_is_blocked(Math::Vec2i(i - _offset_x, j - 1 - _offset_y))) {
+				g_new = cell_details[j][i].g + 1.f;
+				h_new = _heristic_func(Math::Vec2i(i - _offset_x, j - 1 - _offset_y), _end);
+				f_new = g_new + h_new;
 
-				if (cellDetails[j - 1][i].f == std::numeric_limits<i32>().max() || cellDetails[j - 1][i].f > fNew) {
-					openList.insert(std::make_pair(fNew, Math::Vec2i(i - m_offsetX, j - 1 - m_offsetY)));
-					cellDetails[j - 1][i].f = fNew;
-					cellDetails[j - 1][i].g = gNew;
-					cellDetails[j - 1][i].h = hNew;
-					cellDetails[j - 1][i].parent_i = i;
-					cellDetails[j - 1][i].parent_j = j;
+				if (cell_details[j - 1][i].f == std::numeric_limits<i32>().max() || cell_details[j - 1][i].f > f_new) {
+					open_list.insert(std::make_pair(f_new, Math::Vec2i(i - _offset_x, j - 1 - _offset_y)));
+					cell_details[j - 1][i].f = f_new;
+					cell_details[j - 1][i].g = g_new;
+					cell_details[j - 1][i].h = h_new;
+					cell_details[j - 1][i].parent_i = i;
+					cell_details[j - 1][i].parent_j = j;
 				}
 			}
 		}
@@ -207,66 +207,66 @@ std::vector<Math::Vec2i> AStarPathfinding::calculatePath() {
 }
 
 
-void AStarPathfinding::resetCalculateHeristic() {
-	m_heristicFunc = [](Math::Vec2i start, Math::Vec2i end) -> f64 {
+void AStarPathfinding::reset_calculate_heristic() {
+	_heristic_func = [](Math::Vec2i start, Math::Vec2i end) -> f64 {
 		return sqrt(pow(start.x - end.x, 2) + pow(start.y - end.y, 2));
 	};
 }
 
 
-bool AStarPathfinding::isValid(Math::Vec2i pos) {
-	pos.x += m_offsetX;
-	pos.y += m_offsetY;
-	return (pos.x >= 0 && pos.x < m_gridWidth && pos.y >= 0 && pos.y < m_gridHeight);
+bool AStarPathfinding::_is_valid(Math::Vec2i pos) {
+	pos.x += _offset_x;
+	pos.y += _offset_y;
+	return (pos.x >= 0 && pos.x < _grid_width && pos.y >= 0 && pos.y < _grid_height);
 }
 
-bool AStarPathfinding::isBlocked(Math::Vec2i pos) {
-	bool isBlocked = false;
+bool AStarPathfinding::_is_blocked(Math::Vec2i pos) {
+	bool is_blocked = false;
 
-	if (!m_walkableTiles.empty() && std::find(m_walkableTiles.begin(), m_walkableTiles.end(), pos) == m_walkableTiles.end()) {
+	if (!_walkable_tiles.empty() && std::find(_walkable_tiles.begin(), _walkable_tiles.end(), pos) == _walkable_tiles.end()) {
 		return true;
 	}
-	if (std::find_if(m_obstacles.begin(), m_obstacles.end(), [pos](std::pair<u32, Math::Vec2i> pair) {
+	if (std::find_if(_obstacles.begin(), _obstacles.end(), [pos](std::pair<u32, Math::Vec2i> pair) {
 		    return pair.second.x == pos.x && pair.second.y == pos.y;
-	    }) != m_obstacles.end()) {
+	    }) != _obstacles.end()) {
 		return true;
 	}
 
-	return isBlocked;
+	return is_blocked;
 }
 
-std::vector<Math::Vec2i> AStarPathfinding::tracePath(std::vector<std::vector<Cell>> cellDetails) {
+std::vector<Math::Vec2i> AStarPathfinding::_trace_path(std::vector<std::vector<Cell>> cell_details) {
 	std::vector<Math::Vec2i> positions;
 
-	i32 row = m_end.x + m_offsetX;
-	i32 col = m_end.y + m_offsetY;
+	i32 row = _end.x + _offset_x;
+	i32 col = _end.y + _offset_y;
 
-	while (row != cellDetails[col][row].parent_i || col != cellDetails[col][row].parent_j) {
-		positions.push_back(Math::Vec2i(row - m_offsetX, col - m_offsetY));
-		row = cellDetails[col][row].parent_i;
-		col = cellDetails[col][row].parent_j;
+	while (row != cell_details[col][row].parent_i || col != cell_details[col][row].parent_j) {
+		positions.push_back(Math::Vec2i(row - _offset_x, col - _offset_y));
+		row = cell_details[col][row].parent_i;
+		col = cell_details[col][row].parent_j;
 	}
 
-	i32 dirX = cellDetails[col][row].parent_i - row;
-	i32 dirY = cellDetails[col][row].parent_j - col;
+	i32 dir_x = cell_details[col][row].parent_i - row;
+	i32 dir_y = cell_details[col][row].parent_j - col;
 
 
-	positions.push_back(Math::Vec2i(row - m_offsetX, col - m_offsetY));
+	positions.push_back(Math::Vec2i(row - _offset_x, col - _offset_y));
 	std::reverse(positions.begin(), positions.end());
 
 	std::vector<Math::Vec2i> directions;
 
-	Math::Vec2i from = m_start;
+	Math::Vec2i from = _start;
 	for (u32 i = 0; i < positions.size(); i++) {
 		Math::Vec2i to = positions[i];
-		i32 dirX = to.x - from.x;
-		i32 dirY = to.y - from.y;
+		i32 dir_x = to.x - from.x;
+		i32 dir_y = to.y - from.y;
 
-		if (dirX != 0 && dirY != 0) {
-			directions.push_back(Math::Vec2i(dirX, 0));
-			directions.push_back(Math::Vec2i(0, dirY));
+		if (dir_x != 0 && dir_y != 0) {
+			directions.push_back(Math::Vec2i(dir_x, 0));
+			directions.push_back(Math::Vec2i(0, dir_y));
 		} else {
-			directions.push_back(Math::Vec2i(dirX, dirY));
+			directions.push_back(Math::Vec2i(dir_x, dir_y));
 		}
 		from = to;
 	}

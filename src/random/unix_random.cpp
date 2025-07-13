@@ -7,66 +7,43 @@ using namespace LTEngine;
 using namespace LTEngine::Random;
 
 
-UnixRandom::UnixRandom(size_t bufferSize) {
-	m_bufferSize = bufferSize;
+UnixRandom::UnixRandom(size_t buffer_size) {
+	_buffer_size = buffer_size;
 
-	m_urandom.open("/dev/urandom", std::ios::in | std::ios::binary);
-	if (!m_urandom.is_open()) { throw std::runtime_error("Failed to open /dev/urandom"); }
+	_urandom.open("/dev/urandom", std::ios::in | std::ios::binary);
+	if (!_urandom.is_open()) { throw std::runtime_error("Failed to open /dev/urandom"); }
 
-	m_buffer.resize(m_bufferSize);
+	_buffer.resize(_buffer_size);
 
-	m_urandom.read(reinterpret_cast<char *>(&m_buffer[0]), m_bufferSize);
+	_urandom.read(reinterpret_cast<char *>(&_buffer[0]), _buffer_size);
 }
 
 UnixRandom::~UnixRandom() {
-	m_urandom.close();
+	_urandom.close();
 }
 
 
 u8 UnixRandom::next_u8() {
-	if (m_buffer.size() <= 0) {
-		m_buffer.resize(m_bufferSize);
-		m_urandom.read(reinterpret_cast<char *>(&m_buffer[0]), m_bufferSize);
+	if (_buffer.size() <= 0) {
+		_buffer.resize(_buffer_size);
+		_urandom.read(reinterpret_cast<char *>(&_buffer[0]), _buffer_size);
 	}
 
-	u8 value = m_buffer.back();
-	m_buffer.pop_back();
+	u8 value = _buffer.back();
+	_buffer.pop_back();
 	return value;
 }
 
 u16 UnixRandom::next_u16() {
-	if (m_buffer.size() <= 0) {
-		m_buffer.resize(m_bufferSize);
-		m_urandom.read(reinterpret_cast<char *>(&m_buffer[0]), m_bufferSize);
-	}
-
-	u16 value = m_buffer.back() | m_buffer.back();
-	m_buffer.pop_back();
-	m_buffer.pop_back();
-	return value;
+	return next_u8() | (next_u8() << 8);
 }
 
 u32 UnixRandom::next_u32() {
-	if (m_buffer.size() <= 0) {
-		m_buffer.resize(m_bufferSize);
-		m_urandom.read(reinterpret_cast<char *>(&m_buffer[0]), m_bufferSize);
-	}
-
-	u32 value = m_buffer.back() | m_buffer.back() | m_buffer.back() | m_buffer.back();
-	for (int i = 0; i < sizeof(u32); i++) { m_buffer.pop_back(); }
-	return value;
+	return next_u16() | (next_u16() << 16);
 }
 
 u64 UnixRandom::next_u64() {
-	if (m_buffer.size() <= 0) {
-		m_buffer.resize(m_bufferSize);
-		m_urandom.read(reinterpret_cast<char *>(&m_buffer[0]), m_bufferSize);
-	}
-
-	u64 value = m_buffer.back() | m_buffer.back() | m_buffer.back() | m_buffer.back() | m_buffer.back() | m_buffer.back() |
-	            m_buffer.back() | m_buffer.back();
-	for (int i = 0; i < sizeof(u64); i++) { m_buffer.pop_back(); }
-	return value;
+	return next_u32() | ((u64)next_u16() << 32);
 }
 
 
@@ -100,6 +77,6 @@ f64 UnixRandom::next_f64() {
 }
 
 
-void UnixRandom::nextBytes(void *data, size_t size) {
+void UnixRandom::next_bytes(void *data, size_t size) {
 	for (size_t i = 0; i < size; i++) { ((u8 *)data)[i] = next_u8(); }
 }

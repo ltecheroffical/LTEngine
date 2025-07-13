@@ -23,12 +23,12 @@ namespace LTEngine::Random {
 		f32 next_f32() override;
 		f64 next_f64() override;
 
-		void nextBytes(void *data, size_t size) override;
+		void next_bytes(void *data, size_t size) ;
 
 		void seed(u64 seed);
 
 	private:
-		u64 m_seed;
+		u64 _seed;
 	};
 } // namespace LTEngine::Random
 

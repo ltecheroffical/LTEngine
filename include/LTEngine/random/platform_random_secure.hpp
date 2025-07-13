@@ -10,7 +10,7 @@ namespace LTEngine::Random {
 	class LTENGINE_API PlatformRandomSecure : public Random {
 	public:
 		struct RandomSettings {
-			size_t unixRandomBufferSize = 512;
+			size_t unix_random_buffer_size = 512;
 		};
 
 		PlatformRandomSecure(RandomSettings settings);
@@ -29,11 +29,11 @@ namespace LTEngine::Random {
 		f32 next_f32() override;
 		f64 next_f64() override;
 
-		void nextBytes(void *data, size_t size) override;
+		void next_bytes(void *data, size_t size) ;
 
 	private:
 #if defined(__linux__) || defined(__APPLE__)
-		UnixRandomSecure m_random;
+		UnixRandomSecure _random;
 #else
 		OpenOpenSSLRandom m_random;
 #endif

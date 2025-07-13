@@ -10,39 +10,39 @@ namespace LTEngine {
 		Timer() = default;
 		~Timer() = default;
 
-		Event<> onEnd;
+		Event<> on_end;
 
 		void start();
 		void start(f32 time);
 		void pause();
 		void stop();
 
-		void step(f32 timeStep);
+		void step(f32 time_step);
 
-		void setRepeat(bool repeat) {
-			m_repeat = repeat;
+		void set_repeat(bool repeat) {
+			_repeat = repeat;
 		}
 
-		f32 getTimeSet() const {
-			return m_time;
+		f32 get_time_set() const {
+			return _time;
 		}
-		f32 getTimeLeft() const {
-			return m_timeLeft;
+		f32 get_time_left() const {
+			return _time_left;
 		}
-		bool isRepeating() const {
-			return m_repeat;
+		bool is_repeating() const {
+			return _repeat;
 		}
-		bool isRunning() const {
-			return m_running;
+		bool is_running() const {
+			return _running;
 		}
 
 	private:
-		bool m_running = false;
-		bool m_paused = false;
-		bool m_repeat = false;
+		bool _running = false;
+		bool _paused = false;
+		bool _repeat = false;
 
-		f32 m_time = 0.f;
-		f32 m_timeLeft = 0.f;
+		f32 _time = 0.f;
+		f32 _time_left = 0.f;
 	};
 } // namespace LTEngine
 

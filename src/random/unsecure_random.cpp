@@ -8,8 +8,8 @@ using namespace LTEngine::Random;
 
 
 u8 RandomUnsecure::next_u8() {
-	m_seed = m_seed * 1103515245 + 12345 / 2 - 124783; // Random function
-	return ((u8)(m_seed)) ^ ((u8)(m_seed >> 8)) ^ ((u8)(m_seed >> 16)) ^ ((u8)(m_seed >> 24));
+	_seed = _seed * 1664525 + 1013904223; // Random function
+	return ((u8)(_seed)) ^ ((u8)(_seed >> 8)) ^ ((u8)(_seed >> 16)) ^ ((u8)(_seed >> 24));
 }
 
 u16 RandomUnsecure::next_u16() {
@@ -51,7 +51,7 @@ f64 RandomUnsecure::next_f64() {
 }
 
 
-void RandomUnsecure::nextBytes(void *buffer, size_t size) {
+void RandomUnsecure::next_bytes(void *buffer, size_t size) {
 	for (u32 i = 0; i < size; i++) {
 		((u8 *)buffer)[i] = next_u8();
 	}
@@ -59,5 +59,5 @@ void RandomUnsecure::nextBytes(void *buffer, size_t size) {
 
 
 void RandomUnsecure::seed(u64 seed) {
-	m_seed = seed;
+	_seed = seed;
 }

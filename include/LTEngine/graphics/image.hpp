@@ -16,35 +16,35 @@ namespace LTEngine::Graphics {
 		Image(const ColorA *buffer, u32 width, u32 height);
 		~Image() = default;
 
-		void setSize(u32 width, u32 height);
-		Math::Vec2u getSize() const;
+		void set_size(u32 width, u32 height);
+		Math::Vec2u get_size() const;
 
-		void setPixel(ColorA color, u32 x, u32 y);
-		ColorA getPixel(u32 x, u32 y) const;
+		void set_pixel(ColorA color, u32 x, u32 y);
+		ColorA get_pixel(u32 x, u32 y) const;
 
-		void flipH(), flipV();
+		void flip_h(), flip_v();
 
 		void load(const char *filename);
 		void load(u8 *buffer, size_t size);
 
-		const ColorA *getMemBuffer() const {
-			return m_data.data();
+		const ColorA *get_mem_buffer() const {
+			return _data.data();
 		}
-		ColorA *getMemBuffer() {
-			return m_data.data();
+		ColorA *get_mem_buffer() {
+			return _data.data();
 		}
 
-		void savePNG(const char *filename) const;
-		void saveBMP(const char *filename) const;
-		void saveJPG(const char *filename) const;
-		std::vector<u8> savePNG() const;
-		std::vector<u8> saveBMP() const;
-		std::vector<u8> saveJPG() const;
+		void save_png(const char *filename) const;
+		void save_bmp(const char *filename) const;
+		void save_jpg(const char *filename) const;
+		std::vector<u8> save_png() const;
+		std::vector<u8> save_bmp() const;
+		std::vector<u8> save_jpg() const;
 
 	private:
-		u32 m_width, m_height;
+		u32 _width, _height;
 
-		std::vector<ColorA> m_data;
+		std::vector<ColorA> _data;
 	};
 } // namespace LTEngine::Rendering
 

@@ -9,20 +9,20 @@ namespace LTEngine::State {
 
 	class LTENGINE_API FSMState {
 	public:
-		FSMState(FiniteStateMachine *machine) : m_machine(machine) {
+		FSMState(FiniteStateMachine *machine) : _machine(machine) {
 		}
 		virtual ~FSMState() = default;
 
-		virtual void onEnter() {
+		virtual void on_enter() {
 		}
-		virtual void onExit() {
+		virtual void on_exit() {
 		}
 
 		virtual void update(f32 delta) {
 		}
 
 	private:
-		FiniteStateMachine *m_machine = nullptr;
+		FiniteStateMachine *_machine = nullptr;
 	};
 } // namespace LTEngine::State
 

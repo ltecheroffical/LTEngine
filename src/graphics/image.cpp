@@ -8,17 +8,17 @@ using namespace LTEngine;
 using namespace LTEngine::Graphics;
 
 
-Image::Image(u32 width, u32 height) : m_width(width), m_height(height) {
-    m_data.resize(width * height);
+Image::Image(u32 width, u32 height) : _width(width), _height(height) {
+    _data.resize(width * height);
 }
 
 Image::Image(const Color *buffer, u32 width, u32 height) : Image(width, height) {
     for (u32 y = 0; y < height; y++) {
         for (u32 x = 0; x < width; x++) {
-            m_data.at(y * width + x).r = buffer[y * width + x].r;
-            m_data.at(y * width + x).g = buffer[y * width + x].g;
-            m_data.at(y * width + x).b = buffer[y * width + x].b;
-            m_data.at(y * width + x).a = 255;
+            _data.at(y * width + x).r = buffer[y * width + x].r;
+            _data.at(y * width + x).g = buffer[y * width + x].g;
+            _data.at(y * width + x).b = buffer[y * width + x].b;
+            _data.at(y * width + x).a = 255;
         }
     }
 }
@@ -26,48 +26,48 @@ Image::Image(const Color *buffer, u32 width, u32 height) : Image(width, height) 
 Image::Image(const ColorA *buffer, u32 width, u32 height) : Image(width, height) {
     for (u32 y = 0; y < height; y++) {
         for (u32 x = 0; x < width; x++) {
-            m_data.at(y * width + x) = buffer[y * width + x];
+            _data.at(y * width + x) = buffer[y * width + x];
         }
     }
 }
 
 
-void Image::setSize(u32 width, u32 height) {
-    m_width = width;
-    m_height = height;
-    m_data.resize(width * height);
+void Image::set_size(u32 width, u32 height) {
+    _width = width;
+    _height = height;
+    _data.resize(width * height);
 }
 
-Math::Vec2u Image::getSize() const {
-    return Math::Vec2u(m_width, m_height);
-}
-
-
-void Image::setPixel(ColorA color, u32 x, u32 y) {
-    m_data.at(y * m_width + x) = color;
-}
-
-ColorA Image::getPixel(u32 x, u32 y) const {
-    return m_data.at(y * m_width + x);
+Math::Vec2u Image::get_size() const {
+    return Math::Vec2u(_width, _height);
 }
 
 
-void Image::flipH() {
-    for (u32 y = 0; y < m_height / 2; y++) {
-        for (u32 x = 0; x < m_width; x++) {
-            ColorA temp = m_data.at(y * m_width + x);
-            m_data.at(y * m_width + x) = m_data.at((m_height - y - 1) * m_width + x);
-            m_data.at((m_height - y - 1) * m_width + x) = temp;
+void Image::set_pixel(ColorA color, u32 x, u32 y) {
+    _data.at(y * _width + x) = color;
+}
+
+ColorA Image::get_pixel(u32 x, u32 y) const {
+    return _data.at(y * _width + x);
+}
+
+
+void Image::flip_h() {
+    for (u32 y = 0; y < _height / 2; y++) {
+        for (u32 x = 0; x < _width; x++) {
+            ColorA temp = _data.at(y * _width + x);
+            _data.at(y * _width + x) = _data.at((_height - y - 1) * _width + x);
+            _data.at((_height - y - 1) * _width + x) = temp;
         }
     }
 }
 
-void Image::flipV() {
-    for (u32 y = 0; y < m_height; y++) {
-        for (u32 x = 0; x < m_width / 2; x++) {
-            ColorA temp = m_data.at(y * m_width + x);
-            m_data.at(y * m_width + x) = m_data.at(y * m_width + m_width - x - 1);
-            m_data.at(y * m_width + m_width - x - 1) = temp;
+void Image::flip_v() {
+    for (u32 y = 0; y < _height; y++) {
+        for (u32 x = 0; x < _width / 2; x++) {
+            ColorA temp = _data.at(y * _width + x);
+            _data.at(y * _width + x) = _data.at(y * _width + _width - x - 1);
+            _data.at(y * _width + _width - x - 1) = temp;
         }
     }
 }
@@ -78,20 +78,20 @@ void Image::load(const char *filename) {
     int width, height = 0;
     u8 *data = stbi_load(filename, &width, &height, &channels_in_file, 4);
 
-    m_width = width;
-    m_height = height;
+    _width = width;
+    _height = height;
 
     if (data == nullptr) {
         throw std::runtime_error("Failed to load image: " + std::string(filename));
     }
 
-    m_data.resize(m_width * m_height);
-    for (u32 y = 0; y < m_height; y++) {
-        for (u32 x = 0; x < m_width; x++) {
-            m_data.at(y * m_width + x).r = data[(y * m_width + x) * 4 + 0];
-            m_data.at(y * m_width + x).g = data[(y * m_width + x) * 4 + 1];
-            m_data.at(y * m_width + x).b = data[(y * m_width + x) * 4 + 2];
-            m_data.at(y * m_width + x).a = data[(y * m_width + x) * 4 + 3];
+    _data.resize(_width * _height);
+    for (u32 y = 0; y < height; y++) {
+        for (u32 x = 0; x < _width; x++) {
+            _data.at(y * _width + x).r = data[(y * _width + x) * 4 + 0];
+            _data.at(y * _width + x).g = data[(y * _width + x) * 4 + 1];
+            _data.at(y * _width + x).b = data[(y * _width + x) * 4 + 2];
+            _data.at(y * _width + x).a = data[(y * _width + x) * 4 + 3];
         }
     }
     stbi_image_free(data);
@@ -102,64 +102,64 @@ void Image::load(u8 *buffer, size_t size) {
     int width, height = 0;
     u8 *data = stbi_load_from_memory(buffer, size, &width, &height, &channels_in_file, 4);
     
-    m_width = width;
-    m_height = height;
+    _width = width;
+    _height = height;
 
     if (data == nullptr) {
         throw std::runtime_error("Failed to load image from memory");
     }
 
-    m_data.resize(m_width * m_height);
-    for (u32 y = 0; y < m_height; y++) {
-        for (u32 x = 0; x < m_width; x++) {
-            m_data.at(y * m_width + x).r = data[(y * m_width + x) * 4 + 0];
-            m_data.at(y * m_width + x).g = data[(y * m_width + x) * 4 + 1];
-            m_data.at(y * m_width + x).b = data[(y * m_width + x) * 4 + 2];
-            m_data.at(y * m_width + x).a = data[(y * m_width + x) * 4 + 3];
+    _data.resize(_width * _height);
+    for (u32 y = 0; y < height; y++) {
+        for (u32 x = 0; x < _width; x++) {
+            _data.at(y * _width + x).r = data[(y * _width + x) * 4 + 0];
+            _data.at(y * _width + x).g = data[(y * _width + x) * 4 + 1];
+            _data.at(y * _width + x).b = data[(y * _width + x) * 4 + 2];
+            _data.at(y * _width + x).a = data[(y * _width + x) * 4 + 3];
         }
     }
     stbi_image_free(data);
 }
 
 
-void Image::savePNG(const char *filename) const {
-    stbi_write_png(filename, m_width, m_height, 4, m_data.data(), m_width * 4);
+void Image::save_png(const char *filename) const {
+    stbi_write_png(filename, _width, _height, 4, _data.data(), _width * 4);
 }
 
-void Image::saveBMP(const char *filename) const {
-    stbi_write_bmp(filename, m_width, m_height, 4, m_data.data());
+void Image::save_bmp(const char *filename) const {
+    stbi_write_bmp(filename, _width, _height, 4, _data.data());
 }
 
-void Image::saveJPG(const char *filename) const {
-    stbi_write_jpg(filename, m_width, m_height, 4, m_data.data(), 100);
+void Image::save_jpg(const char *filename) const {
+    stbi_write_jpg(filename, _width, _height, 4, _data.data(), 100);
 }
 
-std::vector<u8> Image::savePNG() const {
+std::vector<u8> Image::save_png() const {
     std::vector<u8> data;
     stbi_write_png_to_func([](void *context, void *data, int size) {
         auto array = (std::vector<u8>*)data;
         array->resize(size);
         std::memcpy(array->data(), (u8*)data, size);
-    }, &data, m_width, m_height, 4, m_data.data(), m_width * 4);
+    }, &data, _width, _height, 4, _data.data(), _width * 4);
     return data;
 }
 
-std::vector<u8> Image::saveBMP() const {
+std::vector<u8> Image::save_bmp() const {
     std::vector<u8> data;
     stbi_write_bmp_to_func([](void *context, void *data, int size) {
         auto array = (std::vector<u8>*)data;
         array->resize(size);
         std::memcpy(array->data(), (u8*)data, size);
-    }, &data, m_width, m_height, 4, m_data.data());
+    }, &data, _width, _height, 4, _data.data());
     return data;
 }
 
-std::vector<u8> Image::saveJPG() const {
+std::vector<u8> Image::save_jpg() const {
     std::vector<u8> data;
     stbi_write_jpg_to_func([](void *context, void *data, int size) {
         auto array = (std::vector<u8>*)data;
         array->resize(size);
         std::memcpy(array->data(), (u8*)data, size);
-    }, &data, m_width, m_height, 4, m_data.data(), m_width * 4);
+    }, &data, _width, _height, 4, _data.data(), _width * 4);
     return data;
 }

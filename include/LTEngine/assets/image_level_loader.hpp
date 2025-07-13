@@ -14,21 +14,21 @@ namespace LTEngine {
 
 		const static u32 TILE_NONE = std::numeric_limits<u32>().max();
 
-		void loadLevel(const Graphics::Image *image);
+		void load_level(const Graphics::Image *image);
 		// Calls the specified function on every non transparent pixel
-		void buildLevel(std::function<void(u32 x, u32 y, u32 tile)> addObjCallback);
+		void build_level(std::function<void(u32 x, u32 y, u32 tile)> add_obj_callback);
 
-		void addMapping(Graphics::Color color, u32 tile);
-		void removeMapping(Graphics::Color color);
-		void clearMappings();
+		void add_mapping(Graphics::Color color, u32 tile);
+		void remove_mapping(Graphics::Color color);
+		void clear_mappings();
 
 		// Gets the tile specified, it is the user's job to associate tile ids with objects
-		u32 getTile(u32 x, u32 y);
+		u32 get_tile(u32 x, u32 y);
 
 	private:
-		const Graphics::Image *m_image = nullptr;
+		const Graphics::Image *_image = nullptr;
 
-		std::map<Graphics::Color, u32> m_tileMap;
+		std::map<Graphics::Color, u32> _tile_map;
 	};
 } // namespace LTEngine
 

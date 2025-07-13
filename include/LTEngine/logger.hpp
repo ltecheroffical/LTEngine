@@ -13,16 +13,16 @@ namespace LTEngine {
         ~Logger() = default;
 
         enum class LogOutput {
-            None = 0,
-            Stdout,
-            Stderr
+            NONE = 0,
+            STDOUT,
+            STDERR
         };
 
         enum class LogType {
-            Info = 0,
-            Warn,
-            Error,
-            Fatal
+            INFO = 0,
+            WARN,
+            ERROR,
+            FATAL
         };
 
         struct Log {
@@ -36,11 +36,11 @@ namespace LTEngine {
         void error(const char *format, ...);
         void fatal(const char *format, ...);
 
-        void setLogOutput(LogOutput output) { m_output = output; }
+        void set_log_output(LogOutput output) { _output = output; }
 
     private:
-        std::queue<Log> m_logs;
-        LogOutput m_output = LogOutput::None;
+        std::queue<Log> _logs;
+        LogOutput _output = LogOutput::NONE;
     };
 }
 

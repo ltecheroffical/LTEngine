@@ -13,7 +13,7 @@
 #define LTENGINE_RETURN_NULL(test) if (test == NULL) return; (void)0
 
 #define LTENGINE_F32_EPSILON 0.000001
-static inline int LTENGINE_F32_EQ(LTEngine_f32 a, LTEngine_f32 b) {
+static inline int LTEngine_f32_eq(LTEngine_f32 a, LTEngine_f32 b) {
     float diff = fabsf(a - b);
     float max_val = fmaxf(fabsf(a), fabsf(b));
     if (max_val < FLT_MIN) max_val = FLT_MIN;

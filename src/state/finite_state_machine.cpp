@@ -6,33 +6,33 @@ using namespace LTEngine;
 using namespace LTEngine::State;
 
 void FiniteStateMachine::update(f32 delta) {
-	if (m_isInState) {
-		m_states[m_currentState]->update(delta);
+	if (_is_in_state) {
+		_states[_current_state]->update(delta);
 	}
 }
 
-void FiniteStateMachine::addState(const std::string &name, std::unique_ptr<FSMState> state) {
-	m_states[name] = std::move(state);
+void FiniteStateMachine::add_state(const std::string &name, std::unique_ptr<FSMState> state) {
+	_states[name] = std::move(state);
 }
 
-FSMState *FiniteStateMachine::getState(const std::string &name) {
-	return m_states.contains(name) ? m_states[name].get() : nullptr;
+FSMState *FiniteStateMachine::get_state(const std::string &name) {
+	return _states.contains(name) ? _states[name].get() : nullptr;
 }
 
-bool FiniteStateMachine::isInState(const std::string &name) {
-	return m_currentState == name && m_isInState;
+bool FiniteStateMachine::is_in_state(const std::string &name) {
+	return _current_state == name && _is_in_state;
 }
 
 void FiniteStateMachine::transition(const std::string &name) {
-	if (!m_states.contains(name)) {
+	if (!_states.contains(name)) {
 		return;
 	}
-	if (m_isInState) {
-		m_states[m_currentState]->onExit();
+	if (_is_in_state) {
+		_states[_current_state]->on_exit();
 	}
-	m_currentState = name;
-	m_isInState = true;
-	if (m_states[m_currentState]) {
-		m_states[m_currentState]->onEnter();
+	_current_state = name;
+	_is_in_state = true;
+	if (_states[_current_state]) {
+		_states[_current_state]->on_enter();
 	}
 }

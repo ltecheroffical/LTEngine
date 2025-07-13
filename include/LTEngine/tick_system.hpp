@@ -20,7 +20,7 @@ namespace LTEngine {
 		 * @details
 		 * The first argument is the current ticks.
 		 */
-		Event<u64> onTick;
+		Event<u64> on_tick;
 
 
 		void step(f32 step);
@@ -28,27 +28,27 @@ namespace LTEngine {
 		/**
 		 * @brief Sets the time between ticks in seconds.
 		 */
-		void setTickDelay(f32 delaySeconds);
+		void set_tick_delay(f32 delay_seconds);
 
-		u64 getTicks();
+		u64 get_ticks();
 
-		void resetTicks() {
-			m_currentTick = 0;
+		void reset_ticks() {
+			_current_tick = 0;
 		}
 
-		void registerTick(std::string name, u64 everyTicks);
-		void unregisterTick(std::string name);
-		Event<u64> *getTickEvent(std::string name);
+		void register_tick(std::string name, u64 every_ticks);
+		void unregister_tick(std::string name);
+		Event<u64> *get_tick_event(std::string name);
 
 	private:
-		void onTimerEnd();
+		void _on_timer_end();
 
-		u64 m_currentTick = 0;
+		u64 _current_tick = 0;
 
-		Timer m_tickTimer;
+		Timer _tick_timer;
 
-		std::unordered_map<std::string, u64> m_tickClocks;
-		std::unordered_map<std::string, Event<u64>> m_tickEvents;
+		std::unordered_map<std::string, u64> _tick_clocks;
+		std::unordered_map<std::string, Event<u64>> _tick_events;
 	};
 } // namespace LTEngine
 

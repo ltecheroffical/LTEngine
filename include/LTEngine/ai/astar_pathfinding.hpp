@@ -12,20 +12,20 @@ namespace LTEngine::AI {
 		AStarPathfinding();
 		~AStarPathfinding() override = default;
 
-		void setPath(Math::Vec2i start, Math::Vec2i end) override;
-		bool isPossibleToReachInTheory() override;
+		void set_path(Math::Vec2i start, Math::Vec2i end) override;
+		bool is_possible_to_reach_in_theory() override;
 
-		void setWalkablePath(std::vector<Math::Vec2i> path) override;
+		void set_walkable_path(std::vector<Math::Vec2i> path) override;
 
-		u32 addObstacle(Math::Vec2i pos) override;
-		void removeObstacle(u32 id) override;
+		u32 add_obstacle(Math::Vec2i pos) override;
+		void remove_obstacle(u32 id) override;
 
-		std::vector<Math::Vec2i> calculatePath() override;
+		std::vector<Math::Vec2i> calculate_path() override;
 
-		void setCalculateHeristic(std::function<f32(Math::Vec2i a, Math::Vec2i b)> func) {
-			m_heristicFunc = func;
+		void set_calculate_heristic(std::function<f32(Math::Vec2i a, Math::Vec2i b)> func) {
+			_heristic_func = func;
 		}
-		void resetCalculateHeristic();
+		void reset_calculate_heristic();
 
 	private:
 		struct Cell {
@@ -34,25 +34,25 @@ namespace LTEngine::AI {
 		};
 
 
-		bool isValid(Math::Vec2i pos);
-		bool isBlocked(Math::Vec2i pos);
-		std::vector<Math::Vec2i> tracePath(std::vector<std::vector<Cell>> cellDetails);
+		bool _is_valid(Math::Vec2i pos);
+		bool _is_blocked(Math::Vec2i pos);
+		std::vector<Math::Vec2i> _trace_path(std::vector<std::vector<Cell>> cell_details);
 
-		Math::Vec2i m_start = Math::Vec2i::Zero;
-		Math::Vec2i m_end = Math::Vec2i::Zero;
+		Math::Vec2i _start = Math::Vec2i::ZERO;
+		Math::Vec2i _end = Math::Vec2i::ZERO;
 
-		i32 m_offsetX = 0;
-		i32 m_offsetY = 0;
+		i32 _offset_x = 0;
+		i32 _offset_y = 0;
 
-		u32 m_gridWidth = 0;
-		u32 m_gridHeight = 0;
+		u32 _grid_width = 0;
+		u32 _grid_height = 0;
 
-		u32 m_nextObstacleId = 0;
+		u32 _next_obstacle_id = 0;
 
-		std::vector<Math::Vec2i> m_walkableTiles;
-		std::unordered_map<u32, Math::Vec2i> m_obstacles;
+		std::vector<Math::Vec2i> _walkable_tiles;
+		std::unordered_map<u32, Math::Vec2i> _obstacles;
 
-		std::function<f32(Math::Vec2i, Math::Vec2i)> m_heristicFunc;
+		std::function<f32(Math::Vec2i, Math::Vec2i)> _heristic_func;
 	};
 } // namespace LTEngine::AI
 

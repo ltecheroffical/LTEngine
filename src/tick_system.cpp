@@ -7,48 +7,48 @@ using namespace LTEngine;
 
 
 TickSystem::TickSystem() {
-	m_tickTimer.onEnd += std::bind(&TickSystem::onTimerEnd, this);
-	m_tickTimer.setRepeat(true);
+	_tick_timer.on_end += std::bind(&TickSystem::_on_timer_end, this);
+	_tick_timer.set_repeat(true);
 }
 
 
 void TickSystem::step(f32 step) {
-	m_tickTimer.step(step);
+	_tick_timer.step(step);
 }
 
 
-void TickSystem::setTickDelay(f32 delaySeconds) {
-	m_tickTimer.stop();
-	m_tickTimer.start(delaySeconds);
+void TickSystem::set_tick_delay(f32 delay_seconds) {
+	_tick_timer.stop();
+	_tick_timer.start(delay_seconds);
 }
 
 
-u64 TickSystem::getTicks() {
-	return m_currentTick;
+u64 TickSystem::get_ticks() {
+	return _current_tick;
 }
 
 
-void TickSystem::registerTick(std::string name, u64 everyTicks) {
-	if (everyTicks == 0) { throw std::runtime_error("`everyTicks` cannot be 0 or it will cause division by zero"); }
-	m_tickClocks[name] = everyTicks;
-	m_tickEvents[name].clear();
+void TickSystem::register_tick(std::string name, u64 every_ticks) {
+	if (every_ticks == 0) { throw std::runtime_error("`everyTicks` cannot be 0 or it will cause division by zero"); }
+	_tick_clocks[name] = every_ticks;
+	_tick_events[name].clear();
 }
 
-void TickSystem::unregisterTick(std::string name) {
-	m_tickClocks.erase(name);
-	m_tickEvents.erase(name);
+void TickSystem::unregister_tick(std::string name) {
+	_tick_clocks.erase(name);
+	_tick_events.erase(name);
 }
 
-Event<u64> *TickSystem::getTickEvent(std::string name) {
-	return &m_tickEvents[name];
+Event<u64> *TickSystem::get_tick_event(std::string name) {
+	return &_tick_events[name];
 }
 
 
-void TickSystem::onTimerEnd() {
-	m_currentTick++;
-	onTick(m_currentTick);
+void TickSystem::_on_timer_end() {
+	_current_tick++;
+	on_tick(_current_tick);
 
-	for (auto &clock : m_tickClocks) {
-		if (m_currentTick % clock.second == 0) { m_tickEvents[clock.first](m_currentTick); }
+	for (auto &clock : _tick_clocks) {
+		if (_current_tick % clock.second == 0) { _tick_events[clock.first](_current_tick); }
 	}
 }
