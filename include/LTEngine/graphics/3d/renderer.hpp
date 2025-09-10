@@ -53,6 +53,7 @@ class LTENGINE_API Renderer {
 
 	virtual void draw(Model3D model, Math::Vec3 position, Math::Vec3 rotation, Math::Vec3 scale, Material &material) = 0;
 
+    // Draws everything on top of everything else
 	void set_hud_mode() {
 		_hud_mode = true;
 	}

@@ -12,6 +12,9 @@
 #define LTENGINE_RETURN_VALUE_NULL(test, value) if (test == NULL) return value; (void)0
 #define LTENGINE_RETURN_NULL(test) if (test == NULL) return; (void)0
 
+#define LTENGINE_ASSERT_EXC(cond, exc) if (!(cond)) throw exc; (void)0
+#define LTENGINE_ASSERT_EXC_VALUE(test, exc) if (test == NULL) throw exc; (void)0
+
 #define LTENGINE_F32_EPSILON 0.000001
 static inline int LTEngine_f32_eq(LTEngine_f32 a, LTEngine_f32 b) {
     float diff = fabsf(a - b);

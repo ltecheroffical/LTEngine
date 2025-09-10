@@ -1,5 +1,5 @@
 #ifdef LTENGINE_COMPONENT_PHYSICS_BOX2D
-#include <LTEngine/backends/box2d/box2d.hpp>
+#include <LTEngine/backends/box2d/physics/box2d.hpp>
 
 using namespace LTEngine;
 using namespace LTEngine::Physics;

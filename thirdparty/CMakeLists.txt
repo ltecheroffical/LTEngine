@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
 
+# OpenGL
+if (LTENGINE_COMPONENT_OPENGL)
+    add_subdirectory(glad)
+    target_link_libraries(${PROJECT_NAME} PUBLIC glad)
+endif()
+
 # SDL
 if (LTENGINE_COMPONENT_SDL)
     add_subdirectory(SDL)

@@ -22,6 +22,7 @@ set(POSSIBLE_COMPONENTS
     LTENGINE_COMPONENT_C_API 
 
     LTENGINE_COMPONENT_SDL
+    LTENGINE_COMPONENT_OPENGL
 
     LTENGINE_COMPONENT_PHYSICS_BOX2D 
 )
@@ -29,7 +30,8 @@ set(POSSIBLE_COMPONENTS
 option(LTENGINE_COMPONENT_ENGINE_CORE "The engine core" ON)
 option(LTENGINE_COMPONENT_C_API "The C API, compatibility with bindings and C" ON)
 
-option(LTENGINE_COMPONENT_SDL "The Simple DirectMedia layer, provides rendering and windowing." ON)
+option(LTENGINE_COMPONENT_SDL "The Simple DirectMedia layer, provides rendering and windowing." OFF)
+option(LTENGINE_COMPONENT_OPENGL "OpenGL provides compatible rendering at still decent FPS" ON)
 
 option(LTENGINE_COMPONENT_PHYSICS_BOX2D "The Box2D physics system" ON)
 

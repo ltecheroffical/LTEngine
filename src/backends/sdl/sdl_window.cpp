@@ -1,4 +1,6 @@
-#include <LTEngine/backends/sdl/sdl_window.hpp>
+#ifdef LTENGINE_COMPONENT_SDL
+
+#include <LTEngine/sdl/sdl_window.hpp>
 
 using namespace LTEngine;
 
@@ -291,3 +293,5 @@ std::vector<u8> SDLWindow::pasteBytesClipboard() {
 SDL_Window *SDLWindow::getWindow() {
 	return m_window;
 }
+
+#endif // LTENGINE_COMPONENT_SDL
