@@ -40,7 +40,7 @@ namespace LTEngine::Shapes {
 			}
 		}
 
-		std::vector<Math::Vec3> get_points() {
+		std::vector<Math::Vec3> get_points() const {
 			std::vector<Math::Vec3> points;
 			for (u32 index : indices) {
 				points.push_back(vertices[index]);

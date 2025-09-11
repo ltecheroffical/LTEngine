@@ -39,14 +39,28 @@ private:
         GLint type;
     };
 
+    struct TextureCacheEntry {
+        u16 flushes_since_last_used;
+        u32 image_crc32;
+        GLuint texture;
+        bool valid = false;
+    };
+
     OpenGL *_context;
+
+    std::vector<TextureCacheEntry> _cache;
+    size_t _flush_cycle_thrahes = 0;
+
+    std::unordered_map<i8, std::queue<DrawCmd>> _hud_draw_cmds;
     std::queue<DrawCmd> _draw_cmds;
 
-    // If type is -1, it will not be run inside verrtices
+    // If type is -1, it will not be run inside vertices
     void _add_draw_cmd(DrawCmdFunction function, GLint type);
 
-    Math::Vec2 _to_ndc2d(Math::Vec2 position);
-    Math::Vec2 _from_ndc2d(Math::Vec2 ndc);
+    // Convert a CPU texture to a GPU texture and upload it if not cached
+    GLuint _gpu_texture(Image image);
+
+    void _apply_material(const Material &material);
 };
 } // namespace LTEngine::Graphics
 
